@@ -96,10 +96,10 @@ CANDIDATES = [
 {"id":"CANDIDATE 10","role":"General Manager","meta":"Retail · 19 J. Erfahrung · 13 J. Führung","career":"General Manager → Regional Manager → Store Operations","facts":"P&L · Expansion · 300 Mitarbeitende","new":"Im Gespräch zeigt sich sehr konkrete Skalierungserfahrung, allerdings ausschließlich in stark standardisierten Strukturen.","reveal":"—"},
 ]
 BYID={c["id"]:c for c in CANDIDATES}
-CRITERIA=["Führungserfahrung","Aufbau / Expansion","Branchen- / Markterfahrung","Internationale Erfahrung","Funktions- / Rollenerfahrung","Karriereverlauf","Arbeitgeberhintergrund","Stabilität der Stationen"]
+CRITERIA=["Führungserfahrung","Aufbau / Expansion","Branchen- / Markterfahrung","Internationale Erfahrung","Funktions- / Rollenerfahrung","Karriereverlauf","Arbeitgeberhintergrund","Stabilität der Stationen","Sonstiges"]
 
 # ---------- state ----------
-defaults=dict(phase=0,max_phase=0,shortlist=[],criteria=[],confidence1=60,assessments={},final_candidate=None,final_reasons=[],final_confidence=70,reveal={},counter_change="Nein",counter_candidate=None)
+defaults=dict(phase=0,max_phase=0,shortlist=[],criteria=[],criteria_other="",confidence1=60,assessments={},final_candidate=None,final_reasons=[],final_other="",final_confidence=70,reveal={},counter_change="Nein",counter_candidate=None)
 for k,v in defaults.items():
     if k not in st.session_state: st.session_state[k]=v
 
@@ -160,9 +160,10 @@ elif st.session_state.phase==1:
     st.markdown('</div>',unsafe_allow_html=True)
     st.info(f"SHORTLIST · {len(draft)} / 3 ausgewählt")
     selected_criteria=st.multiselect("Welche Kriterien haben eure Auswahl besonders beeinflusst?",CRITERIA,default=st.session_state.criteria)
+    criteria_other=st.text_input("Sonstiges – welches Kriterium?",value=st.session_state.criteria_other,placeholder="z. B. Ausbildung, Unternehmensgröße, Gesamteindruck …") if "Sonstiges" in selected_criteria else ""
     confidence=st.slider("Wie sicher seid ihr euch bei eurer Shortlist?",0,100,st.session_state.confidence1,5)
     if st.button("SHORTLIST BESTÄTIGEN",disabled=len(draft)!=3,use_container_width=True):
-        st.session_state.shortlist=draft; st.session_state.criteria=selected_criteria; st.session_state.confidence1=confidence; goto(2)
+        st.session_state.shortlist=draft; st.session_state.criteria=selected_criteria; st.session_state.criteria_other=criteria_other; st.session_state.confidence1=confidence; goto(2)
     if st.session_state.shortlist: nav(0,2,"ZUR THEORIE & PRAXIS →")
 
 # ---------- 2 THEORY HANDOVER ----------
@@ -215,13 +216,14 @@ elif st.session_state.phase==4:
     fc=BYID[final]
     st.markdown(f"""<div class="final-choice"><div class="cid">FINALE EMPFEHLUNG</div><b>{final} · {fc['role']}</b></div>""",unsafe_allow_html=True)
     reasons=st.multiselect("Welche Kriterien tragen eure finale Empfehlung?",CRITERIA,default=st.session_state.final_reasons)
+    final_other=st.text_input("Sonstiges – welches Kriterium?",value=st.session_state.final_other,placeholder="z. B. Ausbildung, Unternehmensgröße, Gesamteindruck …",key="final_other_input") if "Sonstiges" in reasons else ""
     conf=st.slider("Wie sicher seid ihr euch jetzt?",0,100,st.session_state.final_confidence,5)
     c1,c2=st.columns(2)
     with c1:
         if st.button("← ZURÜCK",use_container_width=True): goto(3)
     with c2:
         if st.button("ENTSCHEIDUNG BESTÄTIGEN",use_container_width=True):
-            st.session_state.final_candidate=final; st.session_state.final_reasons=reasons; st.session_state.final_confidence=conf; goto(5)
+            st.session_state.final_candidate=final; st.session_state.final_reasons=reasons; st.session_state.final_other=final_other; st.session_state.final_confidence=conf; goto(5)
 
 # ---------- 5 REVEAL ----------
 elif st.session_state.phase==5:
@@ -256,7 +258,11 @@ elif st.session_state.phase==6:
     c3.metric("Sicherheit vorher",f"{st.session_state.confidence1}%")
     c4.metric("Sicherheit final",f"{st.session_state.final_confidence}%")
     st.markdown("### Welche Kriterien kamen bei euch zum Zug?")
-    counts=Counter(st.session_state.criteria + st.session_state.final_reasons)
+    dashboard_criteria=list(st.session_state.criteria + st.session_state.final_reasons)
+    dashboard_criteria=[x for x in dashboard_criteria if x!="Sonstiges"]
+    if st.session_state.criteria_other.strip(): dashboard_criteria.append(st.session_state.criteria_other.strip())
+    if st.session_state.final_other.strip(): dashboard_criteria.append(st.session_state.final_other.strip())
+    counts=Counter(dashboard_criteria)
     if counts:
         import pandas as pd
         df=pd.DataFrame({"Kriterium":list(counts.keys()),"Nennungen":list(counts.values())}).set_index("Kriterium")
