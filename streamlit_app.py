@@ -57,28 +57,28 @@ h1,h2,h3,p,label,div {{font-family:Arial,sans-serif;}}
 div[data-testid="stMetric"] {{background:white;padding:12px;border-radius:10px;}}
 
 /* premium controls */
-div[data-baseweb="select"] > div {
+div[data-baseweb="select"] > div {{
     background:#FFFFFF !important;
     border:1px solid #CBD7E1 !important;
     color:#142536 !important;
-}
-div[data-baseweb="select"] span {color:#142536 !important;}
-div[role="listbox"] {background:#FFFFFF !important;}
-div[role="option"] {color:#142536 !important;}
-div[data-testid="stMultiSelect"] span[data-baseweb="tag"] {
+}}
+div[data-baseweb="select"] span {{color:#142536 !important;}}
+div[role="listbox"] {{background:#FFFFFF !important;}}
+div[role="option"] {{color:#142536 !important;}}
+div[data-testid="stMultiSelect"] span[data-baseweb="tag"] {{
     background:#E7F4ED !important;
     color:#247653 !important;
-}
-div[data-testid="stMultiSelect"] span[data-baseweb="tag"] * {color:#247653 !important;}
-div[data-testid="stCheckbox"] label p {color:#EAF0F5 !important;}
-.recruiter-shell div[data-testid="stCheckbox"] label p {color:#142536 !important;}
-.final-choice {
+}}
+div[data-testid="stMultiSelect"] span[data-baseweb="tag"] * {{color:#247653 !important;}}
+div[data-testid="stCheckbox"] label p {{color:#EAF0F5 !important;}}
+.recruiter-shell div[data-testid="stCheckbox"] label p {{color:#142536 !important;}}
+.final-choice {{
     background:#F3FAF6;border:1px solid #86C5A6;border-left:5px solid #2F8F67;
     border-radius:10px;padding:14px 16px;margin:8px 0;
-}
-.reflection-box {
+}}
+.reflection-box {{
     background:#F5F8FA;border-left:4px solid #6E879B;padding:15px;border-radius:7px;
-}
+}}
 </style>
 """, unsafe_allow_html=True)
 
