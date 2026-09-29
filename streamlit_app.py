@@ -13,18 +13,20 @@ st.set_page_config(
 
 
 # ============================================================
-# DESIGN – EXECUTIVE SEARCH
+# DESIGN
 # ============================================================
 
 st.markdown("""
 <style>
 
-/* Gesamte App */
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
 .stApp {
     background-color: #f4f6f8;
 }
 
-/* Hauptbereich */
 .block-container {
     max-width: 1180px;
     padding-top: 2rem;
@@ -35,14 +37,17 @@ h1, h2, h3 {
     letter-spacing: -0.02em;
 }
 
-/* Buttons */
 .stButton > button {
     border-radius: 8px;
     font-weight: 700;
     padding: 0.65rem 1.2rem;
 }
 
-/* Executive Search Header */
+
+/* =========================================================
+   EXECUTIVE SEARCH – INTERNAL LOOK
+   ========================================================= */
+
 .exec-header {
     background: linear-gradient(120deg, #0b1628 0%, #162943 100%);
     padding: 34px 38px;
@@ -69,7 +74,7 @@ h1, h2, h3 {
 .exec-subtitle {
     font-size: 16px;
     color: #d7e0eb;
-    max-width: 720px;
+    max-width: 760px;
 }
 
 .confidential {
@@ -84,7 +89,6 @@ h1, h2, h3 {
     margin-top: 20px;
 }
 
-/* Search Mandate */
 .mandate-card {
     background: white;
     border: 1px solid #e2e7ed;
@@ -114,7 +118,6 @@ h1, h2, h3 {
     font-size: 14px;
 }
 
-/* Mission Box */
 .mission-box {
     background: #eaf0f7;
     border-left: 5px solid #183a61;
@@ -135,7 +138,11 @@ h1, h2, h3 {
     line-height: 1.55;
 }
 
-/* Prozessanzeige */
+
+/* =========================================================
+   PROCESS BAR
+   ========================================================= */
+
 .process-row {
     display: flex;
     gap: 8px;
@@ -163,58 +170,100 @@ h1, h2, h3 {
     font-size: 12px;
     font-weight: 700;
 }
-.process-inactive {
-    flex: 1;
-    background: #e5e9ee;
-    color: #7b8794;
-    padding: 11px;
-    text-align: center;
-    border-radius: 7px;
-    font-size: 12px;
-    font-weight: 700;
-}
 
 
 /* =========================================================
-   FIRST SCREENING
+   FIRST SCREENING – RECRUITER SEARCH LOOK
+   bewusst nur inspiriert, keine LinkedIn-Kopie
    ========================================================= */
 
-.phase-header {
+.recruiter-shell {
     background: #ffffff;
-    border: 1px solid #e2e7ed;
-    border-radius: 14px;
-    padding: 22px 26px;
+    border: 1px solid #d8dee5;
+    border-radius: 12px;
+    overflow: hidden;
     margin-bottom: 18px;
-    box-shadow: 0 3px 12px rgba(20, 35, 55, 0.04);
+    box-shadow: 0 2px 8px rgba(20,35,55,0.05);
 }
 
-.phase-label {
+.recruiter-topbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e7ed;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.recruiter-brand {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0a66c2;
+    letter-spacing: 0.3px;
+}
+
+.recruiter-mode {
+    font-size: 11px;
+    color: #68788b;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.recruiter-search {
+    background: #eef3f8;
+    border: 1px solid #d7e0e8;
+    border-radius: 6px;
+    margin: 16px 22px;
+    padding: 12px 16px;
+    color: #34465b;
+    font-size: 14px;
+}
+
+.recruiter-summary {
+    display: flex;
+    gap: 24px;
+    padding: 0 22px 18px 22px;
+    color: #5c6f82;
+    font-size: 13px;
+}
+
+.recruiter-summary strong {
+    color: #1f2d3d;
+}
+
+.recruiter-section-title {
     font-size: 11px;
     font-weight: 800;
-    letter-spacing: 1.6px;
+    letter-spacing: 1.5px;
     color: #68788b;
     margin-bottom: 5px;
 }
 
-.phase-title {
-    font-size: 27px;
+.recruiter-main-title {
+    font-size: 25px;
     font-weight: 800;
-    color: #102239;
+    color: #172b3a;
     margin-bottom: 5px;
 }
 
-.phase-text {
+.recruiter-subtitle {
+    color: #607386;
     font-size: 14px;
-    color: #647386;
+    line-height: 1.5;
 }
+
+
+/* =========================================================
+   REQUIREMENTS
+   ========================================================= */
 
 .requirement-card {
     background: #ffffff;
     border: 1px solid #e2e7ed;
-    border-radius: 12px;
-    padding: 20px 22px;
-    min-height: 180px;
-    box-shadow: 0 2px 8px rgba(20, 35, 55, 0.04);
+    border-radius: 10px;
+    padding: 18px 20px;
+    min-height: 165px;
+    box-shadow: 0 2px 7px rgba(20,35,55,0.03);
 }
 
 .requirement-label {
@@ -231,13 +280,147 @@ h1, h2, h3 {
     line-height: 1.4;
 }
 
-.screening-note {
-    background: #eaf0f7;
+
+/* =========================================================
+   CANDIDATE SEARCH RESULT HEADER
+   ========================================================= */
+
+.results-header {
+    background: white;
+    border: 1px solid #dfe4ea;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 22px 0 12px 0;
+}
+
+.results-count {
+    font-size: 20px;
+    font-weight: 800;
+    color: #172b3a;
+}
+
+.results-caption {
+    font-size: 13px;
+    color: #68788b;
+    margin-top: 3px;
+}
+
+.candidate-id {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    color: #0a66c2;
+    margin-bottom: 3px;
+}
+
+.candidate-role {
+    font-size: 19px;
+    font-weight: 800;
+    color: #172b3a;
+    margin-bottom: 3px;
+}
+
+.candidate-sector {
+    color: #5f7182;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.profile-chip {
+    display: inline-block;
+    background: #eef3f8;
+    color: #40566c;
+    border-radius: 20px;
+    padding: 4px 9px;
+    margin: 3px 4px 3px 0;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   INTERNAL PROCESS AFTER SOURCING
+   ========================================================= */
+
+.internal-header {
+    background: linear-gradient(120deg, #0b1628 0%, #1a314e 100%);
+    color: white;
+    padding: 26px 30px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+}
+
+.internal-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    color: #aebed2;
+    margin-bottom: 6px;
+}
+
+.internal-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.internal-text {
+    color: #d7e0eb;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.internal-card {
+    background: white;
+    border: 1px solid #e0e5ea;
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(20,35,55,0.04);
+}
+
+.interview-box {
+    background: #eef4f8;
     border-left: 4px solid #183a61;
     border-radius: 7px;
-    padding: 15px 18px;
-    color: #34465b;
-    margin: 20px 0;
+    padding: 15px 17px;
+    margin: 12px 0;
+    color: #31465a;
+}
+
+.change-box {
+    background: #fff8e8;
+    border: 1px solid #ead7a5;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 14px 0;
+}
+
+.complete-box {
+    background: linear-gradient(120deg, #0b1628 0%, #183a61 100%);
+    color: white;
+    padding: 38px;
+    border-radius: 16px;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.complete-small {
+    color: #aebed2;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.complete-title {
+    font-size: 38px;
+    font-weight: 900;
+    margin: 8px 0;
+}
+
+.complete-text {
+    color: #d7e0eb;
+    font-size: 15px;
 }
 
 </style>
@@ -251,6 +434,7 @@ h1, h2, h3 {
 kandidaten = {
 
     "Kandidat A – Der Branchenprofi": {
+        "id": "CANDIDATE 01",
         "aktuell": "Regional Director",
         "branche": "Finanzdienstleistungen",
         "erfahrung": "16 Jahre Berufserfahrung",
@@ -268,6 +452,7 @@ kandidaten = {
     },
 
     "Kandidatin B – Die Aufbau-Expertin": {
+        "id": "CANDIDATE 02",
         "aktuell": "Managing Director",
         "branche": "Technologie",
         "erfahrung": "13 Jahre Berufserfahrung",
@@ -285,6 +470,7 @@ kandidaten = {
     },
 
     "Kandidat C – Der internationale Manager": {
+        "id": "CANDIDATE 03",
         "aktuell": "Vice President Operations",
         "branche": "Industrie",
         "erfahrung": "18 Jahre Berufserfahrung",
@@ -300,6 +486,7 @@ kandidaten = {
     },
 
     "Kandidatin D – Die unauffällige Kandidatin": {
+        "id": "CANDIDATE 04",
         "aktuell": "Head of Operations",
         "branche": "Finanznahe Dienstleistungen",
         "erfahrung": "12 Jahre Berufserfahrung",
@@ -317,6 +504,7 @@ kandidaten = {
     },
 
     "Kandidat E – Der perfekte Lebenslauf?": {
+        "id": "CANDIDATE 05",
         "aktuell": "Country Director",
         "branche": "Finanzdienstleistungen",
         "erfahrung": "17 Jahre Berufserfahrung",
@@ -376,7 +564,7 @@ for key, value in defaults.items():
 
 
 # ============================================================
-# PHASE 0 – START / BRIEFING
+# PHASE 0 – BRIEFING
 # ============================================================
 
 if st.session_state.phase == 0:
@@ -427,22 +615,13 @@ Die erste Sichtung erfolgt bewusst schnell –
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.metric(
-            "KANDIDAT:INNEN",
-            "5"
-        )
+        st.metric("KANDIDAT:INNEN", "5")
 
     with col2:
-        st.metric(
-            "SHORTLIST",
-            "3"
-        )
+        st.metric("SHORTLIST", "3")
 
     with col3:
-        st.metric(
-            "SCREENING-ZEIT",
-            "90 Sek."
-        )
+        st.metric("SCREENING-ZEIT", "90 Sek.")
 
     st.write("")
 
@@ -462,7 +641,7 @@ Die erste Sichtung erfolgt bewusst schnell –
 
 
 # ============================================================
-# PHASE 1 – SCHNELLSCREENING / SHORTLIST 1.0
+# PHASE 1 – RECRUITER SEARCH / FIRST SCREENING
 # ============================================================
 
 elif st.session_state.phase == 1:
@@ -476,19 +655,30 @@ elif st.session_state.phase == 1:
 </div>
 """, unsafe_allow_html=True)
 
+    # Recruiter-inspirierter Bereich
     st.markdown("""
-<div class="phase-header">
-<div class="phase-label">CONFIDENTIAL SEARCH MANDATE</div>
-<div class="phase-title">First Screening</div>
-<div class="phase-text">
-Sichtet die verfügbaren Profile und entscheidet, welche drei Personen
-ihr in die nächste Phase des Auswahlprozesses aufnehmt.
+<div class="recruiter-shell">
+
+<div class="recruiter-topbar">
+<div class="recruiter-brand">Recruiter Search</div>
+<div class="recruiter-mode">TALENT SOURCING · CONFIDENTIAL</div>
 </div>
+
+<div class="recruiter-search">
+🔎 Managing Director · Austria · Leadership · Expansion
+</div>
+
+<div class="recruiter-summary">
+<span><strong>5</strong> Search Results</span>
+<span><strong>3</strong> Shortlist Positions</span>
+<span>Search Mandate: <strong>Managing Director Austria</strong></span>
+</div>
+
 </div>
 """, unsafe_allow_html=True)
 
     # --------------------------------------------------------
-    # COUNTDOWN – FUNKTIONIERENDE VERSION BEIBEHALTEN
+    # COUNTDOWN – UNVERÄNDERT
     # --------------------------------------------------------
 
     components.html(
@@ -590,7 +780,7 @@ ihr in die nächste Phase des Auswahlprozesses aufnehmt.
         height=145
     )
 
-    st.markdown("## Anforderungsprofil")
+    st.markdown("### Search Criteria")
 
     col1, col2 = st.columns(2)
 
@@ -598,18 +788,9 @@ ihr in die nächste Phase des Auswahlprozesses aufnehmt.
         st.markdown("""
 <div class="requirement-card">
 <div class="requirement-label">MUST-HAVES</div>
-
-<div class="requirement-item">
-✓ Mehrjährige Führungserfahrung
-</div>
-
-<div class="requirement-item">
-✓ Erfahrung mit Wachstum, Aufbau oder Expansion
-</div>
-
-<div class="requirement-item">
-✓ Erfahrung in komplexen Unternehmensstrukturen
-</div>
+<div class="requirement-item">✓ Mehrjährige Führungserfahrung</div>
+<div class="requirement-item">✓ Erfahrung mit Wachstum, Aufbau oder Expansion</div>
+<div class="requirement-item">✓ Erfahrung in komplexen Unternehmensstrukturen</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -617,74 +798,82 @@ ihr in die nächste Phase des Auswahlprozesses aufnehmt.
         st.markdown("""
 <div class="requirement-card">
 <div class="requirement-label">NICE-TO-HAVES</div>
-
-<div class="requirement-item">
-✓ Internationale Erfahrung
+<div class="requirement-item">✓ Internationale Erfahrung</div>
+<div class="requirement-item">✓ Kenntnisse der Finanzdienstleistungsbranche</div>
 </div>
+""", unsafe_allow_html=True)
 
-<div class="requirement-item">
-✓ Kenntnisse der Finanzdienstleistungsbranche
+    st.markdown("""
+<div class="results-header">
+<div class="results-count">5 Candidate Results</div>
+<div class="results-caption">
+Profile öffnen, berufliche Informationen prüfen und maximal drei Personen auswählen.
 </div>
 </div>
 """, unsafe_allow_html=True)
 
-    st.divider()
-
-    st.subheader("FIRST SCREENING")
-
-    st.write(
-        "Prüft die verfügbaren Informationen möglichst zügig. "
-        "**Welche drei Personen nehmt ihr in die nächste Phase auf?**"
-    )
-
     auswahl = []
 
-    for name, daten in kandidaten.items():
+    kandidatennamen = list(kandidaten.keys())
 
-        with st.expander(name):
+    for index, name in enumerate(kandidatennamen, start=1):
 
-            c1, c2 = st.columns(2)
+        daten = kandidaten[name]
 
-            with c1:
-                st.write("**Aktuelle Position:**", daten["aktuell"])
-                st.write("**Branche:**", daten["branche"])
-                st.write("**Berufserfahrung:**", daten["erfahrung"])
+        # Im sichtbaren Screening keine wertenden Demo-Namen
+        expander_title = (
+            f"{daten['id']}  ·  {daten['aktuell']}  ·  {daten['branche']}"
+        )
 
-            with c2:
-                st.write("**Führung:**", daten["fuehrung"])
-                st.write("**International:**", daten["international"])
+        with st.expander(expander_title):
 
-            st.write("**Kurzprofil**")
+            st.markdown(
+                f"""
+<div class="candidate-id">{daten['id']}</div>
+<div class="candidate-role">{daten['aktuell']}</div>
+<div class="candidate-sector">{daten['branche']}</div>
+
+<span class="profile-chip">{daten['erfahrung']}</span>
+<span class="profile-chip">{daten['fuehrung']}</span>
+<span class="profile-chip">{daten['international']}</span>
+""",
+                unsafe_allow_html=True
+            )
+
+            st.markdown("**Berufliches Kurzprofil**")
             st.write(daten["profil"])
 
             if st.checkbox(
-                "Auf meine Shortlist",
+                "Zur Shortlist hinzufügen",
                 key=f"runde1_{name}"
             ):
                 auswahl.append(name)
 
     st.divider()
 
-    st.subheader("Eure Shortlist 1.0")
+    st.markdown("## Shortlist 1.0")
 
     if len(auswahl) < 3:
 
         st.warning(
-            f"Ihr habt {len(auswahl)} von 3 Personen ausgewählt."
+            f"SHORTLIST · {len(auswahl)} / 3 ausgewählt"
         )
 
     elif len(auswahl) > 3:
 
         st.error(
-            "Bitte genau drei Personen auswählen."
+            "Die Shortlist kann maximal drei Personen enthalten."
         )
 
     else:
 
-        st.success("✓ Drei Personen ausgewählt.")
+        st.success("✓ SHORTLIST · 3 / 3")
 
         for person in auswahl:
-            st.write("🎯", person)
+            daten = kandidaten[person]
+            st.write(
+                f"🎯 {daten['id']} · {daten['aktuell']}"
+            )
 
         st.markdown("### Was hat eure Entscheidung beeinflusst?")
 
@@ -698,6 +887,7 @@ ihr in die nächste Phase des Auswahlprozesses aufnehmt.
         sonstiges = ""
 
         if "Sonstiges" in ausgewaehlte_gruende:
+
             sonstiges = st.text_input(
                 "Welcher weitere Grund war wichtig?",
                 key="sonstiger_grund"
@@ -716,9 +906,10 @@ ihr in die nächste Phase des Auswahlprozesses aufnehmt.
         )
 
         if st.button(
-            "🔒 Shortlist 1.0 bestätigen",
+            "🔒 SHORTLIST 1.0 BESTÄTIGEN",
             type="primary",
-            key="shortlist1_bestaetigen"
+            key="shortlist1_bestaetigen",
+            use_container_width=True
         ):
 
             if not ausgewaehlte_gruende:
@@ -744,24 +935,62 @@ ihr in die nächste Phase des Auswahlprozesses aufnehmt.
 
 
 # ============================================================
-# PHASE 2 – SHORTLIST 1.0 / PAUSE
+# PHASE 2 – INTERNAL HANDOVER / PAUSE
 # ============================================================
 
 elif st.session_state.phase == 2:
 
-    st.success("✓ SHORTLIST 1.0 ABGESCHLOSSEN")
+    st.markdown("""
+<div class="process-row">
+<div class="process-inactive">01 · BRIEFING</div>
+<div class="process-inactive">02 · FIRST SCREENING</div>
+<div class="process-active">03 · SECOND LOOK</div>
+<div class="process-inactive">04 · FINAL SHORTLIST</div>
+</div>
+""", unsafe_allow_html=True)
+
+    st.markdown("""
+<div class="internal-header">
+<div class="internal-label">INTERNAL SEARCH PROCESS</div>
+<div class="internal-title">Shortlist 1.0 abgeschlossen</div>
+<div class="internal-text">
+Das öffentliche Profil-Screening ist beendet. Eure Vorauswahl wurde in den internen Auswahlprozess übernommen.
+</div>
+</div>
+""", unsafe_allow_html=True)
 
     st.markdown("### Eure erste Entscheidung")
 
     for person in st.session_state.shortlist1:
-        st.write("🎯", person)
 
-    st.write(
-        f"**Entscheidungssicherheit:** "
-        f"{st.session_state.sicherheit1}%"
-    )
+        daten = kandidaten[person]
 
-    st.markdown("**Entscheidungsgründe:**")
+        st.markdown(
+            f"""
+<div class="internal-card">
+<div class="candidate-id">{daten['id']}</div>
+<div class="candidate-role">{daten['aktuell']}</div>
+<div class="candidate-sector">{daten['branche']}</div>
+</div>
+""",
+            unsafe_allow_html=True
+        )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.metric(
+            "ENTSCHEIDUNGSSICHERHEIT",
+            f"{st.session_state.sicherheit1}%"
+        )
+
+    with col2:
+        st.metric(
+            "SHORTLIST",
+            "3 / 3"
+        )
+
+    st.markdown("**Eure Entscheidungsgründe:**")
 
     for grund in st.session_state.gruende1:
         st.write("•", grund)
@@ -773,38 +1002,53 @@ elif st.session_state.phase == 2:
 
 Bitte wartet auf das gemeinsame Signal.
 
-Die nächsten Informationen werden erst nach der gemeinsamen
-Zwischenphase freigegeben.
+Die nächste Phase wird nach der gemeinsamen Zwischenbesprechung gestartet.
 """)
 
     if st.button(
-        "🎙️ SECOND LOOK starten",
+        "SECOND LOOK STARTEN  →",
         type="primary",
-        key="interviews_oeffnen"
+        key="interviews_oeffnen",
+        use_container_width=True
     ):
         st.session_state.phase = 3
         st.rerun()
 
 
 # ============================================================
-# PHASE 3 – SHORTLIST 2.0
+# PHASE 3 – SECOND LOOK / INTERNAL ASSESSMENT
 # ============================================================
 
 elif st.session_state.phase == 3:
 
-    st.subheader("🎙️ SECOND LOOK")
+    st.markdown("""
+<div class="process-row">
+<div class="process-inactive">01 · BRIEFING</div>
+<div class="process-inactive">02 · FIRST SCREENING</div>
+<div class="process-active">03 · SECOND LOOK</div>
+<div class="process-inactive">04 · FINAL SHORTLIST</div>
+</div>
+""", unsafe_allow_html=True)
 
-    st.write("""
-Ihr habt nun zusätzliche Informationen aus ersten Gesprächen.
-
-Prüft alle fünf Kandidat:innen erneut.
-
-**Welche drei Personen nehmt ihr jetzt in die nächste Phase auf?**
-""")
+    st.markdown("""
+<div class="internal-header">
+<div class="internal-label">INTERNAL CANDIDATE ASSESSMENT</div>
+<div class="internal-title">Second Look</div>
+<div class="internal-text">
+Zusätzliche Informationen aus ersten Gesprächen liegen vor.
+Prüft eure Einschätzung erneut.
+</div>
+</div>
+""", unsafe_allow_html=True)
 
     st.caption(
-        "Die Interviewinformationen sind für diese Demo "
-        "frei erfunden und didaktisch konstruiert."
+        "DEMO: Die Interviewinformationen sind frei erfunden und "
+        "didaktisch konstruiert."
+    )
+
+    st.write(
+        "**Für den aktuellen Prototyp werden noch alle fünf Profile gezeigt. "
+        "Die finale Version wird nach Marcs Praxisinput angepasst.**"
     )
 
     st.divider()
@@ -813,27 +1057,32 @@ Prüft alle fünf Kandidat:innen erneut.
 
     for name, daten in kandidaten.items():
 
-        with st.expander(name):
+        with st.expander(
+            f"{daten['id']} · {daten['aktuell']} · {daten['branche']}"
+        ):
 
-            st.markdown("#### Bisher bekannte Informationen")
+            st.markdown(
+                f"""
+<div class="candidate-id">{daten['id']}</div>
+<div class="candidate-role">{daten['aktuell']}</div>
+<div class="candidate-sector">{daten['branche']}</div>
+""",
+                unsafe_allow_html=True
+            )
 
-            c1, c2 = st.columns(2)
-
-            with c1:
-                st.write("**Aktuelle Position:**", daten["aktuell"])
-                st.write("**Branche:**", daten["branche"])
-                st.write("**Berufserfahrung:**", daten["erfahrung"])
-
-            with c2:
-                st.write("**Führung:**", daten["fuehrung"])
-                st.write("**International:**", daten["international"])
-
-            st.write("**Kurzprofil:**")
+            st.markdown("**Bisher bekannte Informationen**")
             st.write(daten["profil"])
 
-            st.markdown("#### 🔓 NEUE INTERVIEWINFORMATION")
+            st.markdown("**Neue Information aus dem Gespräch**")
 
-            st.info(daten["interview"])
+            st.markdown(
+                f"""
+<div class="interview-box">
+{daten['interview']}
+</div>
+""",
+                unsafe_allow_html=True
+            )
 
             war_vorher_dabei = (
                 name in st.session_state.shortlist1
@@ -841,11 +1090,11 @@ Prüft alle fünf Kandidat:innen erneut.
 
             if war_vorher_dabei:
                 st.caption(
-                    "🎯 Diese Person war auf eurer Shortlist 1.0."
+                    "🎯 War auf eurer Shortlist 1.0"
                 )
 
             if st.checkbox(
-                "Auf meine Shortlist 2.0",
+                "Für die nächste Phase vormerken",
                 value=war_vorher_dabei,
                 key=f"runde2_{name}"
             ):
@@ -853,12 +1102,12 @@ Prüft alle fünf Kandidat:innen erneut.
 
     st.divider()
 
-    st.subheader("Eure Shortlist 2.0")
+    st.markdown("## Aktuelle Auswahl")
 
     if len(auswahl2) < 3:
 
         st.warning(
-            f"Ihr habt {len(auswahl2)} von 3 Personen ausgewählt."
+            f"{len(auswahl2)} / 3 Personen ausgewählt."
         )
 
     elif len(auswahl2) > 3:
@@ -869,15 +1118,21 @@ Prüft alle fünf Kandidat:innen erneut.
 
     else:
 
-        st.success("✓ Drei Personen ausgewählt.")
+        st.success("✓ 3 / 3 Personen ausgewählt.")
 
         for person in auswahl2:
-            st.write("🎯", person)
+
+            daten = kandidaten[person]
+
+            st.write(
+                f"🎯 {daten['id']} · {daten['aktuell']}"
+            )
 
         if st.button(
-            "🎯 Shortlist 2.0 bestätigen",
+            "AUSWAHL BESTÄTIGEN  →",
             type="primary",
-            key="shortlist2_bestaetigen"
+            key="shortlist2_bestaetigen",
+            use_container_width=True
         ):
 
             st.session_state.shortlist2 = auswahl2.copy()
@@ -887,12 +1142,29 @@ Prüft alle fünf Kandidat:innen erneut.
 
 
 # ============================================================
-# PHASE 4 – VERGLEICH / AHA
+# PHASE 4 – DECISION REVIEW
 # ============================================================
 
 elif st.session_state.phase == 4:
 
-    st.subheader("🔍 EURE ENTSCHEIDUNG IM VERGLEICH")
+    st.markdown("""
+<div class="process-row">
+<div class="process-inactive">01 · BRIEFING</div>
+<div class="process-inactive">02 · FIRST SCREENING</div>
+<div class="process-inactive">03 · SECOND LOOK</div>
+<div class="process-active">04 · FINAL SHORTLIST</div>
+</div>
+""", unsafe_allow_html=True)
+
+    st.markdown("""
+<div class="internal-header">
+<div class="internal-label">DECISION REVIEW</div>
+<div class="internal-title">Eure Entscheidung im Vergleich</div>
+<div class="internal-text">
+Vergleicht eure erste Vorauswahl mit eurer Entscheidung nach den zusätzlichen Informationen.
+</div>
+</div>
+""", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
 
@@ -901,14 +1173,24 @@ elif st.session_state.phase == 4:
         st.markdown("### SHORTLIST 1.0")
 
         for person in st.session_state.shortlist1:
-            st.write("🎯", person)
+
+            daten = kandidaten[person]
+
+            st.write(
+                f"🎯 {daten['id']} · {daten['aktuell']}"
+            )
 
     with col2:
 
-        st.markdown("### SHORTLIST 2.0")
+        st.markdown("### SECOND LOOK")
 
         for person in st.session_state.shortlist2:
-            st.write("🎯", person)
+
+            daten = kandidaten[person]
+
+            st.write(
+                f"🎯 {daten['id']} · {daten['aktuell']}"
+            )
 
     vorher = set(st.session_state.shortlist1)
     nachher = set(st.session_state.shortlist2)
@@ -920,34 +1202,49 @@ elif st.session_state.phase == 4:
 
     if vorher == nachher:
 
-        st.success("""
-### Eure Shortlist ist gleich geblieben.
+        st.success(
+            "✓ Eure Auswahl ist gleich geblieben."
+        )
 
-Die zusätzlichen Informationen haben eure ursprüngliche
-Auswahl nicht verändert.
-""")
+        st.write(
+            "Die zusätzlichen Informationen haben eure ursprüngliche "
+            "Auswahl nicht verändert."
+        )
 
     else:
 
-        st.warning(
-            "💡 EURE ENTSCHEIDUNG HAT SICH VERÄNDERT."
-        )
+        st.markdown("""
+<div class="change-box">
+<strong>💡 EURE ENTSCHEIDUNG HAT SICH VERÄNDERT.</strong><br>
+Mindestens eine Person wurde nach den zusätzlichen Informationen anders beurteilt.
+</div>
+""", unsafe_allow_html=True)
 
         col3, col4 = st.columns(2)
 
         with col3:
 
-            st.markdown("#### ↓ Nicht mehr auf der Shortlist")
+            st.markdown("#### ↓ Nicht mehr dabei")
 
             for person in raus:
-                st.write(person)
+
+                daten = kandidaten[person]
+
+                st.write(
+                    f"{daten['id']} · {daten['aktuell']}"
+                )
 
         with col4:
 
-            st.markdown("#### ↑ Neu auf der Shortlist")
+            st.markdown("#### ↑ Neu dabei")
 
             for person in rein:
-                st.write(person)
+
+                daten = kandidaten[person]
+
+                st.write(
+                    f"{daten['id']} · {daten['aktuell']}"
+                )
 
         st.divider()
 
@@ -957,32 +1254,52 @@ Auswahl nicht verändert.
 
             daten = kandidaten[person]
 
-            st.markdown(f"#### ↓ {person}")
+            st.markdown(
+                f"#### ↓ {daten['id']} · {daten['aktuell']}"
+            )
 
             st.write("**Information beim First Screening:**")
             st.write(daten["profil"])
 
-            st.write("**Zusätzliche Information aus dem Gespräch:**")
-            st.info(daten["interview"])
+            st.write("**Zusätzliche Information:**")
+
+            st.markdown(
+                f"""
+<div class="interview-box">
+{daten['interview']}
+</div>
+""",
+                unsafe_allow_html=True
+            )
 
         for person in rein:
 
             daten = kandidaten[person]
 
-            st.markdown(f"#### ↑ {person}")
+            st.markdown(
+                f"#### ↑ {daten['id']} · {daten['aktuell']}"
+            )
 
             st.write("**Information beim First Screening:**")
             st.write(daten["profil"])
 
-            st.write("**Zusätzliche Information aus dem Gespräch:**")
-            st.info(daten["interview"])
+            st.write("**Zusätzliche Information:**")
+
+            st.markdown(
+                f"""
+<div class="interview-box">
+{daten['interview']}
+</div>
+""",
+                unsafe_allow_html=True
+            )
 
     st.divider()
 
     st.markdown("### Was hat eure Entscheidung beeinflusst?")
 
     ausgewaehlte_gruende2 = st.multiselect(
-        "Welche Informationen oder Überlegungen waren für eure zweite Entscheidung ausschlaggebend?",
+        "Welche Informationen oder Überlegungen waren ausschlaggebend?",
         options=gruende2,
         placeholder="Entscheidungsgründe auswählen",
         key="entscheidungsgruende2"
@@ -998,9 +1315,10 @@ Auswahl nicht verändert.
         )
 
     if st.button(
-        "✓ Auswahlprozess abschließen",
+        "AUSWAHLPROZESS ABSCHLIESSEN  →",
         type="primary",
-        key="prozess_abschliessen"
+        key="prozess_abschliessen",
+        use_container_width=True
     ):
 
         if not ausgewaehlte_gruende2:
@@ -1016,6 +1334,7 @@ Auswahl nicht verändert.
             )
 
             if sonstiges2:
+
                 st.session_state.gruende2.append(
                     f"Sonstiges: {sonstiges2}"
                 )
@@ -1025,33 +1344,41 @@ Auswahl nicht verändert.
 
 
 # ============================================================
-# PHASE 5 – ABSCHLUSS DER SIMULATION
+# PHASE 5 – SEARCH COMPLETED
 # ============================================================
 
 elif st.session_state.phase == 5:
 
-    st.markdown("# ✓ SEARCH COMPLETED")
-
     st.markdown("""
-## Eure finale Shortlist steht.
+<div class="complete-box">
+<div class="complete-small">EXECUTIVE SEARCH SIMULATION</div>
+<div class="complete-title">✓ SEARCH COMPLETED</div>
+<div class="complete-text">
+Der Auswahlprozess der Simulation ist abgeschlossen.
+</div>
+</div>
+""", unsafe_allow_html=True)
 
-Der Auswahlprozess in der Simulation ist damit abgeschlossen.
-""")
-
-    st.divider()
-
-    st.markdown("### FINAL SHORTLIST")
+    st.markdown("## Eure finale Auswahl")
 
     for person in st.session_state.shortlist2:
-        st.write("🎯", person)
 
-    st.divider()
+        daten = kandidaten[person]
 
-    st.info("""
-### Bitte bleibt bei eurer Entscheidung.
+        st.markdown(
+            f"""
+<div class="internal-card">
+<div class="candidate-id">{daten['id']}</div>
+<div class="candidate-role">{daten['aktuell']}</div>
+<div class="candidate-sector">{daten['branche']}</div>
+</div>
+""",
+            unsafe_allow_html=True
+        )
 
-Die Ergebnisse werden jetzt gemeinsam ausgewertet.
-""")
+    st.info(
+        "Die Ergebnisse werden jetzt gemeinsam ausgewertet."
+    )
 
     st.markdown(
         "## → Zurück zur gemeinsamen Präsentation"
@@ -1062,7 +1389,7 @@ Die Ergebnisse werden jetzt gemeinsam ausgewertet.
     )
 
     if st.button(
-        "↻ Demo neu starten",
+        "↻ DEMO NEU STARTEN",
         key="demo_neustart"
     ):
 
