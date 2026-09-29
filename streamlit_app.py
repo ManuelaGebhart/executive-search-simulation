@@ -1127,30 +1127,54 @@ elif st.session_state.phase == 3:
 <div class="internal-label">INTERNAL CANDIDATE ASSESSMENT</div>
 <div class="internal-title">Second Look</div>
 <div class="internal-text">
-Zusätzliche Informationen aus ersten Gesprächen liegen vor.
-Prüft eure Einschätzung erneut.
+Nur die Personen aus eurer Shortlist 1.0 wurden in den nächsten Prozessschritt übernommen.
+Zu diesen Kandidat:innen liegen nun zusätzliche Informationen aus ersten Gesprächen vor.
 </div>
 </div>
 """, unsafe_allow_html=True)
 
     st.caption(
-        "DEMO: Die Interviewinformationen sind frei erfunden und "
-        "didaktisch konstruiert."
+        "DEMO: Die Gesprächsinformationen sind frei erfunden und didaktisch konstruiert."
     )
 
-    st.write(
-        "**Für den aktuellen Prototyp werden noch alle fünf Profile gezeigt. "
-        "Die finale Version wird nach Marcs Praxisinput angepasst.**"
+    st.info(
+        "Im realitätsnäheren Ablauf bekommt ihr jetzt nur zu den drei Personen zusätzliche "
+        "Informationen, die ihr im First Screening selbst ausgewählt habt."
     )
 
-    st.divider()
+    # --------------------------------------------------------
+    # AUSWAHLSTAND WIEDERHERSTELLEN
+    # --------------------------------------------------------
+    # Priorität: bereits bestätigte Runde 2 -> Entwurf -> ursprüngliche Shortlist 1.0
+    if st.session_state.shortlist2:
+        gespeicherte_auswahl2 = st.session_state.shortlist2.copy()
+    elif st.session_state.get("shortlist2_draft") is not None:
+        gespeicherte_auswahl2 = st.session_state.get("shortlist2_draft", []).copy()
+    else:
+        gespeicherte_auswahl2 = st.session_state.shortlist1.copy()
+
+    # Beim allerersten Öffnen des Second Look alle drei Personen vorauswählen.
+    if "shortlist2_initialized" not in st.session_state:
+        gespeicherte_auswahl2 = st.session_state.shortlist1.copy()
+        st.session_state.shortlist2_draft = gespeicherte_auswahl2.copy()
+        st.session_state.shortlist2_initialized = True
+
+    # Checkbox-Zustände nur initialisieren, wenn sie noch nicht existieren.
+    for name in st.session_state.shortlist1:
+        widget_key = f"runde2_{name}"
+        if widget_key not in st.session_state:
+            st.session_state[widget_key] = name in gespeicherte_auswahl2
 
     auswahl2 = []
 
-    for name, daten in kandidaten.items():
+    # WICHTIG: Nur Kandidat:innen aus Shortlist 1.0 anzeigen.
+    for name in st.session_state.shortlist1:
+
+        daten = kandidaten[name]
 
         with st.expander(
-            f"{daten['id']} · {daten['aktuell']} · {daten['branche']}"
+            f"{daten['id']} · {daten['aktuell']} · {daten['branche']}",
+            expanded=True
         ):
 
             st.markdown(
@@ -1162,11 +1186,10 @@ Prüft eure Einschätzung erneut.
                 unsafe_allow_html=True
             )
 
-            st.markdown("**Bisher bekannte Informationen**")
+            st.markdown("**Was ihr im First Screening wusstet**")
             st.write(daten["profil"])
 
             st.markdown("**Neue Information aus dem Gespräch**")
-
             st.markdown(
                 f"""
 <div class="interview-box">
@@ -1176,81 +1199,72 @@ Prüft eure Einschätzung erneut.
                 unsafe_allow_html=True
             )
 
-            war_vorher_dabei = (
-                name in st.session_state.shortlist1
-            )
-
-            if war_vorher_dabei:
-                st.caption(
-                    "🎯 War auf eurer Shortlist 1.0"
-                )
-
             if st.checkbox(
-                "Für die nächste Phase vormerken",
-                value=war_vorher_dabei,
+                "Im Prozess behalten",
                 key=f"runde2_{name}"
             ):
                 auswahl2.append(name)
 
-    # Aktuellen Arbeitsstand auch dann behalten, wenn zwischendurch zurück navigiert wird.
-    st.session_state["shortlist2_draft"] = auswahl2.copy()
+    # Arbeitsstand bei jedem Streamlit-Rerun speichern.
+    st.session_state.shortlist2_draft = auswahl2.copy()
 
-    nav_back, nav_forward = st.columns(2)
+    st.divider()
+    st.markdown("## Entscheidung nach dem Second Look")
+
+    if len(auswahl2) == 3:
+        st.success("✓ Alle drei Personen bleiben im Prozess.")
+    elif len(auswahl2) == 0:
+        st.warning("Aktuell bleibt keine Person aus eurer Shortlist im Prozess.")
+    else:
+        st.warning(f"Aktuell bleiben {len(auswahl2)} von 3 Personen im Prozess.")
+
+    for person in auswahl2:
+        daten = kandidaten[person]
+        st.write(f"🎯 {daten['id']} · {daten['aktuell']}")
+
+    st.caption(
+        "Ihr müsst nicht zwingend drei Personen behalten. Entscheidend ist, ob die neuen "
+        "Informationen eure ursprüngliche Einschätzung verändern."
+    )
+
+    # --------------------------------------------------------
+    # NAVIGATION
+    # --------------------------------------------------------
+    nav_back, nav_action, nav_forward = st.columns([1, 1.4, 1])
+
     with nav_back:
         if st.button("← ZURÜCK", key="back_phase3", use_container_width=True):
+            st.session_state.shortlist2_draft = auswahl2.copy()
             st.session_state.phase = 2
             st.rerun()
-    with nav_forward:
-        if st.session_state.max_phase >= 4:
-            if st.button("WEITER ZUM DECISION REVIEW →", key="forward_phase3", use_container_width=True):
-                st.session_state.phase = 4
-                st.rerun()
 
-    st.caption("Zurück/Weiter verändert eure gespeicherten Entscheidungen nicht.")
-
-    # Navigation above replaces the old back-only block.
-    nav_back = None
-    nav_space = None
-    st.divider()
-
-    st.markdown("## Aktuelle Auswahl")
-
-    if len(auswahl2) < 3:
-
-        st.warning(
-            f"{len(auswahl2)} / 3 Personen ausgewählt."
-        )
-
-    elif len(auswahl2) > 3:
-
-        st.error(
-            "Bitte genau drei Personen auswählen."
-        )
-
-    else:
-
-        st.success("✓ 3 / 3 Personen ausgewählt.")
-
-        for person in auswahl2:
-
-            daten = kandidaten[person]
-
-            st.write(
-                f"🎯 {daten['id']} · {daten['aktuell']}"
-            )
-
+    with nav_action:
         if st.button(
-            "AUSWAHL BESTÄTIGEN  →",
+            "SECOND LOOK BESTÄTIGEN",
             type="primary",
             key="shortlist2_bestaetigen",
             use_container_width=True
         ):
-
             st.session_state.shortlist2 = auswahl2.copy()
+            st.session_state.shortlist2_draft = auswahl2.copy()
             st.session_state.phase = 4
             st.session_state.max_phase = max(st.session_state.max_phase, 4)
-
             st.rerun()
+
+    with nav_forward:
+        if st.session_state.max_phase >= 4:
+            if st.button(
+                "WEITER →",
+                key="forward_phase3",
+                use_container_width=True
+            ):
+                # Beim bloßen Vorwärtsnavigieren die bereits bestätigte Entscheidung behalten.
+                st.session_state.phase = 4
+                st.rerun()
+
+    st.caption(
+        "Zurück dient zum Nachschauen. Eure aktuelle Auswahl im Second Look wird dabei gespeichert."
+    )
 
 
 # ============================================================
