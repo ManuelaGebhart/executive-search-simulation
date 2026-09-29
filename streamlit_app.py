@@ -1,6 +1,5 @@
 import streamlit as st
-import time
-from datetime import datetime, timedelta
+import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="Executive Search Simulation",
@@ -19,21 +18,11 @@ kandidaten = {
         "erfahrung": "16 Jahre Berufserfahrung",
         "fuehrung": "9 Jahre Führungserfahrung",
         "international": "Deutschland, Österreich, Schweiz",
-        "profil": (
-            "Langjährige Tätigkeit bei zwei großen Finanzdienstleistern. "
-            "Seit fünf Jahren Leitung einer regionalen Geschäftseinheit "
-            "mit rund 120 Mitarbeitenden."
-        ),
-        "interview": (
-            "Im Gespräch wird deutlich: Der Kandidat übernahm seine "
-            "bisherigen Führungsbereiche jeweils in bereits etablierten "
-            "Strukturen. Einen neuen Standort oder eine neue Geschäftseinheit "
-            "hat er bisher nicht selbst aufgebaut."
-        ),
-        "reflexion": (
-            "Aus langer Führungserfahrung allein lässt sich noch nicht ableiten, "
-            "dass Erfahrung mit dem Aufbau eines neuen Standorts vorliegt."
-        )
+        "profil": "Langjährige Tätigkeit bei zwei großen Finanzdienstleistern. "
+                  "Seit fünf Jahren Leitung einer regionalen Geschäftseinheit mit rund 120 Mitarbeitenden.",
+        "interview": "Im Gespräch wird deutlich: Der Kandidat übernahm seine bisherigen "
+                     "Führungsbereiche jeweils in bereits etablierten Strukturen. Einen neuen "
+                     "Standort oder eine neue Geschäftseinheit hat er bisher nicht selbst aufgebaut."
     },
 
     "Kandidatin B – Die Aufbau-Expertin": {
@@ -42,21 +31,11 @@ kandidaten = {
         "erfahrung": "13 Jahre Berufserfahrung",
         "fuehrung": "7 Jahre Führungserfahrung",
         "international": "Österreich, Polen, Tschechien",
-        "profil": (
-            "Begleitete mehrere Expansionsprojekte und war zuletzt für den "
-            "Aufbau einer neuen Geschäftseinheit in Zentral- und Osteuropa "
-            "verantwortlich."
-        ),
-        "interview": (
-            "Im Gespräch konkretisiert sie ihre Rolle: Sie verantwortete den "
-            "Aufbau einer neuen Einheit von der Personalgewinnung bis zur "
-            "Etablierung operativer Strukturen. Direkte Erfahrung in der "
-            "Finanzdienstleistungsbranche hat sie nicht."
-        ),
-        "reflexion": (
-            "Die neue Information konkretisiert, was mit „Aufbau“ tatsächlich "
-            "gemeint war und welche Verantwortung sie dabei selbst trug."
-        )
+        "profil": "Begleitete mehrere Expansionsprojekte und war zuletzt für den Aufbau "
+                  "einer neuen Geschäftseinheit in Zentral- und Osteuropa verantwortlich.",
+        "interview": "Im Gespräch konkretisiert sie ihre Rolle: Sie verantwortete den Aufbau "
+                     "einer neuen Einheit von der Personalgewinnung bis zur Etablierung operativer "
+                     "Strukturen. Direkte Erfahrung in der Finanzdienstleistungsbranche hat sie nicht."
     },
 
     "Kandidat C – Der internationale Manager": {
@@ -65,19 +44,11 @@ kandidaten = {
         "erfahrung": "18 Jahre Berufserfahrung",
         "fuehrung": "11 Jahre Führungserfahrung",
         "international": "Europa, USA, Asien",
-        "profil": (
-            "Internationale Führungslaufbahn mit Verantwortung für mehrere "
-            "Standorte. Langjährige Erfahrung in globalen Unternehmensstrukturen."
-        ),
-        "interview": (
-            "Im Gespräch zeigt sich: Seine internationale Verantwortung bezog "
-            "sich vor allem auf die Steuerung bereits bestehender Standorte. "
-            "Bei deren Aufbau war er selbst nicht beteiligt."
-        ),
-        "reflexion": (
-            "„Verantwortung für mehrere Standorte“ und „Erfahrung mit dem Aufbau "
-            "von Standorten“ sind nicht dieselbe Information."
-        )
+        "profil": "Internationale Führungslaufbahn mit Verantwortung für mehrere Standorte. "
+                  "Langjährige Erfahrung in globalen Unternehmensstrukturen.",
+        "interview": "Im Gespräch zeigt sich: Seine internationale Verantwortung bezog sich "
+                     "vor allem auf die Steuerung bereits bestehender Standorte. Bei deren Aufbau "
+                     "war er selbst nicht beteiligt."
     },
 
     "Kandidatin D – Die unauffällige Kandidatin": {
@@ -86,21 +57,12 @@ kandidaten = {
         "erfahrung": "12 Jahre Berufserfahrung",
         "fuehrung": "5 Jahre Führungserfahrung",
         "international": "Österreich, Slowenien",
-        "profil": (
-            "Karriere überwiegend bei mittelständischen Unternehmen. "
-            "Verantwortung für operative Teams und mehrere interne "
-            "Veränderungsprojekte."
-        ),
-        "interview": (
-            "Im Gespräch wird eine Information sichtbar, die aus dem Kurzprofil "
-            "kaum hervorging: Sie war beim Eintritt in ihr aktuelles Unternehmen "
-            "maßgeblich am Aufbau eines neuen österreichischen Standorts beteiligt "
-            "und übernahm dort schrittweise Führungsverantwortung."
-        ),
-        "reflexion": (
-            "Das ursprüngliche Kurzprofil enthielt relevante Erfahrung, machte "
-            "deren konkreten Bezug zum Standortaufbau aber kaum sichtbar."
-        )
+        "profil": "Karriere überwiegend bei mittelständischen Unternehmen. "
+                  "Verantwortung für operative Teams und mehrere interne Veränderungsprojekte.",
+        "interview": "Im Gespräch wird eine Information sichtbar, die aus dem Kurzprofil kaum "
+                     "hervorging: Sie war beim Eintritt in ihr aktuelles Unternehmen maßgeblich "
+                     "am Aufbau eines neuen österreichischen Standorts beteiligt und übernahm "
+                     "dort schrittweise Führungsverantwortung."
     },
 
     "Kandidat E – Der perfekte Lebenslauf?": {
@@ -109,20 +71,11 @@ kandidaten = {
         "erfahrung": "17 Jahre Berufserfahrung",
         "fuehrung": "10 Jahre Führungserfahrung",
         "international": "Deutschland, Schweiz, Großbritannien",
-        "profil": (
-            "Führungspositionen bei mehreren international bekannten Unternehmen. "
-            "Verantwortung für große Teams und strategische Wachstumsprojekte."
-        ),
-        "interview": (
-            "Im Gespräch wird deutlich: Die strategischen Wachstumsprojekte wurden "
-            "zentral vorbereitet. Seine Verantwortung lag vor allem in der Umsetzung "
-            "bereits definierter Konzepte und in der Führung bestehender Organisationen."
-        ),
-        "reflexion": (
-            "Bekannte Arbeitgeber und strategische Wachstumsprojekte können einen "
-            "starken ersten Eindruck erzeugen. Entscheidend bleibt, welche konkrete "
-            "Rolle die Person selbst übernommen hat."
-        )
+        "profil": "Führungspositionen bei mehreren international bekannten Unternehmen. "
+                  "Verantwortung für große Teams und strategische Wachstumsprojekte.",
+        "interview": "Im Gespräch wird deutlich: Die strategischen Wachstumsprojekte wurden "
+                     "zentral vorbereitet. Seine Verantwortung lag vor allem in der Umsetzung "
+                     "bereits definierter Konzepte und in der Führung bestehender Organisationen."
     }
 }
 
@@ -146,46 +99,12 @@ defaults = {
     "shortlist1": [],
     "shortlist2": [],
     "gruende1": [],
-    "sicherheit1": 70,
-    "screening_start": None,
-    "screening_locked": False
+    "sicherheit1": 70
 }
 
 for key, value in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = value
-
-# ============================================================
-# HILFSFUNKTIONEN
-# ============================================================
-
-def reset_demo():
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
-    st.rerun()
-
-
-def kandidatenkarte(name, daten, interview=False):
-    st.markdown(f"### {name}")
-
-    c1, c2 = st.columns(2)
-
-    with c1:
-        st.write("**Aktuelle Position:**", daten["aktuell"])
-        st.write("**Branche:**", daten["branche"])
-        st.write("**Berufserfahrung:**", daten["erfahrung"])
-
-    with c2:
-        st.write("**Führung:**", daten["fuehrung"])
-        st.write("**International:**", daten["international"])
-
-    st.write("**Kurzprofil:**")
-    st.write(daten["profil"])
-
-    if interview:
-        st.markdown("#### 🔓 Neue Interviewinformation")
-        st.info(daten["interview"])
-
 
 # ============================================================
 # KOPF
@@ -194,12 +113,11 @@ def kandidatenkarte(name, daten, interview=False):
 st.title("MISSION: EXECUTIVE SEARCH")
 
 st.caption(
-    "DEMO-PROTOTYP · Alle Personen, Unternehmen und Angaben "
-    "dieser Simulation sind frei erfunden."
+    "DEMO-PROTOTYP · Alle Unternehmen, Personen und Angaben sind frei erfunden."
 )
 
 # ============================================================
-# PHASE 0 – MISSION
+# PHASE 0 – START
 # ============================================================
 
 if st.session_state.phase == 0:
@@ -210,7 +128,7 @@ if st.session_state.phase == 0:
 ### Neue Führung für einen strategisch wichtigen Standort
 
 Ein international tätiges Unternehmen baut seine Präsenz in Österreich aus
-und sucht eine neue Führungskraft:
+und sucht eine neue Führungskraft für die Position:
 
 ## **Managing Director Austria**
 
@@ -220,17 +138,10 @@ Das Executive-Search-Team hat fünf potenzielle Kandidat:innen identifiziert.
 
 Erstellt aus den fünf Profilen eine **Shortlist mit genau drei Personen**.
 
-Die erste Sichtung erfolgt bewusst schnell.
+Die erste Sichtung erfolgt bewusst schnell – ähnlich einer ersten
+Vorauswahl im Executive Search.
 
-Nach dem Start habt ihr:
-
-**90 Sekunden FIRST SCREENING**
-
-danach
-
-**15 Sekunden FINAL DECISION**
-
-Anschließend wird eure Auswahl fixiert.
+Sobald ihr die Suche startet, habt ihr **90 Sekunden Zeit**.
 """)
 
     if st.button(
@@ -238,74 +149,116 @@ Anschließend wird eure Auswahl fixiert.
         type="primary",
         key="start_mission"
     ):
-        st.session_state.screening_start = time.time()
         st.session_state.phase = 1
         st.rerun()
 
-
 # ============================================================
-# PHASE 1 – FIRST SCREENING
+# PHASE 1 – SCHNELLSCREENING / SHORTLIST 1.0
 # ============================================================
 
 elif st.session_state.phase == 1:
 
-    if st.session_state.screening_start is None:
-        st.session_state.screening_start = time.time()
+    st.info("🔒 CONFIDENTIAL SEARCH MANDATE")
 
-    elapsed = time.time() - st.session_state.screening_start
+    # Countdown
+    components.html(
+        """
+        <div id="timerbox" style="
+            text-align:center;
+            padding:12px;
+            border-radius:12px;
+            background:#f1f3f5;
+            font-family:Arial,sans-serif;
+        ">
 
-    # --------------------------------------------------------
-    # ZEITSTATUS
-    # --------------------------------------------------------
+            <div style="
+                font-size:14px;
+                font-weight:bold;
+                letter-spacing:1px;
+            ">
+                FIRST SCREENING · VERBLEIBENDE ZEIT
+            </div>
 
-    if elapsed < 90:
-        rest = max(0, int(90 - elapsed))
-        modus = "screening"
+            <div id="timer" style="
+                font-size:40px;
+                font-weight:bold;
+                margin:4px;
+            ">
+                01:30
+            </div>
 
-    elif elapsed < 105:
-        rest = max(0, int(105 - elapsed))
-        modus = "final"
+            <div id="message" style="font-size:14px;">
+                Prüft die Profile und wählt genau 3 Personen aus.
+            </div>
 
-    else:
-        rest = 0
-        modus = "locked"
-        st.session_state.screening_locked = True
+        </div>
 
-    # --------------------------------------------------------
-    # TIMERANZEIGE
-    # --------------------------------------------------------
+        <script>
 
-    timer_placeholder = st.empty()
+        let timeLeft = 90;
 
-    if modus == "screening":
+        const timer = document.getElementById("timer");
+        const box = document.getElementById("timerbox");
+        const message = document.getElementById("message");
 
-        if rest > 20:
-            timer_placeholder.info(
-                f"⏱️ FIRST SCREENING · Noch **{rest} Sekunden**"
-            )
+        const countdown = setInterval(function() {
 
-        else:
-            timer_placeholder.error(
-                f"🔴 NOCH **{rest} SEKUNDEN** · "
-                "Bitte eure drei Personen auswählen!"
-            )
+            timeLeft--;
 
-    elif modus == "final":
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
 
-        timer_placeholder.error(
-            f"🚨 **FINAL DECISION · {rest} SEKUNDEN**\n\n"
-            "Keine Detailanalyse mehr – legt jetzt eure drei Personen fest."
-        )
+            timer.innerHTML =
+                String(minutes).padStart(2,'0')
+                + ":"
+                + String(seconds).padStart(2,'0');
 
-    else:
+            if (timeLeft <= 20 && timeLeft > 5) {
 
-        timer_placeholder.error(
-            "🔒 **ZEIT ABGELAUFEN · AUSWAHL FIXIERT**"
-        )
+                box.style.background = "#ffe1e1";
+                box.style.border = "2px solid #c62828";
 
-    # --------------------------------------------------------
-    # ANFORDERUNGSPROFIL
-    # --------------------------------------------------------
+                timer.style.color = "#c62828";
+                timer.style.fontSize = "54px";
+
+                message.innerHTML =
+                    "<b>Noch " + timeLeft +
+                    " Sekunden – bitte 3 Personen auswählen!</b>";
+            }
+
+            if (timeLeft <= 5 && timeLeft > 0) {
+
+                box.style.background = "#c62828";
+
+                timer.style.color = "white";
+                timer.style.fontSize = "70px";
+
+                message.style.color = "white";
+                message.innerHTML =
+                    "<b>JETZT AUSWAHL ABSCHLIESSEN</b>";
+            }
+
+            if (timeLeft <= 0) {
+
+                clearInterval(countdown);
+
+                box.style.background = "#c62828";
+
+                timer.style.color = "white";
+                timer.style.fontSize = "34px";
+                timer.innerHTML = "ZEIT ABGELAUFEN";
+
+                message.style.color = "white";
+                message.innerHTML =
+                    "<b>Bitte bestätigt jetzt eure Auswahl.</b>";
+            }
+
+        },1000);
+
+        </script>
+        """,
+        height=145
+    )
 
     st.subheader("Anforderungsprofil")
 
@@ -333,12 +286,9 @@ elif st.session_state.phase == 1:
     st.subheader("FIRST SCREENING")
 
     st.write(
+        "Prüft die verfügbaren Informationen möglichst zügig. "
         "**Welche drei Personen nehmt ihr in die nächste Phase auf?**"
     )
-
-    # --------------------------------------------------------
-    # AUSWAHL
-    # --------------------------------------------------------
 
     auswahl = []
 
@@ -346,133 +296,107 @@ elif st.session_state.phase == 1:
 
         with st.expander(name):
 
-            kandidatenkarte(name, daten)
+            c1, c2 = st.columns(2)
 
-            checkbox_key = f"runde1_{name}"
+            with c1:
+                st.write("**Aktuelle Position:**", daten["aktuell"])
+                st.write("**Branche:**", daten["branche"])
+                st.write("**Berufserfahrung:**", daten["erfahrung"])
+
+            with c2:
+                st.write("**Führung:**", daten["fuehrung"])
+                st.write("**International:**", daten["international"])
+
+            st.write("**Kurzprofil**")
+            st.write(daten["profil"])
 
             if st.checkbox(
                 "Auf meine Shortlist",
-                key=checkbox_key,
-                disabled=st.session_state.screening_locked
+                key=f"runde1_{name}"
             ):
                 auswahl.append(name)
-
-    # --------------------------------------------------------
-    # TIMER AKTUALISIEREN
-    # --------------------------------------------------------
-
-    if not st.session_state.screening_locked:
-
-        if st.button(
-            "⟳ Countdown aktualisieren",
-            key="timer_refresh"
-        ):
-            st.rerun()
-
-        st.caption(
-            "Der Countdown läuft weiter. Die Anzeige aktualisiert sich "
-            "bei Interaktionen automatisch; mit dem Button könnt ihr "
-            "den aktuellen Stand zusätzlich abrufen."
-        )
 
     st.divider()
 
-    # --------------------------------------------------------
-    # NACH ABLAUF
-    # --------------------------------------------------------
+    st.subheader("Eure Shortlist 1.0")
 
-    if st.session_state.screening_locked:
+    if len(auswahl) < 3:
 
-        # Auswahl aus den gespeicherten Checkbox-Zuständen lesen
-        auswahl = []
+        st.warning(
+            f"Ihr habt {len(auswahl)} von 3 Personen ausgewählt."
+        )
 
-        for name in kandidaten:
-            if st.session_state.get(f"runde1_{name}", False):
-                auswahl.append(name)
+    elif len(auswahl) > 3:
 
-        st.subheader("🔒 Eure fixierte Vorauswahl")
+        st.error(
+            "Bitte genau drei Personen auswählen."
+        )
 
-        if len(auswahl) == 3:
+    else:
 
-            st.success("✓ Ihr habt genau drei Personen ausgewählt.")
+        st.success("✓ Drei Personen ausgewählt.")
 
-            for person in auswahl:
-                st.write("🎯", person)
+        for person in auswahl:
+            st.write("🎯", person)
 
-            st.markdown("### Was hat eure Entscheidung beeinflusst?")
+        st.markdown("### Was hat eure Entscheidung beeinflusst?")
 
-            ausgewaehlte_gruende = st.multiselect(
-                "Mehrfachauswahl möglich",
-                options=gruende,
-                key="entscheidungsgruende"
+        ausgewaehlte_gruende = st.multiselect(
+            "Mehrfachauswahl möglich",
+            options=gruende,
+            placeholder="Entscheidungsgründe auswählen",
+            key="entscheidungsgruende"
+        )
+
+        sonstiges = ""
+
+        if "Sonstiges" in ausgewaehlte_gruende:
+            sonstiges = st.text_input(
+                "Welcher weitere Grund war wichtig?",
+                key="sonstiger_grund"
             )
 
-            sonstiges = ""
+        st.markdown("### Wie sicher seid ihr euch?")
 
-            if "Sonstiges" in ausgewaehlte_gruende:
-                sonstiges = st.text_input(
-                    "Welcher weitere Grund war wichtig?",
-                    key="sonstiger_grund"
+        sicherheit = st.slider(
+            "Entscheidungssicherheit",
+            0,
+            100,
+            70,
+            5,
+            format="%d%%",
+            key="sicherheit_runde1"
+        )
+
+        if st.button(
+            "🔒 Shortlist 1.0 bestätigen",
+            type="primary",
+            key="shortlist1_bestaetigen"
+        ):
+
+            if not ausgewaehlte_gruende:
+
+                st.warning(
+                    "Bitte mindestens einen Entscheidungsgrund auswählen."
                 )
 
-            st.markdown("### Wie sicher seid ihr euch?")
+            else:
 
-            sicherheit = st.slider(
-                "Entscheidungssicherheit",
-                min_value=0,
-                max_value=100,
-                value=70,
-                step=5,
-                format="%d%%",
-                key="sicherheit_runde1"
-            )
+                st.session_state.shortlist1 = auswahl.copy()
+                st.session_state.gruende1 = ausgewaehlte_gruende.copy()
 
-            if st.button(
-                "Shortlist 1.0 speichern",
-                type="primary",
-                key="shortlist1_speichern"
-            ):
-
-                if not ausgewaehlte_gruende:
-                    st.warning(
-                        "Bitte mindestens einen Entscheidungsgrund auswählen."
+                if sonstiges:
+                    st.session_state.gruende1.append(
+                        f"Sonstiges: {sonstiges}"
                     )
 
-                else:
-                    st.session_state.shortlist1 = auswahl.copy()
-                    st.session_state.gruende1 = ausgewaehlte_gruende.copy()
+                st.session_state.sicherheit1 = sicherheit
+                st.session_state.phase = 2
 
-                    if sonstiges:
-                        st.session_state.gruende1.append(
-                            f"Sonstiges: {sonstiges}"
-                        )
-
-                    st.session_state.sicherheit1 = sicherheit
-                    st.session_state.phase = 2
-                    st.rerun()
-
-        else:
-
-            st.warning(
-                f"Ihr habt innerhalb der Zeit **{len(auswahl)} Personen** "
-                "ausgewählt. Für die Simulation werden genau drei benötigt."
-            )
-
-            st.write(
-                "Für den Demo-Prototyp könnt ihr die Runde neu starten. "
-                "Für die endgültige Version bauen wir hier noch eine "
-                "kontrollierte Notfalllösung ein."
-            )
-
-            if st.button(
-                "↻ Screening neu starten",
-                key="screening_restart"
-            ):
-                reset_demo()
-
+                st.rerun()
 
 # ============================================================
-# PHASE 2 – ERSTER THEORIE-IMPULS
+# PHASE 2 – THEORIE
 # ============================================================
 
 elif st.session_state.phase == 2:
@@ -488,19 +412,21 @@ zukünftige Position geeignet sein könnte.
 """)
 
     with st.expander(
-        "💡 THEORIE-IMPULS · Biografieorientierte Verfahren"
+        "💡 THEORIE-IMPULS: Biografieorientierter Ansatz"
     ):
 
         st.markdown("""
-Bei **biografieorientierten Verfahren** wird Berufserfolg dadurch
-vorhergesagt, dass von vergangenem Verhalten beziehungsweise
-früher erbrachten Leistungen auf zukünftige Leistungen geschlossen wird.
+### Biografieorientierte Personalauswahl
 
-Zu den bedeutsamen biografieorientierten Verfahren werden in der
-Kursunterlage unter anderem die **Prüfung von Bewerbungsunterlagen**
-und das **Vorstellungsgespräch** gezählt.
+Bei biografieorientierten Verfahren werden Informationen über
+vergangenes Verhalten beziehungsweise früher erbrachte Leistungen
+genutzt, um zukünftige Leistungen bzw. Eignung vorherzusagen.
 
-**Quelle:** Furtmüller & Zdravkovic, *Personalauswahl*, S. 297.
+Bewerbungsunterlagen und Lebenslauf können dabei Quellen
+biografischer Informationen sein.
+
+**Aber:** Eine Information aus der Vergangenheit ist noch
+nicht automatisch ein Beleg für die Eignung für eine konkrete Position.
 """)
 
     st.divider()
@@ -525,23 +451,26 @@ und das **Vorstellungsgespräch** gezählt.
     st.warning("""
 🔓 **NEUE INFORMATIONEN SIND VERFÜGBAR**
 
-Ihr erhaltet jetzt zusätzliche Informationen aus fiktiven
-Erstgesprächen.
+Im nächsten Schritt erhaltet ihr zusätzliche Informationen
+aus fiktiven Erstgesprächen.
 
-Prüft danach eure ursprüngliche Entscheidung erneut.
+Bei jeder Person seht ihr das ursprüngliche Profil und direkt
+darunter die neue Information.
+
+Danach erstellt ihr eure **Shortlist 2.0**.
 """)
 
     if st.button(
-        "🎙️ SECOND LOOK starten",
+        "🎙️ Neue Informationen öffnen",
         type="primary",
-        key="second_look_start"
+        key="interviews_oeffnen"
     ):
+
         st.session_state.phase = 3
         st.rerun()
 
-
 # ============================================================
-# PHASE 3 – SECOND LOOK / SHORTLIST 2.0
+# PHASE 3 – SHORTLIST 2.0
 # ============================================================
 
 elif st.session_state.phase == 3:
@@ -549,40 +478,36 @@ elif st.session_state.phase == 3:
     st.subheader("🎙️ SECOND LOOK")
 
     st.write("""
-Jetzt stehen zusätzliche Informationen zur Verfügung.
+Ihr habt nun zusätzliche Informationen aus ersten Gesprächen.
 
-Prüft **alle fünf Kandidat:innen erneut** und erstellt danach
-wieder eine Shortlist mit **genau drei Personen**.
+Prüft alle fünf Kandidat:innen erneut.
+
+**Welche drei Personen nehmt ihr jetzt in die nächste Phase auf?**
 """)
 
     with st.expander(
-        "🧭 DIAGNOSTIK-CHECK"
+        "🧭 DIAGNOSTIK-CHECK: Worauf solltet ihr jetzt achten?"
     ):
 
         st.markdown("""
-### Prüft eure Schlussfolgerung
-
-**Was wissen wir tatsächlich?**
+**1. Was wissen wir tatsächlich?**
 
 ↓
 
-**Was schließen wir daraus?**
+**2. Was schließen wir daraus?**
 
 ↓
 
-**Welche konkrete Anforderung betrifft diese Schlussfolgerung?**
+**3. Welche konkrete Anforderung betrifft diese Schlussfolgerung?**
 
 ↓
 
-**Reicht die vorhandene Information für diesen Schluss?**
-
-*Dieser Vier-Schritt-Check ist eine didaktische Aufbereitung
-für unsere Simulation und kein wörtlich übernommenes Literaturmodell.*
+**4. Reicht die vorhandene Information für diesen Schluss?**
 """)
 
     st.caption(
-        "Alle Interviewinformationen dieser Demo sind frei erfunden "
-        "und didaktisch konstruiert."
+        "Die Interviewinformationen sind für diese Demo "
+        "frei erfunden und didaktisch konstruiert."
     )
 
     st.divider()
@@ -593,11 +518,25 @@ für unsere Simulation und kein wörtlich übernommenes Literaturmodell.*
 
         with st.expander(name):
 
-            kandidatenkarte(
-                name,
-                daten,
-                interview=True
-            )
+            st.markdown("#### Bisher bekannte Informationen")
+
+            c1, c2 = st.columns(2)
+
+            with c1:
+                st.write("**Aktuelle Position:**", daten["aktuell"])
+                st.write("**Branche:**", daten["branche"])
+                st.write("**Berufserfahrung:**", daten["erfahrung"])
+
+            with c2:
+                st.write("**Führung:**", daten["fuehrung"])
+                st.write("**International:**", daten["international"])
+
+            st.write("**Kurzprofil:**")
+            st.write(daten["profil"])
+
+            st.markdown("#### 🔓 NEUE INTERVIEWINFORMATION")
+
+            st.info(daten["interview"])
 
             war_vorher_dabei = (
                 name in st.session_state.shortlist1
@@ -646,16 +585,32 @@ für unsere Simulation und kein wörtlich übernommenes Literaturmodell.*
 
             st.session_state.shortlist2 = auswahl2.copy()
             st.session_state.phase = 4
+
             st.rerun()
 
-
 # ============================================================
-# PHASE 4 – VERGLEICH
+# PHASE 4 – VERGLEICH / AHA
 # ============================================================
 
 elif st.session_state.phase == 4:
 
     st.subheader("🔍 EURE ENTSCHEIDUNG IM VERGLEICH")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        st.markdown("### SHORTLIST 1.0")
+
+        for person in st.session_state.shortlist1:
+            st.write("🎯", person)
+
+    with col2:
+
+        st.markdown("### SHORTLIST 2.0")
+
+        for person in st.session_state.shortlist2:
+            st.write("🎯", person)
 
     vorher = set(st.session_state.shortlist1)
     nachher = set(st.session_state.shortlist2)
@@ -663,154 +618,111 @@ elif st.session_state.phase == 4:
     raus = vorher - nachher
     rein = nachher - vorher
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("### SHORTLIST 1.0")
-        for person in st.session_state.shortlist1:
-            st.write("🎯", person)
-
-    with col2:
-        st.markdown("### SHORTLIST 2.0")
-        for person in st.session_state.shortlist2:
-            st.write("🎯", person)
-
     st.divider()
-
-    # --------------------------------------------------------
-    # VERÄNDERUNG
-    # --------------------------------------------------------
 
     if vorher == nachher:
 
         st.success("""
-### Eure Shortlist ist gleich geblieben.
+Eure Shortlist ist gleich geblieben.
 
-Die zusätzlichen Informationen haben eure Auswahl nicht verändert.
-
-Auch dann lohnt sich die Frage:
-**Haben sich eure Gründe für dieselbe Auswahl verändert?**
+Die zusätzlichen Informationen haben eure ursprüngliche
+Auswahl nicht verändert.
 """)
-
-        relevante_personen = list(st.session_state.shortlist2)
 
     else:
 
         st.warning(
-            "💡 **EURE ENTSCHEIDUNG HAT SICH VERÄNDERT.**"
+            "💡 EURE ENTSCHEIDUNG HAT SICH VERÄNDERT."
         )
 
-        relevante_personen = list(raus | rein)
+        col3, col4 = st.columns(2)
 
-        for person in relevante_personen:
+        with col3:
 
-            daten = kandidaten[person]
+            st.markdown("#### ↓ Nicht mehr auf der Shortlist")
 
-            if person in raus:
-                status = "↓ NICHT MEHR AUF DER SHORTLIST"
-            else:
-                status = "↑ NEU AUF DER SHORTLIST"
+            for person in raus:
+                st.write(person)
 
-            st.markdown(f"## {status}")
-            st.markdown(f"### {person}")
+        with col4:
 
-            st.markdown("**Was ihr zuerst wusstet:**")
-            st.write(daten["profil"])
+            st.markdown("#### ↑ Neu auf der Shortlist")
 
-            st.markdown("**Was ihr später erfahren habt:**")
-            st.info(daten["interview"])
-
-            st.divider()
-
-    # --------------------------------------------------------
-    # DYNAMISCHE REFLEXION
-    # --------------------------------------------------------
-
-    st.subheader("🔎 INFORMATION ODER INTERPRETATION?")
-
-    st.write("""
-Schaut euch genau die Kandidat:innen an, die für eure
-Entscheidung relevant waren.
-
-**Was stand tatsächlich in den Informationen – und was habt ihr
-selbst daraus geschlossen?**
-""")
-
-    for person in relevante_personen:
-
-        daten = kandidaten[person]
-
-        with st.expander(
-            f"Reflexion · {person}"
-        ):
-            st.write(daten["reflexion"])
-
-            st.markdown("""
-Fragt euch:
-
-- Welche Information war tatsächlich vorhanden?
-- Welche Bedeutung haben wir ihr gegeben?
-- Welche konkrete Stellenanforderung wollten wir damit beurteilen?
-- Hat die neue Information unsere Interpretation bestätigt oder verändert?
-""")
-
-    st.caption(
-        "Die Reflexionshinweise sind Teil der didaktisch konstruierten "
-        "Demo. Sie werden später an die endgültigen Profile und an "
-        "Marcs Praxisfall angepasst."
-    )
+            for person in rein:
+                st.write(person)
 
     st.divider()
 
-    # --------------------------------------------------------
-    # THEORIE / GRENZEN
-    # --------------------------------------------------------
+    st.markdown("## 🧠 BLIND-SPOT-CHECK")
+
+    st.write("""
+Welche Informationen standen tatsächlich im Profil –
+und welche Schlussfolgerungen habt ihr selbst daraus gezogen?
+""")
+
+    st.info("""
+**Beispiel**
+
+Information:
+
+**„10 Jahre Führungserfahrung“**
+
+↓
+
+Schlussfolgerung:
+
+**„Diese Person kann große Teams erfolgreich führen.“**
+
+↓
+
+### Stand diese Schlussfolgerung tatsächlich im Profil?
+""")
+
+    st.markdown("""
+### Die entscheidende Frage
+
+**Welche biografische Information liefert einen begründeten
+Hinweis auf welche konkrete Anforderung der Position?**
+""")
 
     with st.expander(
-        "💡 THEORIE-IMPULS · Aussagekraft biografischer Informationen"
+        "💡 THEORIE-IMPULS: Aussagekraft und Grenzen"
     ):
 
         st.markdown("""
-Biografische Informationen können für eine Eignungsprognose
-herangezogen werden. Entscheidend ist jedoch der Bezug zu den
-Anforderungen der konkreten Position.
+Biografische Informationen können für eine
+Eignungsprognose genutzt werden.
 
-In der in der Kursunterlage dargestellten Übersicht wird für
-**Bewerbungsunterlagen eine prognostische Validität von .18**
-angeführt.
+Entscheidend ist jedoch nicht nur, **wie viele Informationen**
+über die Vergangenheit einer Person vorliegen.
 
-Das bedeutet **nicht**, dass jede Form biografischer Information
-generell „schlecht“ oder nutzlos wäre. Der Wert bezieht sich auf
-die in der Unterlage dargestellte Verfahrensübersicht.
+Entscheidend ist, **welche Schlussfolgerung daraus gezogen wird**
+und ob diese mit den Anforderungen der konkreten Position
+begründet verknüpft werden kann.
 
-**Quelle:** Furtmüller & Zdravkovic, *Personalauswahl*,
-Übersicht zur prognostischen Validität von Auswahlverfahren.
+Zusätzliche diagnostische Informationen können eine erste
+Einschätzung bestätigen, differenzieren oder verändern.
 """)
 
     st.divider()
 
-    st.markdown("## TAKE-AWAY")
+    st.markdown("### TAKE-AWAY")
 
     st.success("""
-### Vergangenheit ≠ automatisch Eignung
+**Vergangenheit ≠ automatisch Eignung**
 
-**Biografische Information**
-
-↓
-
-**Interpretation**
-
-↓
-
-**Bezug zur konkreten Anforderung**
-
-↓
-
-**begründete Eignungsprognose**
+Biografische Information  
+→ Interpretation  
+→ konkrete Anforderung  
+→ begründete Eignungsprognose
 """)
 
     if st.button(
         "↻ Demo neu starten",
         key="demo_neustart"
     ):
-        reset_demo()
+
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+
+        st.rerun()
