@@ -9,8 +9,6 @@ st.set_page_config(
 
 # ============================================================
 # DEMO-DATEN
-# Alle Kandidat:innen und Informationen sind frei erfunden.
-# Die finalen Profile werden später gemeinsam mit Marc erstellt.
 # ============================================================
 
 kandidaten = {
@@ -232,53 +230,196 @@ elif st.session_state.phase == 1:
     if st.session_state.screening_start is None:
         st.session_state.screening_start = time.time()
 
-    elapsed = time.time() - st.session_state.screening_start
+    @st.fragment(run_every="1s")
+    def screening_fragment():
 
-    if elapsed < 90:
-        rest = max(0, int(90 - elapsed))
-        modus = "screening"
+        elapsed = time.time() - st.session_state.screening_start
 
-    elif elapsed < 105:
-        rest = max(0, int(105 - elapsed))
-        modus = "final"
+        # ----------------------------------------------------
+        # ZEITPHASEN
+        # ----------------------------------------------------
 
-    else:
-        rest = 0
-        modus = "locked"
-        st.session_state.screening_locked = True
+        if elapsed < 90:
+            remaining = max(0, 90 - int(elapsed))
+            mode = "screening"
 
-    # TIMER
-    if modus == "screening":
+        elif elapsed < 105:
+            remaining = max(0, 105 - int(elapsed))
+            mode = "final"
 
-        if rest > 20:
-            st.info(
-                f"⏱️ FIRST SCREENING · Noch **{rest} Sekunden**"
-            )
         else:
-            st.error(
-                f"🔴 NOCH **{rest} SEKUNDEN** · "
-                "Trefft eure Vorauswahl."
+            remaining = 0
+            mode = "locked"
+            st.session_state.screening_locked = True
+
+        # ----------------------------------------------------
+        # COUNTDOWN
+        # ----------------------------------------------------
+
+        if mode == "screening":
+
+            if remaining > 20:
+
+                st.markdown(
+                    f"""
+                    <div style="
+                        padding:18px;
+                        border-radius:12px;
+                        background:#eef4ff;
+                        text-align:center;
+                        margin-bottom:20px;
+                    ">
+                        <div style="
+                            font-size:15px;
+                            font-weight:700;
+                            letter-spacing:1px;
+                        ">
+                            FIRST SCREENING
+                        </div>
+
+                        <div style="
+                            font-size:42px;
+                            font-weight:800;
+                            margin-top:4px;
+                        ">
+                            {remaining}
+                        </div>
+
+                        <div style="font-size:14px;">
+                            SEKUNDEN
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+            else:
+
+                st.markdown(
+                    f"""
+                    <div style="
+                        padding:20px;
+                        border-radius:12px;
+                        background:#ffe8e8;
+                        border:2px solid #d60000;
+                        text-align:center;
+                        margin-bottom:20px;
+                    ">
+                        <div style="
+                            color:#b00000;
+                            font-size:17px;
+                            font-weight:800;
+                        ">
+                            ⚠ FIRST SCREENING
+                        </div>
+
+                        <div style="
+                            color:#d00000;
+                            font-size:55px;
+                            font-weight:900;
+                        ">
+                            {remaining}
+                        </div>
+
+                        <div style="
+                            color:#b00000;
+                            font-weight:700;
+                        ">
+                            SEKUNDEN VERBLEIBEN
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+        elif mode == "final":
+
+            st.markdown(
+                f"""
+                <div style="
+                    padding:25px;
+                    border-radius:12px;
+                    background:#ffdede;
+                    border:3px solid #c40000;
+                    text-align:center;
+                    margin-bottom:20px;
+                ">
+
+                    <div style="
+                        color:#a00000;
+                        font-size:22px;
+                        font-weight:900;
+                        letter-spacing:1px;
+                    ">
+                        🚨 FINAL DECISION
+                    </div>
+
+                    <div style="
+                        color:#c00000;
+                        font-size:70px;
+                        font-weight:900;
+                        line-height:1.1;
+                    ">
+                        {remaining}
+                    </div>
+
+                    <div style="
+                        color:#a00000;
+                        font-size:16px;
+                        font-weight:800;
+                    ">
+                        SEKUNDEN
+                    </div>
+
+                    <div style="
+                        margin-top:10px;
+                        font-weight:700;
+                    ">
+                        Legt jetzt eure endgültigen drei Personen fest.
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
-    elif modus == "final":
+        else:
 
-        st.error(
-            f"🚨 **FINAL DECISION · {rest} SEKUNDEN**\n\n"
-            "Legt jetzt eure endgültigen drei Personen fest."
-        )
+            st.markdown(
+                """
+                <div style="
+                    padding:22px;
+                    border-radius:12px;
+                    background:#eeeeee;
+                    border:2px solid #555555;
+                    text-align:center;
+                    margin-bottom:20px;
+                ">
+                    <div style="
+                        font-size:23px;
+                        font-weight:900;
+                    ">
+                        🔒 AUSWAHL FIXIERT
+                    </div>
 
-    else:
-        st.error(
-            "🔒 **ZEIT ABGELAUFEN · AUSWAHL FIXIERT**"
-        )
+                    <div style="margin-top:5px;">
+                        Die Entscheidungszeit ist abgelaufen.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
-    # ANFORDERUNGSPROFIL
-    st.subheader("Anforderungsprofil")
+        # ----------------------------------------------------
+        # ANFORDERUNGSPROFIL
+        # ----------------------------------------------------
 
-    col1, col2 = st.columns(2)
+        st.subheader("Anforderungsprofil")
 
-    with col1:
-        st.markdown("""
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("""
 **MUST-HAVES**
 
 ✓ Mehrjährige Führungserfahrung  
@@ -286,139 +427,157 @@ elif st.session_state.phase == 1:
 ✓ Erfahrung in komplexen Unternehmensstrukturen
 """)
 
-    with col2:
-        st.markdown("""
+        with col2:
+            st.markdown("""
 **NICE-TO-HAVES**
 
 ✓ Internationale Erfahrung  
 ✓ Kenntnisse der Finanzdienstleistungsbranche
 """)
 
-    st.divider()
+        st.divider()
 
-    st.subheader("FIRST SCREENING")
+        st.subheader("FIRST SCREENING")
 
-    st.write(
-        "**Welche drei Personen nehmt ihr in die nächste Phase auf?**"
-    )
-
-    auswahl = []
-
-    for name, daten in kandidaten.items():
-
-        with st.expander(name):
-
-            kandidatenkarte(name, daten)
-
-            if st.checkbox(
-                "Auf meine Shortlist",
-                key=f"runde1_{name}",
-                disabled=st.session_state.screening_locked
-            ):
-                auswahl.append(name)
-
-    # Countdown manuell aktualisieren
-    if not st.session_state.screening_locked:
-
-        if st.button(
-            "⟳ Countdown aktualisieren",
-            key="timer_refresh"
-        ):
-            st.rerun()
-
-        st.caption(
-            "Der Countdown läuft im Hintergrund weiter. "
-            "Bei Interaktionen wird die verbleibende Zeit aktualisiert."
-        )
-
-    st.divider()
-
-    # NACH ZEITABLAUF
-    if st.session_state.screening_locked:
-
-        auswahl = []
-
-        for name in kandidaten:
-            if st.session_state.get(f"runde1_{name}", False):
-                auswahl.append(name)
-
-        st.subheader("🔒 Eure fixierte Vorauswahl")
-
-        if len(auswahl) == 3:
-
-            st.success("✓ Drei Personen ausgewählt.")
-
-            for person in auswahl:
-                st.write("🎯", person)
-
-            st.markdown("### Was hat eure Entscheidung beeinflusst?")
-
-            ausgewaehlte_gruende = st.multiselect(
-                "Mehrfachauswahl möglich",
-                options=gruende,
-                key="entscheidungsgruende"
+        if mode == "screening":
+            st.write(
+                "**Welche drei Personen nehmt ihr in die nächste Phase auf?**"
             )
 
-            sonstiges = ""
-
-            if "Sonstiges" in ausgewaehlte_gruende:
-                sonstiges = st.text_input(
-                    "Welcher weitere Grund war wichtig?",
-                    key="sonstiger_grund"
-                )
-
-            st.markdown("### Wie sicher seid ihr euch?")
-
-            sicherheit = st.slider(
-                "Entscheidungssicherheit",
-                min_value=0,
-                max_value=100,
-                value=70,
-                step=5,
-                format="%d%%",
-                key="sicherheit_runde1"
+        elif mode == "final":
+            st.write(
+                "**FINAL DECISION: Prüft nur noch eure Auswahl und legt drei Personen fest.**"
             )
-
-            if st.button(
-                "Shortlist 1.0 speichern",
-                type="primary",
-                key="shortlist1_speichern"
-            ):
-
-                if not ausgewaehlte_gruende:
-                    st.warning(
-                        "Bitte mindestens einen Entscheidungsgrund auswählen."
-                    )
-
-                else:
-                    st.session_state.shortlist1 = auswahl.copy()
-                    st.session_state.gruende1 = ausgewaehlte_gruende.copy()
-
-                    if sonstiges:
-                        st.session_state.gruende1.append(
-                            f"Sonstiges: {sonstiges}"
-                        )
-
-                    st.session_state.sicherheit1 = sicherheit
-                    st.session_state.phase = 2
-                    st.rerun()
 
         else:
-
-            st.warning(
-                f"Ihr habt innerhalb der Zeit **{len(auswahl)} Personen** "
-                "ausgewählt. Für die Simulation werden genau drei benötigt."
+            st.write(
+                "**Die Auswahl kann nicht mehr verändert werden.**"
             )
 
-            if st.button(
-                "↻ Screening neu starten",
-                key="screening_restart"
-            ):
-                reset_demo()
+        # ----------------------------------------------------
+        # KANDIDAT:INNEN
+        # ----------------------------------------------------
+
+        for name, daten in kandidaten.items():
+
+            with st.expander(name):
+
+                kandidatenkarte(name, daten)
+
+                st.checkbox(
+                    "Auf meine Shortlist",
+                    key=f"runde1_{name}",
+                    disabled=(mode == "locked")
+                )
+
+        # ----------------------------------------------------
+        # NACH ABLAUF
+        # ----------------------------------------------------
+
+        if mode == "locked":
+
+            auswahl = []
+
+            for name in kandidaten:
+                if st.session_state.get(f"runde1_{name}", False):
+                    auswahl.append(name)
+
+            st.divider()
+
+            st.subheader("🔒 Eure fixierte Vorauswahl")
+
+            if len(auswahl) == 3:
+
+                st.success("✓ Drei Personen ausgewählt.")
+
+                for person in auswahl:
+                    st.write("🎯", person)
+
+                st.markdown(
+                    "### Was hat eure Entscheidung beeinflusst?"
+                )
+
+                ausgewaehlte_gruende = st.multiselect(
+                    "Mehrfachauswahl möglich",
+                    options=gruende,
+                    key="entscheidungsgruende"
+                )
+
+                sonstiges = ""
+
+                if "Sonstiges" in ausgewaehlte_gruende:
+
+                    sonstiges = st.text_input(
+                        "Welcher weitere Grund war wichtig?",
+                        key="sonstiger_grund"
+                    )
+
+                st.markdown(
+                    "### Wie sicher seid ihr euch?"
+                )
+
+                sicherheit = st.slider(
+                    "Entscheidungssicherheit",
+                    min_value=0,
+                    max_value=100,
+                    value=70,
+                    step=5,
+                    format="%d%%",
+                    key="sicherheit_runde1"
+                )
+
+                if st.button(
+                    "Shortlist 1.0 speichern",
+                    type="primary",
+                    key="shortlist1_speichern"
+                ):
+
+                    if not ausgewaehlte_gruende:
+
+                        st.warning(
+                            "Bitte mindestens einen Entscheidungsgrund auswählen."
+                        )
+
+                    else:
+
+                        st.session_state.shortlist1 = auswahl.copy()
+                        st.session_state.gruende1 = (
+                            ausgewaehlte_gruende.copy()
+                        )
+
+                        if sonstiges:
+                            st.session_state.gruende1.append(
+                                f"Sonstiges: {sonstiges}"
+                            )
+
+                        st.session_state.sicherheit1 = sicherheit
+                        st.session_state.phase = 2
+
+                        st.rerun()
+
+            else:
+
+                st.warning(
+                    f"Ihr habt **{len(auswahl)} Personen** ausgewählt. "
+                    "Für die Simulation werden genau drei benötigt."
+                )
+
+                st.write(
+                    "Die Entscheidungszeit ist beendet. "
+                    "Startet die Runde bitte erneut."
+                )
+
+                if st.button(
+                    "↻ First Screening neu starten",
+                    key="screening_restart"
+                ):
+                    reset_demo()
+
+    screening_fragment()
 
 
 # ============================================================
-# PHASE 2 – SHORTLIST 1.0 ABGESCHLOSSEN
+# PHASE 2 – SHORTLIST 1.0 / STOP
 # ============================================================
 
 elif st.session_state.phase == 2:
@@ -442,23 +601,22 @@ elif st.session_state.phase == 2:
 
     st.divider()
 
-    st.info("""
+    st.markdown("""
 ### ⏸️ STOP
 
-Bitte wartet auf die gemeinsame Freigabe.
+Bitte wartet auf das Signal der Lehrenden.
 
-Die nächste Phase startet erst, wenn ihr dazu aufgefordert werdet.
+Die neuen Informationen werden gemeinsam freigegeben.
 """)
 
-    st.caption(
-        "In der Präsentation erfolgt an dieser Stelle die gemeinsame "
-        "Zwischenphase."
-    )
+    st.divider()
 
+    # WICHTIG:
+    # Button für Runde 2 wieder klar sichtbar
     if st.button(
-        "🔓 Neue Informationen freigeben",
+        "🔓 SECOND LOOK starten",
         type="primary",
-        key="informationen_freigeben"
+        key="second_look_start"
     ):
         st.session_state.phase = 3
         st.rerun()
@@ -475,17 +633,15 @@ elif st.session_state.phase == 3:
     st.markdown("""
 ### Neue Informationen liegen vor
 
-Mit ausgewählten Kandidat:innen wurden erste Gespräche geführt.
+Mit den Kandidat:innen wurden erste Gespräche geführt.
 
 Ihr erhaltet jetzt zusätzliche Informationen, die beim
 ersten Screening noch nicht verfügbar waren.
 
 ### Eure Aufgabe
 
-Prüft **alle Kandidat:innen erneut**.
-
-Erstellt anschließend wieder eine Shortlist mit
-**genau drei Personen**.
+Prüft **alle Kandidat:innen erneut** und erstellt eine neue
+Shortlist mit **genau drei Personen**.
 """)
 
     st.caption(
@@ -551,14 +707,13 @@ Erstellt anschließend wieder eine Shortlist mit
             type="primary",
             key="shortlist2_bestaetigen"
         ):
-
             st.session_state.shortlist2 = auswahl2.copy()
             st.session_state.phase = 4
             st.rerun()
 
 
 # ============================================================
-# PHASE 4 – PERSÖNLICHER VERGLEICH
+# PHASE 4 – VERGLEICH
 # ============================================================
 
 elif st.session_state.phase == 4:
@@ -574,12 +729,14 @@ elif st.session_state.phase == 4:
     col1, col2 = st.columns(2)
 
     with col1:
+
         st.markdown("### SHORTLIST 1.0")
 
         for person in st.session_state.shortlist1:
             st.write("🎯", person)
 
     with col2:
+
         st.markdown("### SHORTLIST 2.0")
 
         for person in st.session_state.shortlist2:
@@ -595,7 +752,7 @@ elif st.session_state.phase == 4:
 
         st.write(
             "Die zusätzlichen Informationen haben nicht dazu geführt, "
-            "dass ihr eine andere Person in die Shortlist aufgenommen habt."
+            "dass ihr eine andere Person aufgenommen habt."
         )
 
     else:
@@ -604,10 +761,11 @@ elif st.session_state.phase == 4:
             "### Eure Entscheidung hat sich verändert."
         )
 
-        # AUSGESCHIEDENE KANDIDAT:INNEN
         if raus:
 
-            st.markdown("## ↓ Nicht mehr auf der Shortlist")
+            st.markdown(
+                "## ↓ Nicht mehr auf der Shortlist"
+            )
 
             for person in raus:
 
@@ -615,18 +773,23 @@ elif st.session_state.phase == 4:
 
                 st.markdown(f"### {person}")
 
-                st.markdown("**Information beim First Screening**")
+                st.markdown(
+                    "**Information beim First Screening**"
+                )
                 st.write(daten["profil"])
 
-                st.markdown("**Neue Information aus dem Gespräch**")
+                st.markdown(
+                    "**Neue Information aus dem Gespräch**"
+                )
                 st.info(daten["interview"])
 
                 st.divider()
 
-        # NEU AUFGENOMMENE KANDIDAT:INNEN
         if rein:
 
-            st.markdown("## ↑ Neu auf der Shortlist")
+            st.markdown(
+                "## ↑ Neu auf der Shortlist"
+            )
 
             for person in rein:
 
@@ -634,18 +797,24 @@ elif st.session_state.phase == 4:
 
                 st.markdown(f"### {person}")
 
-                st.markdown("**Information beim First Screening**")
+                st.markdown(
+                    "**Information beim First Screening**"
+                )
                 st.write(daten["profil"])
 
-                st.markdown("**Neue Information aus dem Gespräch**")
+                st.markdown(
+                    "**Neue Information aus dem Gespräch**"
+                )
                 st.info(daten["interview"])
 
                 st.divider()
 
-    st.markdown("### Was hat eure Entscheidung verändert?")
+    st.markdown(
+        "### Was hat eure Entscheidung beeinflusst?"
+    )
 
     veraenderungsgrund = st.text_area(
-        "Notiert kurz die ausschlaggebende Information oder Überlegung.",
+        "Welche neue Information oder Überlegung war ausschlaggebend?",
         placeholder="Zum Beispiel: Die zusätzliche Information über ...",
         key="veraenderungsgrund"
     )
@@ -656,13 +825,16 @@ elif st.session_state.phase == 4:
         key="prozess_abschliessen"
     ):
 
-        st.session_state["veraenderungsgrund_final"] = veraenderungsgrund
+        st.session_state["veraenderungsgrund_final"] = (
+            veraenderungsgrund
+        )
+
         st.session_state.phase = 5
         st.rerun()
 
 
 # ============================================================
-# PHASE 5 – ENDE DER APP
+# PHASE 5 – ENDE
 # ============================================================
 
 elif st.session_state.phase == 5:
@@ -670,9 +842,9 @@ elif st.session_state.phase == 5:
     st.markdown("# ✓ SEARCH COMPLETED")
 
     st.markdown("""
-## Eure Shortlist 2.0 wurde abgeschlossen.
+## Eure Shortlist 2.0 wurde übermittelt.
 
-Der Auswahlprozess in der Simulation ist damit beendet.
+Der Auswahlprozess in der Simulation ist abgeschlossen.
 """)
 
     st.divider()
@@ -695,8 +867,6 @@ Die Ergebnisse werden jetzt gemeinsam ausgewertet.
     st.caption(
         "MISSION: EXECUTIVE SEARCH · Simulation abgeschlossen"
     )
-
-    st.write("")
 
     if st.button(
         "↻ Demo neu starten",
