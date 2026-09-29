@@ -70,8 +70,12 @@ div[data-testid="stMultiSelect"] span[data-baseweb="tag"] {{
     color:#247653 !important;
 }}
 div[data-testid="stMultiSelect"] span[data-baseweb="tag"] * {{color:#247653 !important;}}
-div[data-testid="stCheckbox"] label p {{color:#EAF0F5 !important;}}
-.recruiter-shell div[data-testid="stCheckbox"] label p {{color:#142536 !important;}}
+div[data-testid="stCheckbox"] label p {{color:#F4F8FB !important;font-weight:700 !important;}}
+div[data-testid="stRadio"] label p {{color:#F4F8FB !important;font-weight:700 !important;}}
+div[data-testid="stSlider"] p {{color:#F4F8FB !important;}}
+div[data-testid="stTextInput"] label p {{color:#F4F8FB !important;}}
+div[data-testid="stSelectbox"] label p {{color:#F4F8FB !important;}}
+div[data-testid="stMultiSelect"] label p {{color:#F4F8FB !important;}}
 .final-choice {{
     background:#F3FAF6;border:1px solid #86C5A6;border-left:5px solid #2F8F67;
     border-radius:10px;padding:14px 16px;margin:8px 0;
@@ -144,36 +148,103 @@ if st.session_state.phase==0:
 
 # ---------- 1 SCREENING ----------
 elif st.session_state.phase==1:
-    st.markdown('<div class="recruiter-shell">',unsafe_allow_html=True)
-    st.markdown("""<div class="recruiter-top"><div><div style="font-size:11px;font-weight:800;opacity:.8">SEARCH WORKSPACE</div>
-    <div class="recruiter-title">Recruiter Search · Managing Director Austria</div></div><div><b>10 PROFILE · SHORTLIST 3</b></div></div>""",unsafe_allow_html=True)
+    # Phase-specific Recruiter look: intentionally much brighter than the internal Search pages.
+    st.markdown(f"""
+    <style>
+    .stApp {{
+        background:#F3F2EF !important;
+    }}
+    [data-testid="stWidgetLabel"] p,
+    div[data-testid="stCheckbox"] label p,
+    div[data-testid="stSlider"] p,
+    div[data-testid="stTextInput"] label p,
+    div[data-testid="stMultiSelect"] label p {{
+        color:#243746 !important;
+    }}
+    .recruiter-brand {{
+        background:#FFFFFF;border:1px solid #D7DEE4;border-radius:10px;
+        padding:13px 16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;
+        box-shadow:0 1px 2px rgba(0,0,0,.05);
+    }}
+    .recruiter-mark {{
+        width:34px;height:34px;border-radius:5px;background:#0A66C2;color:white;
+        display:flex;align-items:center;justify-content:center;font-weight:900;font-size:19px;
+    }}
+    .recruiter-search {{
+        flex:1;background:#EEF3F8;border:1px solid #C9D6E2;border-radius:5px;
+        padding:9px 12px;color:#425466;font-size:13px;
+    }}
+    .recruiter-meta {{font-size:11px;color:#667788;font-weight:800;letter-spacing:.4px;}}
+    .candidate {{
+        min-height:148px;background:white;border:1px solid #D7DEE4;border-radius:8px;
+        padding:15px 17px;margin:7px 0 2px;box-shadow:0 1px 2px rgba(0,0,0,.04);
+    }}
+    .candidate:hover {{border-color:#9ABCE0;box-shadow:0 2px 7px rgba(10,102,194,.10);}}
+    .candidate h4 {{color:#1B1F23 !important;font-size:16px;margin:3px 0 6px;}}
+    .candidate p {{color:#52616D !important;font-size:12.5px;line-height:1.35;}}
+    .shortlist-open {{
+        background:#E8F2FB;border:1px solid #B7D4EF;color:#075AAB;
+        border-radius:8px;padding:13px 16px;margin:14px 0;font-weight:850;
+    }}
+    .shortlist-complete {{
+        background:#E6F4EC;border:1px solid #8CC7A9;color:#216C4C;
+        border-radius:8px;padding:13px 16px;margin:14px 0;font-weight:900;
+    }}
+    </style>
+    """,unsafe_allow_html=True)
+
+    st.markdown("""<div class="recruiter-brand">
+        <div class="recruiter-mark">R</div>
+        <div style="min-width:210px"><b style="color:#1B1F23">Recruiter Search</b><div class="recruiter-meta">EXECUTIVE SEARCH WORKSPACE</div></div>
+        <div class="recruiter-search">Managing Director Austria · 10 Profile</div>
+        <div class="recruiter-meta">SHORTLIST 3</div>
+    </div>""",unsafe_allow_html=True)
+
     if not st.session_state.shortlist:
         components.html("""<div id="t" style="font-family:Arial;font-weight:800;font-size:20px;color:#0A66C2">01:30</div>
         <script>let s=90;let e=document.getElementById('t');let x=setInterval(()=>{s--;let m=Math.floor(s/60),r=s%60;e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');if(s<=20)e.style.color='#C94E55';if(s<=0){clearInterval(x);e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';}},1000);</script>""",height=42)
+
     draft=[]
     cols=st.columns(2)
     for i,c in enumerate(CANDIDATES):
         with cols[i%2]:
-            st.markdown(f"""<div class="candidate"><div class="cid">{c['id']}</div><h4>{c['role']}</h4><p><b>{c['meta']}</b></p><p>{c['career']}</p><p>{c['facts']}</p></div>""",unsafe_allow_html=True)
+            st.markdown(f"""<div class="candidate"><div class="cid">{c['id']}</div><h4>{c['role']}</h4>
+            <p><b>{c['meta']}</b></p><p>{c['career']}</p><p>{c['facts']}</p></div>""",unsafe_allow_html=True)
             default=c["id"] in st.session_state.shortlist
-            if st.checkbox("SHORTLIST",value=default,key=f"sl_{c['id']}"): draft.append(c["id"])
-    st.markdown('</div>',unsafe_allow_html=True)
-    st.info(f"SHORTLIST · {len(draft)} / 3 ausgewählt")
-    selected_criteria=st.multiselect("Welche Kriterien haben eure Auswahl besonders beeinflusst?",CRITERIA,default=st.session_state.criteria)
-    criteria_other=st.text_input("Sonstiges – welches Kriterium?",value=st.session_state.criteria_other,placeholder="z. B. Ausbildung, Unternehmensgröße, Gesamteindruck …") if "Sonstiges" in selected_criteria else ""
+            if st.checkbox("AUF DIE SHORTLIST",value=default,key=f"sl_{c['id']}"):
+                draft.append(c["id"])
+
+    status_cls="shortlist-complete" if len(draft)==3 else "shortlist-open"
+    status_text="SHORTLIST KOMPLETT · 3 / 3 ausgewählt ✓" if len(draft)==3 else f"SHORTLIST · {len(draft)} / 3 ausgewählt"
+    st.markdown(f'<div class="{status_cls}">{status_text}</div>',unsafe_allow_html=True)
+
+    selected_criteria=st.multiselect(
+        "Welche Kriterien haben eure Auswahl besonders beeinflusst?",
+        CRITERIA,default=st.session_state.criteria
+    )
+    criteria_other=st.text_input(
+        "Sonstiges – welches Kriterium?",
+        value=st.session_state.criteria_other,
+        placeholder="z. B. Ausbildung, Unternehmensgröße, Gesamteindruck …"
+    ) if "Sonstiges" in selected_criteria else ""
     confidence=st.slider("Wie sicher seid ihr euch bei eurer Shortlist?",0,100,st.session_state.confidence1,5)
+
     if st.button("SHORTLIST BESTÄTIGEN",disabled=len(draft)!=3,use_container_width=True):
-        st.session_state.shortlist=draft; st.session_state.criteria=selected_criteria; st.session_state.criteria_other=criteria_other; st.session_state.confidence1=confidence; goto(2)
-    if st.session_state.shortlist: nav(0,2,"ZUR THEORIE & PRAXIS →")
+        st.session_state.shortlist=draft
+        st.session_state.criteria=selected_criteria
+        st.session_state.criteria_other=criteria_other
+        st.session_state.confidence1=confidence
+        goto(2)
+
+    if st.session_state.shortlist:
+        nav(0,2,"ZUR THEORIE & PRAXIS →")
 
 # ---------- 2 THEORY HANDOVER ----------
 elif st.session_state.phase==2:
-    hero("SHORTLIST STEHT","10 Profile → 3 auf der Shortlist","Jetzt zurück zur Präsentation: Theorie-Check und Praxis-Check mit Marc.")
-    st.markdown("""<div class="main-card">
-    <span class="status">SHORTLIST GESPEICHERT</span>
-    <h2 style="margin-top:14px">Jetzt zurück zur gemeinsamen Präsentation.</h2>
-    <p>Eure Auswahl bleibt gespeichert. Nach Theorie- und Praxis-Check geht es hier mit dem <b>Second Look</b> weiter.</p>
-    <div class="lock">Ihr müsst in der App jetzt nichts weiter tun.</div></div>""",unsafe_allow_html=True)
+    hero("SHORTLIST GESPEICHERT","Jetzt zurück zur Präsentation.","Nach Theorie-Check und Praxis-Check mit Marc geht es hier mit dem Second Look weiter.")
+    st.markdown("""<div class="lock" style="font-size:15px;padding:14px 16px">
+    ✓ Eure Auswahl ist gespeichert. In der App müsst ihr jetzt nichts tun.
+    </div>""",unsafe_allow_html=True)
     c1,c2=st.columns(2)
     with c1:
         if st.button("← FIRST SCREENING ANSEHEN",use_container_width=True): goto(1)
@@ -231,54 +302,73 @@ elif st.session_state.phase==5:
     excluded=[c["id"] for c in CANDIDATES if c["id"] not in st.session_state.shortlist]
     reveal_ids=[x for x in ["CANDIDATE 06","CANDIDATE 07","CANDIDATE 09"] if x in excluded][:2]
     if len(reveal_ids)<2: reveal_ids=excluded[:2]
+
     for cid in reveal_ids:
         c=BYID[cid]
-        st.markdown(f"""<div class="internal"><div class="internal-head"><div><div class="cid">{cid}</div><b>{c['role']}</b></div><span style="color:#667788;font-weight:800">IM FIRST SCREENING AUSGESCHIEDEN</span></div>
-        <p>{c['meta']}<br>{c['facts']}</p><div class="reflection-box"><b>WAS IM ERSTEN SCREENING NICHT SICHTBAR WAR</b><br>{c['reveal'] if c['reveal']!='—' else c['new']}</div></div>""",unsafe_allow_html=True)
-        st.session_state.reveal[cid]=st.checkbox("Mit dieser Information hätten wir diese Person im First Screening näher geprüft.",value=st.session_state.reveal.get(cid,False),key=f"rev_{cid}")
-    st.markdown("""<div style="color:#FFFFFF;font-size:25px;font-weight:800;margin-top:22px">REFLEXIONSFRAGE</div>""",unsafe_allow_html=True)
-    st.markdown("""<div style="color:#DDE8F1;font-size:13px;margin-bottom:8px">Keine zweite reale Auswahlrunde – nur Reflexion.</div>""",unsafe_allow_html=True)
-    change=st.radio("Würdet ihr eure finale Entscheidung ändern, wenn ihr heute alle Informationen gekannt hättet?",["Nein","Ja"],index=0 if st.session_state.counter_change=="Nein" else 1,horizontal=True)
+        st.markdown(f"""<div class="internal"><div class="internal-head"><div><div class="cid">{cid}</div><b>{c['role']}</b></div>
+        <span style="color:#667788;font-weight:800">IM FIRST SCREENING AUSGESCHIEDEN</span></div>
+        <p>{c['meta']}<br>{c['facts']}</p>
+        <div class="reflection-box"><b>WAS IM ERSTEN SCREENING NICHT SICHTBAR WAR</b><br>
+        {c['reveal'] if c['reveal']!='—' else c['new']}</div></div>""",unsafe_allow_html=True)
+        st.session_state.reveal[cid]=st.checkbox(
+            "Mit dieser Information hätten wir diese Person im First Screening näher geprüft.",
+            value=st.session_state.reveal.get(cid,False),key=f"rev_{cid}"
+        )
+
+    st.markdown("""<div style="color:#FFFFFF;font-size:25px;font-weight:850;margin-top:24px">REFLEXIONSFRAGE</div>
+    <div style="color:#DDE8F1;font-size:13px;margin:4px 0 12px">Keine zweite reale Auswahlrunde – nur Reflexion.</div>""",unsafe_allow_html=True)
+
+    change=st.selectbox(
+        "Würdet ihr eure finale Entscheidung ändern, wenn ihr diese zusätzlichen Informationen vorher gekannt hättet?",
+        ["Nein","Ja"],
+        index=0 if st.session_state.counter_change=="Nein" else 1,
+        key="counter_change_select"
+    )
     st.session_state.counter_change=change
+
     if change=="Ja":
-        st.session_state.counter_candidate=st.selectbox("Welche Person würdet ihr dann wählen?",[c["id"] for c in CANDIDATES])
+        # Only people who were actually in the decision story:
+        # original Top 3 + the excluded candidates shown in the Blind-Spot reveal.
+        eligible=[]
+        for cid in list(st.session_state.shortlist)+list(reveal_ids):
+            if cid not in eligible and cid != st.session_state.final_candidate:
+                eligible.append(cid)
+        old=st.session_state.counter_candidate
+        idx=eligible.index(old) if old in eligible else 0
+        st.session_state.counter_candidate=st.selectbox(
+            "Welche Person würdet ihr stattdessen wählen?",
+            eligible,index=idx,key="counter_candidate_select"
+        )
+    else:
+        st.session_state.counter_candidate=None
+
     c1,c2=st.columns(2)
     with c1:
         if st.button("← ZURÜCK",use_container_width=True): goto(4)
     with c2:
         if st.button("REFLEXION ABSCHLIESSEN →",use_container_width=True): goto(6)
 
-# ---------- 6 DASHBOARD ----------
+# ---------- 6 LIVE HANDOVER ----------
 elif st.session_state.phase==6:
-    hero("LIVE-AUSWERTUNG","Wie wurde entschieden?","Demo-Ansicht. Später werden hier die Ergebnisse aller Search Teams zentral zusammengeführt.")
-    st.warning("DEMO: Aktuell zeigt diese Seite die Struktur der geplanten Auswertung. Die teamübergreifende Live-Speicherung wird nach dem finalen Fall ergänzt.")
+    hero("LIVE-AUSWERTUNG","Euer Team ist fertig.","Die gemeinsame Auswertung gehört jetzt wieder auf die große Leinwand – nicht auf jedes einzelne Gerät.")
+    st.markdown("""<div class="main-card">
+        <span class="status">TEAM-ERGEBNIS VOLLSTÄNDIG</span>
+        <h2 style="margin-top:14px">Zurück zur gemeinsamen Präsentation.</h2>
+        <p>Wir vergleichen gleich die Ergebnisse aller Search Teams: Shortlists, Auswahlkriterien,
+        Second-Look-Veränderungen, finale Empfehlungen und Blind-Spot-Reaktionen.</p>
+        <div class="lock">Die gemeinsame Auswertung wird von der Moderation gezeigt.</div>
+    </div>""",unsafe_allow_html=True)
+
+    st.markdown("### Euer Ergebnis auf einen Blick")
     c1,c2,c3,c4=st.columns(4)
     c1.metric("Top 3",", ".join(x.split()[-1] for x in st.session_state.shortlist))
-    c2.metric("Finale Empfehlung",st.session_state.final_candidate or "—")
+    c2.metric("Finale Empfehlung",(st.session_state.final_candidate or "—").replace("CANDIDATE ","C"))
     c3.metric("Sicherheit vorher",f"{st.session_state.confidence1}%")
     c4.metric("Sicherheit final",f"{st.session_state.final_confidence}%")
-    st.markdown("### Welche Kriterien kamen bei euch zum Zug?")
-    dashboard_criteria=list(st.session_state.criteria + st.session_state.final_reasons)
-    dashboard_criteria=[x for x in dashboard_criteria if x!="Sonstiges"]
-    if st.session_state.criteria_other.strip(): dashboard_criteria.append(st.session_state.criteria_other.strip())
-    if st.session_state.final_other.strip(): dashboard_criteria.append(st.session_state.final_other.strip())
-    counts=Counter(dashboard_criteria)
-    if counts:
-        import pandas as pd
-        df=pd.DataFrame({"Kriterium":list(counts.keys()),"Nennungen":list(counts.values())}).set_index("Kriterium")
-        st.bar_chart(df,horizontal=True)
-    else: st.info("Für dieses Demo-Team wurden noch keine Kriterien gewählt.")
-    st.markdown("### Geplante gemeinsame Auswertung")
-    st.markdown("""<div class="main-card"><b>Über alle Search Teams:</b><br><br>
-    ① Welche Kandidat:innen waren am häufigsten in der Top 3?<br>
-    ② Welche Auswahlkriterien wurden am häufigsten genannt?<br>
-    ③ Was wurde im Second Look positiver / unverändert / negativer?<br>
-    ④ Welche Personen wurden final empfohlen?<br>
-    ⑤ Wie oft führte der Blind-Spot Check zu „hätte ich näher geprüft“?<br>
-    ⑥ Wie viele Teams würden im Gedankenexperiment ihre Entscheidung ändern?</div>""",unsafe_allow_html=True)
+
     c1,c2=st.columns(2)
     with c1:
-        if st.button("← ZURÜCK",use_container_width=True): goto(5)
+        if st.button("← ZUR REFLEXION",use_container_width=True): goto(5)
     with c2:
         if st.button("ZUM TAKE-AWAY →",use_container_width=True): goto(7)
 
