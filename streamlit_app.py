@@ -423,6 +423,31 @@ h1, h2, h3 {
     font-size: 15px;
 }
 
+
+/* =========================================================
+   SCREENING – DISTINCT BLUE RECRUITER WORKSPACE
+   ========================================================= */
+.screening-banner {
+    background: linear-gradient(120deg, #0A66C2 0%, #07549f 100%);
+    color: white;
+    padding: 24px 28px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    box-shadow: 0 5px 18px rgba(10,102,194,0.18);
+}
+.screening-banner-label {font-size:11px;font-weight:800;letter-spacing:1.6px;color:#dbeeff;margin-bottom:5px;}
+.screening-banner-title {font-size:29px;font-weight:850;margin-bottom:5px;}
+.screening-banner-text {font-size:14px;color:#eef7ff;}
+.recruiter-shell {border: 1px solid #b9d6f2; box-shadow:0 5px 18px rgba(10,102,194,0.10);}
+.recruiter-topbar {background:#0A66C2;border-bottom:none;}
+.recruiter-brand {color:white;font-size:17px;}
+.recruiter-mode {color:#dbeeff;}
+.recruiter-search {background:white;border:2px solid #c8def2;color:#24384b;box-shadow:0 2px 8px rgba(10,102,194,.08);}
+.results-header {border-top:4px solid #0A66C2;background:#f8fbff;}
+.results-count {color:#0A66C2;}
+.screening-help {background:#eaf4ff;border-left:4px solid #0A66C2;border-radius:8px;padding:13px 16px;color:#29465f;margin:14px 0 18px;}
+.nav-hint {font-size:12px;color:#728195;text-align:center;margin-top:6px;}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -655,7 +680,15 @@ elif st.session_state.phase == 1:
 </div>
 """, unsafe_allow_html=True)
 
-    # Recruiter-inspirierter Bereich
+    # Deutlich abgesetzter Recruiter-/Sourcing-Workspace
+    st.markdown("""
+<div class="screening-banner">
+<div class="screening-banner-label">TALENT SOURCING WORKSPACE</div>
+<div class="screening-banner-title">First Screening</div>
+<div class="screening-banner-text">Öffentliche berufliche Profile sichten · Suchauftrag prüfen · Top 3 für die Shortlist auswählen</div>
+</div>
+""", unsafe_allow_html=True)
+
     st.markdown("""
 <div class="recruiter-shell">
 
@@ -849,6 +882,12 @@ Profile öffnen, berufliche Informationen prüfen und maximal drei Personen ausw
             ):
                 auswahl.append(name)
 
+    nav_back, nav_space = st.columns([1, 3])
+    with nav_back:
+        if st.button("← ZURÜCK ZUM BRIEFING", key="back_phase1", use_container_width=True):
+            st.session_state.phase = 0
+            st.rerun()
+
     st.divider()
 
     st.markdown("## Shortlist 1.0")
@@ -1005,14 +1044,20 @@ Bitte wartet auf das gemeinsame Signal.
 Die nächste Phase wird nach der gemeinsamen Zwischenbesprechung gestartet.
 """)
 
-    if st.button(
-        "SECOND LOOK STARTEN  →",
-        type="primary",
-        key="interviews_oeffnen",
-        use_container_width=True
-    ):
-        st.session_state.phase = 3
-        st.rerun()
+    nav1, nav2 = st.columns(2)
+    with nav1:
+        if st.button("← ZURÜCK ZUM FIRST SCREENING", key="back_phase2", use_container_width=True):
+            st.session_state.phase = 1
+            st.rerun()
+    with nav2:
+        if st.button(
+            "SECOND LOOK STARTEN  →",
+            type="primary",
+            key="interviews_oeffnen",
+            use_container_width=True
+        ):
+            st.session_state.phase = 3
+            st.rerun()
 
 
 # ============================================================
@@ -1099,6 +1144,12 @@ Prüft eure Einschätzung erneut.
                 key=f"runde2_{name}"
             ):
                 auswahl2.append(name)
+
+    nav_back, nav_space = st.columns([1, 3])
+    with nav_back:
+        if st.button("← ZURÜCK", key="back_phase3", use_container_width=True):
+            st.session_state.phase = 2
+            st.rerun()
 
     st.divider()
 
@@ -1294,6 +1345,12 @@ Mindestens eine Person wurde nach den zusätzlichen Informationen anders beurtei
                 unsafe_allow_html=True
             )
 
+    nav_back, nav_space = st.columns([1, 3])
+    with nav_back:
+        if st.button("← ZURÜCK ZUM SECOND LOOK", key="back_phase4", use_container_width=True):
+            st.session_state.phase = 3
+            st.rerun()
+
     st.divider()
 
     st.markdown("### Was hat eure Entscheidung beeinflusst?")
@@ -1388,12 +1445,20 @@ Der Auswahlprozess der Simulation ist abgeschlossen.
         "MISSION: EXECUTIVE SEARCH · Simulation abgeschlossen"
     )
 
-    if st.button(
-        "↻ DEMO NEU STARTEN",
-        key="demo_neustart"
-    ):
+    nav1, nav2 = st.columns(2)
+    with nav1:
+        if st.button("← ZURÜCK ZUM DECISION REVIEW", key="back_phase5", use_container_width=True):
+            st.session_state.phase = 4
+            st.rerun()
 
+    with nav2:
+        restart_demo = st.button(
+        "↻ DEMO NEU STARTEN",
+        key="demo_neustart",
+        use_container_width=True
+        )
+
+    if restart_demo:
         for key in list(st.session_state.keys()):
             del st.session_state[key]
-
         st.rerun()
