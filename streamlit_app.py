@@ -448,6 +448,29 @@ h1, h2, h3 {
 .screening-help {background:#eaf4ff;border-left:4px solid #0A66C2;border-radius:8px;padding:13px 16px;color:#29465f;margin:14px 0 18px;}
 .nav-hint {font-size:12px;color:#728195;text-align:center;margin-top:6px;}
 
+/* =========================================================
+   DECISION REVIEW – DIFFERENCES AT A GLANCE
+   ========================================================= */
+
+.diff-card {
+    background: #ffffff;
+    border: 1px solid #dfe5eb;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 10px 0 14px 0;
+    box-shadow: 0 2px 8px rgba(20,35,55,0.04);
+}
+.diff-card-out {border-left: 6px solid #b42318;}
+.diff-card-in {border-left: 6px solid #16803c;}
+.diff-status {font-size:11px;font-weight:900;letter-spacing:1.3px;margin-bottom:6px;}
+.diff-out {color:#b42318;}
+.diff-in {color:#16803c;}
+.diff-name {font-size:20px;font-weight:850;color:#172b3a;margin-bottom:12px;}
+.diff-row {display:grid;grid-template-columns:155px 1fr;gap:12px;padding:8px 0;border-top:1px solid #edf0f3;}
+.diff-label {font-size:11px;font-weight:800;letter-spacing:.7px;color:#6a7888;text-transform:uppercase;}
+.diff-value {font-size:14px;color:#263b50;line-height:1.45;}
+.diff-impact {font-weight:800;color:#102239;}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -465,6 +488,9 @@ kandidaten = {
         "erfahrung": "16 Jahre Berufserfahrung",
         "fuehrung": "9 Jahre Führungserfahrung",
         "international": "Deutschland, Österreich, Schweiz",
+        "screening_signal": "Starke Branchen- und Führungserfahrung",
+        "new_signal": "Führung bisher nur in etablierten Strukturen",
+        "impact": "Aufbau-/Expansionserfahrung bleibt offen",
         "profil":
             "Langjährige Tätigkeit bei zwei großen Finanzdienstleistern. "
             "Seit fünf Jahren Leitung einer regionalen Geschäftseinheit "
@@ -483,6 +509,9 @@ kandidaten = {
         "erfahrung": "13 Jahre Berufserfahrung",
         "fuehrung": "7 Jahre Führungserfahrung",
         "international": "Österreich, Polen, Tschechien",
+        "screening_signal": "Direkte Aufbau- und Expansionserfahrung",
+        "new_signal": "Aufbauverantwortung bestätigt; keine direkte Finanzbranche",
+        "impact": "Aufbau stark belegt, Branchenfit bleibt offen",
         "profil":
             "Begleitete mehrere Expansionsprojekte und war zuletzt für den "
             "Aufbau einer neuen Geschäftseinheit in Zentral- und Osteuropa "
@@ -501,6 +530,9 @@ kandidaten = {
         "erfahrung": "18 Jahre Berufserfahrung",
         "fuehrung": "11 Jahre Führungserfahrung",
         "international": "Europa, USA, Asien",
+        "screening_signal": "Internationale Führung mehrerer Standorte",
+        "new_signal": "Standorte gesteuert, aber nicht selbst aufgebaut",
+        "impact": "Aufbau-/Expansionserfahrung wird schwächer",
         "profil":
             "Internationale Führungslaufbahn mit Verantwortung für mehrere "
             "Standorte. Langjährige Erfahrung in globalen Unternehmensstrukturen.",
@@ -517,6 +549,9 @@ kandidaten = {
         "erfahrung": "12 Jahre Berufserfahrung",
         "fuehrung": "5 Jahre Führungserfahrung",
         "international": "Österreich, Slowenien",
+        "screening_signal": "Solide operative Führung, wenig sichtbare Aufbauhistorie",
+        "new_signal": "Aktiv am Aufbau eines neuen Standorts beteiligt",
+        "impact": "Aufbau-/Expansionserfahrung wird deutlich stärker",
         "profil":
             "Karriere überwiegend bei mittelständischen Unternehmen. "
             "Verantwortung für operative Teams und mehrere interne "
@@ -535,6 +570,9 @@ kandidaten = {
         "erfahrung": "17 Jahre Berufserfahrung",
         "fuehrung": "10 Jahre Führungserfahrung",
         "international": "Deutschland, Schweiz, Großbritannien",
+        "screening_signal": "Starke Marken, große Teams und Wachstumsprojekte",
+        "new_signal": "Wachstumskonzepte waren zentral vorgegeben",
+        "impact": "Eigenständige Aufbauverantwortung wird schwächer",
         "profil":
             "Führungspositionen bei mehreren international bekannten Unternehmen. "
             "Verantwortung für große Teams und strategische Wachstumsprojekte.",
@@ -580,7 +618,8 @@ defaults = {
     "shortlist2": [],
     "gruende1": [],
     "gruende2": [],
-    "sicherheit1": 70
+    "sicherheit1": 70,
+    "max_phase": 0
 }
 
 for key, value in defaults.items():
@@ -657,6 +696,7 @@ Die erste Sichtung erfolgt bewusst schnell –
         use_container_width=True
     ):
         st.session_state.phase = 1
+        st.session_state.max_phase = max(st.session_state.max_phase, 1)
         st.rerun()
 
     st.caption(
@@ -882,11 +922,16 @@ Profile öffnen, berufliche Informationen prüfen und maximal drei Personen ausw
             ):
                 auswahl.append(name)
 
-    nav_back, nav_space = st.columns([1, 3])
+    nav_back, nav_forward = st.columns(2)
     with nav_back:
         if st.button("← ZURÜCK ZUM BRIEFING", key="back_phase1", use_container_width=True):
             st.session_state.phase = 0
             st.rerun()
+    with nav_forward:
+        if st.session_state.max_phase >= 2:
+            if st.button("WEITER ZUR SHORTLIST 1.0 →", key="forward_phase1", use_container_width=True):
+                st.session_state.phase = 2
+                st.rerun()
 
     st.divider()
 
@@ -969,6 +1014,7 @@ Profile öffnen, berufliche Informationen prüfen und maximal drei Personen ausw
 
                 st.session_state.sicherheit1 = sicherheit
                 st.session_state.phase = 2
+                st.session_state.max_phase = max(st.session_state.max_phase, 2)
 
                 st.rerun()
 
@@ -1051,12 +1097,13 @@ Die nächste Phase wird nach der gemeinsamen Zwischenbesprechung gestartet.
             st.rerun()
     with nav2:
         if st.button(
-            "SECOND LOOK STARTEN  →",
+            "WEITER ZUM SECOND LOOK  →" if st.session_state.max_phase >= 3 else "SECOND LOOK STARTEN  →",
             type="primary",
             key="interviews_oeffnen",
             use_container_width=True
         ):
             st.session_state.phase = 3
+            st.session_state.max_phase = max(st.session_state.max_phase, 3)
             st.rerun()
 
 
@@ -1145,12 +1192,25 @@ Prüft eure Einschätzung erneut.
             ):
                 auswahl2.append(name)
 
-    nav_back, nav_space = st.columns([1, 3])
+    # Aktuellen Arbeitsstand auch dann behalten, wenn zwischendurch zurück navigiert wird.
+    st.session_state["shortlist2_draft"] = auswahl2.copy()
+
+    nav_back, nav_forward = st.columns(2)
     with nav_back:
         if st.button("← ZURÜCK", key="back_phase3", use_container_width=True):
             st.session_state.phase = 2
             st.rerun()
+    with nav_forward:
+        if st.session_state.max_phase >= 4:
+            if st.button("WEITER ZUM DECISION REVIEW →", key="forward_phase3", use_container_width=True):
+                st.session_state.phase = 4
+                st.rerun()
 
+    st.caption("Zurück/Weiter verändert eure gespeicherten Entscheidungen nicht.")
+
+    # Navigation above replaces the old back-only block.
+    nav_back = None
+    nav_space = None
     st.divider()
 
     st.markdown("## Aktuelle Auswahl")
@@ -1188,6 +1248,7 @@ Prüft eure Einschätzung erneut.
 
             st.session_state.shortlist2 = auswahl2.copy()
             st.session_state.phase = 4
+            st.session_state.max_phase = max(st.session_state.max_phase, 4)
 
             st.rerun()
 
@@ -1299,57 +1360,59 @@ Mindestens eine Person wurde nach den zusätzlichen Informationen anders beurtei
 
         st.divider()
 
-        st.markdown("### Was war anders?")
+        st.markdown("### Unterschiede auf einen Blick")
+        st.caption("Nur die Personen, deren Status sich verändert hat. Details könnt ihr bei Bedarf aufklappen.")
 
         for person in raus:
-
             daten = kandidaten[person]
-
-            st.markdown(
-                f"#### ↓ {daten['id']} · {daten['aktuell']}"
-            )
-
-            st.write("**Information beim First Screening:**")
-            st.write(daten["profil"])
-
-            st.write("**Zusätzliche Information:**")
-
             st.markdown(
                 f"""
-<div class="interview-box">
-{daten['interview']}
+<div class="diff-card diff-card-out">
+<div class="diff-status diff-out">↓ NICHT MEHR AUF DER SHORTLIST</div>
+<div class="diff-name">{daten['id']} · {daten['aktuell']}</div>
+<div class="diff-row"><div class="diff-label">First Screening</div><div class="diff-value">{daten['screening_signal']}</div></div>
+<div class="diff-row"><div class="diff-label">Neue Information</div><div class="diff-value">{daten['new_signal']}</div></div>
+<div class="diff-row"><div class="diff-label">Auswirkung</div><div class="diff-value diff-impact">{daten['impact']}</div></div>
 </div>
 """,
                 unsafe_allow_html=True
             )
+            with st.expander(f"Details zu {daten['id']} anzeigen"):
+                st.markdown("**Information beim First Screening**")
+                st.write(daten["profil"])
+                st.markdown("**Zusätzliche Information aus dem Gespräch**")
+                st.write(daten["interview"])
 
         for person in rein:
-
             daten = kandidaten[person]
-
-            st.markdown(
-                f"#### ↑ {daten['id']} · {daten['aktuell']}"
-            )
-
-            st.write("**Information beim First Screening:**")
-            st.write(daten["profil"])
-
-            st.write("**Zusätzliche Information:**")
-
             st.markdown(
                 f"""
-<div class="interview-box">
-{daten['interview']}
+<div class="diff-card diff-card-in">
+<div class="diff-status diff-in">↑ NEU AUF DER SHORTLIST</div>
+<div class="diff-name">{daten['id']} · {daten['aktuell']}</div>
+<div class="diff-row"><div class="diff-label">First Screening</div><div class="diff-value">{daten['screening_signal']}</div></div>
+<div class="diff-row"><div class="diff-label">Neue Information</div><div class="diff-value">{daten['new_signal']}</div></div>
+<div class="diff-row"><div class="diff-label">Auswirkung</div><div class="diff-value diff-impact">{daten['impact']}</div></div>
 </div>
 """,
                 unsafe_allow_html=True
             )
+            with st.expander(f"Details zu {daten['id']} anzeigen"):
+                st.markdown("**Information beim First Screening**")
+                st.write(daten["profil"])
+                st.markdown("**Zusätzliche Information aus dem Gespräch**")
+                st.write(daten["interview"])
 
-    nav_back, nav_space = st.columns([1, 3])
+    nav_back, nav_forward = st.columns(2)
     with nav_back:
         if st.button("← ZURÜCK ZUM SECOND LOOK", key="back_phase4", use_container_width=True):
             st.session_state.phase = 3
             st.rerun()
+    with nav_forward:
+        if st.session_state.max_phase >= 5:
+            if st.button("WEITER ZUM ABSCHLUSS →", key="forward_phase4", use_container_width=True):
+                st.session_state.phase = 5
+                st.rerun()
 
     st.divider()
 
@@ -1397,6 +1460,7 @@ Mindestens eine Person wurde nach den zusätzlichen Informationen anders beurtei
                 )
 
             st.session_state.phase = 5
+            st.session_state.max_phase = max(st.session_state.max_phase, 5)
             st.rerun()
 
 
