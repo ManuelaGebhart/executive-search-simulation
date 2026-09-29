@@ -1,12 +1,275 @@
 import streamlit as st
 import streamlit.components.v1 as components
+# ============================================================
+# PHASE 0 – START
+# ============================================================
 
-st.set_page_config(
-    page_title="Executive Search Simulation",
-    page_icon="🎯",
-    layout="wide"
-)
+if st.session_state.phase == 0:
 
+    st.markdown("""
+    <div class="exec-header">
+
+        <div class="exec-eyebrow">
+            EXECUTIVE SEARCH SIMULATION
+        </div>
+
+        <div class="exec-title">
+            MISSION: EXECUTIVE SEARCH
+        </div>
+
+        <div class="exec-subtitle">
+            Ihr übernehmt einen vertraulichen Suchauftrag
+            für eine strategisch wichtige Führungsposition.
+        </div>
+
+        <div class="confidential">
+            ● CONFIDENTIAL SEARCH MANDATE
+        </div>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="process-row">
+        <div class="process-active">01 · BRIEFING</div>
+        <div class="process-inactive">02 · FIRST SCREENING</div>
+        <div class="process-inactive">03 · SECOND LOOK</div>
+        <div class="process-inactive">04 · FINAL SHORTLIST</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="mandate-card">
+
+        <div class="card-label">
+            SEARCH MANDATE
+        </div>
+
+        <div class="position-title">
+            Managing Director Austria
+        </div>
+
+        <div class="position-meta">
+            Internationales Unternehmen · Marktausbau Österreich
+            · Executive Leadership
+        </div>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="mission-box">
+
+        <div class="mission-title">
+            EURE MISSION
+        </div>
+
+        <div class="mission-text">
+            Das Executive-Search-Team hat fünf potenzielle
+            Kandidat:innen identifiziert.<br><br>
+
+            Sichtet die verfügbaren Profile und erstellt eine
+            <strong>Shortlist mit genau drei Personen.</strong><br><br>
+
+            Die erste Sichtung erfolgt bewusst schnell –
+            ähnlich einer ersten Vorauswahl im Executive Search.
+        </div>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "KANDIDAT:INNEN",
+            "5"
+        )
+
+    with col2:
+        st.metric(
+            "SHORTLIST",
+            "3"
+        )
+
+    with col3:
+        st.metric(
+            "SCREENING-ZEIT",
+            "90 Sek."
+        )
+
+    st.write("")
+
+    if st.button(
+        "START FIRST SCREENING  →",
+        type="primary",
+        key="start_mission",
+        use_container_width=True
+    ):
+        st.session_state.phase = 1
+        st.rerun()
+
+    st.caption(
+        "Demo-Prototyp · Alle Unternehmen, Personen und Angaben "
+        "dieser Simulation sind frei erfunden."
+    )
+
+# ============================================================
+# DESIGN – EXECUTIVE SEARCH
+# ============================================================
+
+st.markdown("""
+<style>
+
+/* Gesamte App */
+.stApp {
+    background-color: #f4f6f8;
+}
+
+/* Hauptbereich etwas kompakter */
+.block-container {
+    max-width: 1180px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+/* Standard-Überschrift oben ausblenden wir später über eigene Header */
+h1, h2, h3 {
+    letter-spacing: -0.02em;
+}
+
+/* Buttons */
+.stButton > button {
+    border-radius: 8px;
+    font-weight: 700;
+    padding: 0.65rem 1.2rem;
+}
+
+/* Executive Search Header */
+.exec-header {
+    background: linear-gradient(120deg, #0b1628 0%, #162943 100%);
+    padding: 34px 38px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    color: white;
+}
+
+.exec-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #aebed2;
+    margin-bottom: 10px;
+}
+
+.exec-title {
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 8px;
+}
+
+.exec-subtitle {
+    font-size: 16px;
+    color: #d7e0eb;
+    max-width: 720px;
+}
+
+/* Confidential Badge */
+.confidential {
+    display: inline-block;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 30px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+    margin-top: 20px;
+}
+
+/* Search Mandate */
+.mandate-card {
+    background: white;
+    border: 1px solid #e2e7ed;
+    border-radius: 14px;
+    padding: 28px 30px;
+    margin-bottom: 18px;
+    box-shadow: 0 3px 12px rgba(20, 35, 55, 0.05);
+}
+
+.card-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #68788b;
+    margin-bottom: 6px;
+}
+
+.position-title {
+    font-size: 27px;
+    font-weight: 800;
+    color: #102239;
+    margin-bottom: 5px;
+}
+
+.position-meta {
+    color: #647386;
+    font-size: 14px;
+}
+
+/* Mission Box */
+.mission-box {
+    background: #eaf0f7;
+    border-left: 5px solid #183a61;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-top: 20px;
+    margin-bottom: 22px;
+}
+
+.mission-title {
+    font-weight: 800;
+    color: #102239;
+    margin-bottom: 6px;
+}
+
+.mission-text {
+    color: #34465b;
+    line-height: 1.55;
+}
+
+/* Ablauf */
+.process-row {
+    display: flex;
+    gap: 8px;
+    margin: 24px 0;
+}
+
+.process-active {
+    flex: 1;
+    background: #183a61;
+    color: white;
+    padding: 11px;
+    text-align: center;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.process-inactive {
+    flex: 1;
+    background: #e5e9ee;
+    color: #7b8794;
+    padding: 11px;
+    text-align: center;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+</style>
+""", unsafe_allow_html=True)
 # ============================================================
 # DEMO-DATEN – ALLES FREI ERFUNDEN
 # ============================================================
@@ -637,7 +900,7 @@ Auswahl nicht verändert.
 
     st.divider()
 
-    st.markdown("### Was hat eure Entscheidung beeinflusst?")
+ st.markdown("### Was hat eure Entscheidung beeinflusst?")
 
 gruende2 = [
     "Neue Information aus dem Gespräch",
