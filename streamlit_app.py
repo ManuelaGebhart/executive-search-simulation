@@ -106,6 +106,7 @@ for key, value in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = value
 
+
 # ============================================================
 # KOPF
 # ============================================================
@@ -115,6 +116,7 @@ st.title("MISSION: EXECUTIVE SEARCH")
 st.caption(
     "DEMO-PROTOTYP · Alle Unternehmen, Personen und Angaben sind frei erfunden."
 )
+
 
 # ============================================================
 # PHASE 0 – START
@@ -152,6 +154,7 @@ Sobald ihr die Suche startet, habt ihr **90 Sekunden Zeit**.
         st.session_state.phase = 1
         st.rerun()
 
+
 # ============================================================
 # PHASE 1 – SCHNELLSCREENING / SHORTLIST 1.0
 # ============================================================
@@ -160,7 +163,7 @@ elif st.session_state.phase == 1:
 
     st.info("🔒 CONFIDENTIAL SEARCH MANDATE")
 
-    # Countdown
+    # Countdown – UNVERÄNDERT AUS DEINEM CODE
     components.html(
         """
         <div id="timerbox" style="
@@ -395,41 +398,14 @@ elif st.session_state.phase == 1:
 
                 st.rerun()
 
+
 # ============================================================
-# PHASE 2 – THEORIE
+# PHASE 2 – SHORTLIST 1.0 / PAUSE
 # ============================================================
 
 elif st.session_state.phase == 2:
 
     st.success("✓ SHORTLIST 1.0 ABGESCHLOSSEN")
-
-    st.subheader("Was habt ihr gerade eigentlich gemacht?")
-
-    st.write("""
-Ihr habt Informationen aus der **beruflichen Vergangenheit**
-der Kandidat:innen verwendet, um einzuschätzen, wer für eine
-zukünftige Position geeignet sein könnte.
-""")
-
-    with st.expander(
-        "💡 THEORIE-IMPULS: Biografieorientierter Ansatz"
-    ):
-
-        st.markdown("""
-### Biografieorientierte Personalauswahl
-
-Bei biografieorientierten Verfahren werden Informationen über
-vergangenes Verhalten beziehungsweise früher erbrachte Leistungen
-genutzt, um zukünftige Leistungen bzw. Eignung vorherzusagen.
-
-Bewerbungsunterlagen und Lebenslauf können dabei Quellen
-biografischer Informationen sein.
-
-**Aber:** Eine Information aus der Vergangenheit ist noch
-nicht automatisch ein Beleg für die Eignung für eine konkrete Position.
-""")
-
-    st.divider()
 
     st.markdown("### Eure erste Entscheidung")
 
@@ -449,25 +425,22 @@ nicht automatisch ein Beleg für die Eignung für eine konkrete Position.
     st.divider()
 
     st.warning("""
-🔓 **NEUE INFORMATIONEN SIND VERFÜGBAR**
+### ⏸️ STOP
 
-Im nächsten Schritt erhaltet ihr zusätzliche Informationen
-aus fiktiven Erstgesprächen.
+Bitte wartet auf das gemeinsame Signal.
 
-Bei jeder Person seht ihr das ursprüngliche Profil und direkt
-darunter die neue Information.
-
-Danach erstellt ihr eure **Shortlist 2.0**.
+Die nächsten Informationen werden erst nach der gemeinsamen
+Zwischenphase freigegeben.
 """)
 
     if st.button(
-        "🎙️ Neue Informationen öffnen",
+        "🎙️ SECOND LOOK starten",
         type="primary",
         key="interviews_oeffnen"
     ):
-
         st.session_state.phase = 3
         st.rerun()
+
 
 # ============================================================
 # PHASE 3 – SHORTLIST 2.0
@@ -483,26 +456,6 @@ Ihr habt nun zusätzliche Informationen aus ersten Gesprächen.
 Prüft alle fünf Kandidat:innen erneut.
 
 **Welche drei Personen nehmt ihr jetzt in die nächste Phase auf?**
-""")
-
-    with st.expander(
-        "🧭 DIAGNOSTIK-CHECK: Worauf solltet ihr jetzt achten?"
-    ):
-
-        st.markdown("""
-**1. Was wissen wir tatsächlich?**
-
-↓
-
-**2. Was schließen wir daraus?**
-
-↓
-
-**3. Welche konkrete Anforderung betrifft diese Schlussfolgerung?**
-
-↓
-
-**4. Reicht die vorhandene Information für diesen Schluss?**
 """)
 
     st.caption(
@@ -588,6 +541,7 @@ Prüft alle fünf Kandidat:innen erneut.
 
             st.rerun()
 
+
 # ============================================================
 # PHASE 4 – VERGLEICH / AHA
 # ============================================================
@@ -623,7 +577,7 @@ elif st.session_state.phase == 4:
     if vorher == nachher:
 
         st.success("""
-Eure Shortlist ist gleich geblieben.
+### Eure Shortlist ist gleich geblieben.
 
 Die zusätzlichen Informationen haben eure ursprüngliche
 Auswahl nicht verändert.
@@ -651,71 +605,90 @@ Auswahl nicht verändert.
             for person in rein:
                 st.write(person)
 
+        st.divider()
+
+        st.markdown("### Was war anders?")
+
+        # Nur die Kandidat:innen zeigen,
+        # die tatsächlich ausgetauscht wurden.
+        for person in raus:
+
+            daten = kandidaten[person]
+
+            st.markdown(f"#### ↓ {person}")
+
+            st.write("**Information beim First Screening:**")
+            st.write(daten["profil"])
+
+            st.write("**Zusätzliche Information aus dem Gespräch:**")
+            st.info(daten["interview"])
+
+        for person in rein:
+
+            daten = kandidaten[person]
+
+            st.markdown(f"#### ↑ {person}")
+
+            st.write("**Information beim First Screening:**")
+            st.write(daten["profil"])
+
+            st.write("**Zusätzliche Information aus dem Gespräch:**")
+            st.info(daten["interview"])
+
     st.divider()
 
-    st.markdown("## 🧠 BLIND-SPOT-CHECK")
+    st.markdown("### Was hat eure Entscheidung beeinflusst?")
 
-    st.write("""
-Welche Informationen standen tatsächlich im Profil –
-und welche Schlussfolgerungen habt ihr selbst daraus gezogen?
-""")
+    veraenderungsgrund = st.text_area(
+        "Welche neue Information oder Überlegung war für euch ausschlaggebend?",
+        placeholder="Kurz festhalten ...",
+        key="veraenderungsgrund"
+    )
 
-    st.info("""
-**Beispiel**
+    if st.button(
+        "✓ Auswahlprozess abschließen",
+        type="primary",
+        key="prozess_abschliessen"
+    ):
+        st.session_state.veraenderungsgrund = veraenderungsgrund
+        st.session_state.phase = 5
+        st.rerun()
 
-Information:
 
-**„10 Jahre Führungserfahrung“**
+# ============================================================
+# PHASE 5 – ABSCHLUSS DER SIMULATION
+# ============================================================
 
-↓
+elif st.session_state.phase == 5:
 
-Schlussfolgerung:
-
-**„Diese Person kann große Teams erfolgreich führen.“**
-
-↓
-
-### Stand diese Schlussfolgerung tatsächlich im Profil?
-""")
+    st.markdown("# ✓ SEARCH COMPLETED")
 
     st.markdown("""
-### Die entscheidende Frage
+## Eure finale Shortlist steht.
 
-**Welche biografische Information liefert einen begründeten
-Hinweis auf welche konkrete Anforderung der Position?**
-""")
-
-    with st.expander(
-        "💡 THEORIE-IMPULS: Aussagekraft und Grenzen"
-    ):
-
-        st.markdown("""
-Biografische Informationen können für eine
-Eignungsprognose genutzt werden.
-
-Entscheidend ist jedoch nicht nur, **wie viele Informationen**
-über die Vergangenheit einer Person vorliegen.
-
-Entscheidend ist, **welche Schlussfolgerung daraus gezogen wird**
-und ob diese mit den Anforderungen der konkreten Position
-begründet verknüpft werden kann.
-
-Zusätzliche diagnostische Informationen können eine erste
-Einschätzung bestätigen, differenzieren oder verändern.
+Der Auswahlprozess in der Simulation ist damit abgeschlossen.
 """)
 
     st.divider()
 
-    st.markdown("### TAKE-AWAY")
+    st.markdown("### FINAL SHORTLIST")
 
-    st.success("""
-**Vergangenheit ≠ automatisch Eignung**
+    for person in st.session_state.shortlist2:
+        st.write("🎯", person)
 
-Biografische Information  
-→ Interpretation  
-→ konkrete Anforderung  
-→ begründete Eignungsprognose
+    st.divider()
+
+    st.info("""
+### Bitte bleibt bei eurer Entscheidung.
+
+Die Ergebnisse werden jetzt gemeinsam ausgewertet.
 """)
+
+    st.markdown("## → Zurück zur gemeinsamen Präsentation")
+
+    st.caption(
+        "MISSION: EXECUTIVE SEARCH · Simulation abgeschlossen"
+    )
 
     if st.button(
         "↻ Demo neu starten",
