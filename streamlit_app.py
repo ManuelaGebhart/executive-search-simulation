@@ -7,7 +7,7 @@ st.set_page_config(
 )
 
 # ============================================================
-# DEMO-DATEN – ALLE PERSONEN UND INFORMATIONEN FREI ERFUNDEN
+# DEMO-DATEN – ALLES FREI ERFUNDEN
 # ============================================================
 
 kandidaten = {
@@ -132,9 +132,12 @@ if st.session_state.phase == 0:
 
     Das Executive-Search-Team hat fünf potenzielle Kandidat:innen identifiziert.
 
-    Eure Aufgabe:
+    ### Eure Mission
 
-    **Erstellt aus den fünf Profilen eine Shortlist mit genau zwei Personen.**
+    Erstellt aus den fünf Profilen eine **Shortlist mit genau drei Personen**.
+
+    Entscheidet ausschließlich auf Basis der Informationen,
+    die euch zu diesem Zeitpunkt zur Verfügung stehen.
     """)
 
     if st.button("🎯 Suche starten", type="primary"):
@@ -175,8 +178,8 @@ elif st.session_state.phase == 1:
     st.subheader("Kandidaten-Screening")
 
     st.write(
-        "Prüft die verfügbaren biografischen Informationen. "
-        "**Welche zwei Personen würdet ihr in die nächste Phase aufnehmen?**"
+        "Prüft die verfügbaren Informationen und entscheidet: "
+        "**Welche drei Personen nehmt ihr in die nächste Phase auf?**"
     )
 
     auswahl = []
@@ -208,13 +211,19 @@ elif st.session_state.phase == 1:
     st.divider()
     st.subheader("Eure Shortlist 1.0")
 
-    if len(auswahl) < 2:
-        st.warning(f"Ihr habt {len(auswahl)} von 2 Personen ausgewählt.")
+    if len(auswahl) < 3:
+        st.warning(
+            f"Ihr habt {len(auswahl)} von 3 Personen ausgewählt."
+        )
 
-    elif len(auswahl) > 2:
-        st.error("Bitte wählt genau zwei Personen aus.")
+    elif len(auswahl) > 3:
+        st.error(
+            "Ihr könnt genau drei Personen auswählen. "
+            "Bitte entfernt eine Person."
+        )
 
     else:
+
         st.success("✓ Eure Shortlist ist vollständig.")
 
         for person in auswahl:
@@ -224,7 +233,8 @@ elif st.session_state.phase == 1:
 
         ausgewaehlte_gruende = st.multiselect(
             "Mehrfachauswahl möglich",
-            options=gruende
+            options=gruende,
+            placeholder="Entscheidungsgründe auswählen"
         )
 
         sonstiges = ""
@@ -245,7 +255,10 @@ elif st.session_state.phase == 1:
             format="%d%%"
         )
 
-        if st.button("🔒 Shortlist 1.0 bestätigen", type="primary"):
+        if st.button(
+            "🔒 Shortlist 1.0 bestätigen",
+            type="primary"
+        ):
 
             if not ausgewaehlte_gruende:
                 st.warning(
@@ -253,6 +266,7 @@ elif st.session_state.phase == 1:
                 )
 
             else:
+
                 st.session_state.shortlist1 = auswahl.copy()
                 st.session_state.gruende1 = ausgewaehlte_gruende.copy()
 
@@ -266,64 +280,112 @@ elif st.session_state.phase == 1:
                 st.rerun()
 
 # ============================================================
-# PHASE 2 – INTERVIEW-REVEAL
+# PHASE 2 – THEORIE NACH DER ERSTEN ENTSCHEIDUNG
 # ============================================================
 
 elif st.session_state.phase == 2:
 
-    st.warning("🔓 NEUE INFORMATIONEN VERFÜGBAR")
+    st.success("✓ SHORTLIST 1.0 ABGESCHLOSSEN")
 
-    st.subheader("Die erste Shortlist steht.")
+    st.subheader("Was habt ihr gerade eigentlich gemacht?")
 
-    st.write("Ihr habt ausgewählt:")
+    st.write("""
+    Ihr habt Informationen aus der **beruflichen Vergangenheit**
+    der Kandidat:innen verwendet, um einzuschätzen, wer für eine
+    zukünftige Position geeignet sein könnte.
+    """)
+
+    with st.expander("💡 THEORIE-IMPULS: Biografieorientierter Ansatz"):
+
+        st.markdown("""
+        **Biografieorientierte Personalauswahl**
+
+        Bei biografieorientierten Verfahren werden Informationen über
+        vergangenes Verhalten beziehungsweise früher erbrachte Leistungen
+        genutzt, um zukünftige Leistungen bzw. Eignung vorherzusagen.
+
+        Bewerbungsunterlagen und Lebenslauf können dabei Quellen
+        biografischer Informationen sein.
+
+        **Aber:** Eine Information aus der Vergangenheit ist noch
+        nicht automatisch ein Beleg für die Eignung für eine konkrete
+        Position.
+        """)
+
+    st.divider()
+
+    st.markdown("### Eure erste Entscheidung")
 
     for person in st.session_state.shortlist1:
         st.write("🎯", person)
 
     st.write(
-        f"**Entscheidungssicherheit:** "
+        f"**Eure Entscheidungssicherheit:** "
         f"{st.session_state.sicherheit1}%"
     )
 
+    st.markdown("**Eure wichtigsten Entscheidungsgründe:**")
+
+    for grund in st.session_state.gruende1:
+        st.write("•", grund)
+
     st.divider()
 
-    st.markdown("""
-    ### Fiktive Interviewrunde
+    st.warning("""
+    🔓 **NEUE INFORMATIONEN SIND VERFÜGBAR**
 
-    Ihr erhaltet nun zusätzliche Informationen aus ersten Gesprächen.
+    Im nächsten Schritt erhaltet ihr zusätzliche Informationen
+    aus fiktiven Erstgesprächen.
 
-    **Wichtig:** Die folgenden Interviewinformationen sind für diese
-    Demo didaktisch konstruiert und frei erfunden.
+    Ihr seht dort bei jeder Person sowohl die bisher bekannten
+    Informationen als auch die neuen Interviewinformationen.
 
-    Prüft danach eure ursprüngliche Entscheidung erneut.
+    Danach erstellt ihr eure **Shortlist 2.0**.
     """)
 
-    for name, daten in kandidaten.items():
-
-        with st.expander(f"🎙️ Interviewinformation – {name}"):
-            st.write(daten["interview"])
-
-    st.divider()
-
-    if st.button("➡️ Shortlist erneut prüfen", type="primary"):
+    if st.button(
+        "🎙️ Interviewinformationen öffnen",
+        type="primary"
+    ):
         st.session_state.phase = 3
         st.rerun()
 
 # ============================================================
-# PHASE 3 – SHORTLIST 2.0
+# PHASE 3 – INTERVIEW + SHORTLIST 2.0
 # ============================================================
 
 elif st.session_state.phase == 3:
 
-    st.subheader("SHORTLIST 2.0")
+    st.subheader("🎙️ NEUE INFORMATIONEN")
 
     st.write("""
-    Ihr kennt jetzt zusätzliche Informationen.
+    Ihr habt nun zusätzliche Informationen aus ersten Gesprächen.
 
-    **Welche zwei Personen würdet ihr jetzt in die nächste Phase aufnehmen?**
+    Prüft alle fünf Kandidat:innen erneut.
 
-    Ihr dürft eure ursprüngliche Entscheidung beibehalten oder verändern.
+    **Welche drei Personen würdet ihr jetzt in die nächste Phase aufnehmen?**
     """)
+
+    with st.expander("🧭 DIAGNOSTIK-CHECK: Worauf solltet ihr jetzt achten?"):
+
+        st.markdown("""
+        Stellt euch bei jeder Information vier Fragen:
+
+        **1. Was wissen wir tatsächlich?**  
+        ↓  
+        **2. Was schließen wir daraus?**  
+        ↓  
+        **3. Welche konkrete Anforderung betrifft diese Schlussfolgerung?**  
+        ↓  
+        **4. Reicht die vorhandene Information für diesen Schluss?**
+        """)
+
+    st.caption(
+        "Die Interviewinformationen dieser Demo sind frei erfunden "
+        "und wurden ausschließlich für die Übung konstruiert."
+    )
+
+    st.divider()
 
     auswahl2 = []
 
@@ -331,40 +393,70 @@ elif st.session_state.phase == 3:
 
         with st.expander(name):
 
-            st.write("**Bisher bekannte Information**")
+            st.markdown("#### Bisher bekannte Informationen")
+
+            c1, c2 = st.columns(2)
+
+            with c1:
+                st.write("**Aktuelle Position:**", daten["aktuell"])
+                st.write("**Branche:**", daten["branche"])
+                st.write("**Berufserfahrung:**", daten["erfahrung"])
+
+            with c2:
+                st.write("**Führung:**", daten["fuehrung"])
+                st.write("**International:**", daten["international"])
+
+            st.write("**Kurzprofil:**")
             st.write(daten["profil"])
 
-            st.info("🎙️ **Zusätzliche Interviewinformation**")
-            st.write(daten["interview"])
+            st.markdown("#### 🔓 Neue Interviewinformation")
+            st.info(daten["interview"])
 
-            vorauswahl = name in st.session_state.shortlist1
+            war_vorher_dabei = name in st.session_state.shortlist1
+
+            if war_vorher_dabei:
+                st.caption("🎯 Diese Person war auf eurer Shortlist 1.0.")
 
             if st.checkbox(
                 "Auf meine Shortlist 2.0",
-                value=vorauswahl,
+                value=war_vorher_dabei,
                 key=f"runde2_{name}"
             ):
                 auswahl2.append(name)
 
     st.divider()
+    st.subheader("Eure Shortlist 2.0")
 
-    if len(auswahl2) < 2:
-        st.warning(f"Ihr habt {len(auswahl2)} von 2 Personen ausgewählt.")
+    if len(auswahl2) < 3:
 
-    elif len(auswahl2) > 2:
-        st.error("Bitte wählt genau zwei Personen aus.")
+        st.warning(
+            f"Ihr habt {len(auswahl2)} von 3 Personen ausgewählt."
+        )
+
+    elif len(auswahl2) > 3:
+
+        st.error(
+            "Ihr könnt genau drei Personen auswählen. "
+            "Bitte entfernt eine Person."
+        )
 
     else:
 
-        st.success("✓ Shortlist 2.0 ist vollständig.")
+        st.success("✓ Eure neue Shortlist ist vollständig.")
 
-        if st.button("🎯 Entscheidung abschließen", type="primary"):
+        for person in auswahl2:
+            st.write("🎯", person)
+
+        if st.button(
+            "🎯 Shortlist 2.0 bestätigen",
+            type="primary"
+        ):
             st.session_state.shortlist2 = auswahl2.copy()
             st.session_state.phase = 4
             st.rerun()
 
 # ============================================================
-# PHASE 4 – AHA / VERGLEICH
+# PHASE 4 – VERGLEICH / AHA-EFFEKT
 # ============================================================
 
 elif st.session_state.phase == 4:
@@ -393,55 +485,100 @@ elif st.session_state.phase == 4:
 
     if vorher == nachher:
 
-        st.success(
-            "Ihr seid trotz der zusätzlichen Informationen "
-            "bei eurer ursprünglichen Shortlist geblieben."
-        )
+        st.success("""
+        Eure Shortlist ist gleich geblieben.
+
+        Auch das ist ein Ergebnis:
+        Die zusätzlichen Informationen haben eure ursprüngliche
+        Auswahl nicht verändert.
+        """)
 
     else:
 
-        st.warning("💡 Eure Entscheidung hat sich verändert.")
+        st.warning("💡 EURE ENTSCHEIDUNG HAT SICH VERÄNDERT.")
 
-        if raus:
-            st.write("**Nicht mehr auf der Shortlist:**")
-            for person in raus:
-                st.write("↓", person)
+        col3, col4 = st.columns(2)
 
-        if rein:
-            st.write("**Neu auf der Shortlist:**")
-            for person in rein:
-                st.write("↑", person)
+        with col3:
+            if raus:
+                st.markdown("#### ↓ Nicht mehr auf der Shortlist")
+                for person in raus:
+                    st.write(person)
+
+        with col4:
+            if rein:
+                st.markdown("#### ↑ Neu auf der Shortlist")
+                for person in rein:
+                    st.write(person)
 
     st.divider()
 
-    st.markdown("## DER BLIND-SPOT-CHECK")
+    st.markdown("## 🧠 BLIND-SPOT-CHECK")
 
     st.write("""
-    Schaut noch einmal auf eure erste Entscheidung.
+    Erinnert euch an eure erste Entscheidung.
 
     **Welche Informationen standen tatsächlich im Profil –
-    und was habt ihr daraus geschlossen?**
+    und welche Schlussfolgerungen habt ihr selbst daraus gezogen?**
     """)
 
     st.info("""
-    Beispiel:
+    **Beispiel**
 
-    **Information:** „10 Jahre Führungserfahrung“
+    Information im Profil:
 
-    **Mögliche Schlussfolgerung:** „Diese Person kann große Teams
-    erfolgreich führen.“
+    „10 Jahre Führungserfahrung“
 
-    **Frage:** Stand diese Schlussfolgerung tatsächlich im Profil?
+    ↓
+
+    Mögliche Schlussfolgerung:
+
+    „Diese Person kann große Teams erfolgreich führen.“
+
+    ↓
+
+    **Aber: Stand diese Schlussfolgerung tatsächlich im Profil?**
     """)
 
     st.markdown("""
     ### Die entscheidende Frage
 
-    **Welche biografische Information liefert einen begründeten Hinweis
-    auf welche konkrete Anforderung der Position?**
+    **Welche biografische Information liefert einen begründeten
+    Hinweis auf welche konkrete Anforderung der Position?**
+    """)
+
+    with st.expander("💡 THEORIE-IMPULS: Aussagekraft und Grenzen"):
+
+        st.markdown("""
+        Biografische Informationen können für eine
+        Eignungsprognose genutzt werden.
+
+        Entscheidend ist jedoch nicht nur, **wie viele Informationen**
+        über die Vergangenheit einer Person vorliegen.
+
+        Entscheidend ist, **welche Schlussfolgerung daraus gezogen wird**
+        und ob diese Schlussfolgerung mit den Anforderungen der konkreten
+        Position begründet verknüpft werden kann.
+
+        Zusätzliche diagnostische Informationen können eine erste
+        Einschätzung bestätigen, differenzieren oder verändern.
+        """)
+
+    st.divider()
+
+    st.markdown("### TAKE-AWAY")
+
+    st.success("""
+    **Vergangenheit ≠ automatisch Eignung**
+
+    Biografische Information  
+    → Interpretation  
+    → konkrete Anforderung  
+    → begründete Eignungsprognose
     """)
 
     if st.button("↻ Demo neu starten"):
+
         for key in list(st.session_state.keys()):
             del st.session_state[key]
 
