@@ -639,18 +639,51 @@ Auswahl nicht verändert.
 
     st.markdown("### Was hat eure Entscheidung beeinflusst?")
 
-    veraenderungsgrund = st.text_area(
-        "Welche neue Information oder Überlegung war für euch ausschlaggebend?",
-        placeholder="Kurz festhalten ...",
-        key="veraenderungsgrund"
+gruende2 = [
+    "Neue Information aus dem Gespräch",
+    "Aufbau- / Expansionserfahrung",
+    "Führungserfahrung",
+    "Branchenerfahrung",
+    "Internationale Erfahrung",
+    "Konkretere Beschreibung der bisherigen Aufgaben",
+    "Eine frühere Annahme wurde durch neue Informationen korrigiert",
+    "Sonstiges"
+]
+
+ausgewaehlte_gruende2 = st.multiselect(
+    "Welche Informationen oder Überlegungen waren für eure zweite Entscheidung ausschlaggebend?",
+    options=gruende2,
+    placeholder="Entscheidungsgründe auswählen",
+    key="entscheidungsgruende2"
+)
+
+sonstiges2 = ""
+
+if "Sonstiges" in ausgewaehlte_gruende2:
+    sonstiges2 = st.text_input(
+        "Welcher weitere Grund war wichtig?",
+        key="sonstiger_grund2"
     )
 
-    if st.button(
-        "✓ Auswahlprozess abschließen",
-        type="primary",
-        key="prozess_abschliessen"
-    ):
-        st.session_state.veraenderungsgrund = veraenderungsgrund
+if st.button(
+    "✓ Auswahlprozess abschließen",
+    type="primary",
+    key="prozess_abschliessen"
+):
+
+    if not ausgewaehlte_gruende2:
+        st.warning(
+            "Bitte mindestens einen Entscheidungsgrund auswählen."
+        )
+
+    else:
+        st.session_state.gruende2 = ausgewaehlte_gruende2.copy()
+
+        if sonstiges2:
+            st.session_state.gruende2.append(
+                f"Sonstiges: {sonstiges2}"
+            )
+
         st.session_state.phase = 5
         st.rerun()
 
