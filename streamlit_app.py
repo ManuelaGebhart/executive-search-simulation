@@ -1,5 +1,6 @@
 import streamlit as st
 import time
+from datetime import datetime, timedelta
 
 st.set_page_config(
     page_title="Executive Search Simulation",
@@ -8,7 +9,7 @@ st.set_page_config(
 )
 
 # ============================================================
-# DEMO-DATEN
+# DEMO-DATEN – ALLES FREI ERFUNDEN
 # ============================================================
 
 kandidaten = {
@@ -28,6 +29,10 @@ kandidaten = {
             "bisherigen Führungsbereiche jeweils in bereits etablierten "
             "Strukturen. Einen neuen Standort oder eine neue Geschäftseinheit "
             "hat er bisher nicht selbst aufgebaut."
+        ),
+        "reflexion": (
+            "Aus langer Führungserfahrung allein lässt sich noch nicht ableiten, "
+            "dass Erfahrung mit dem Aufbau eines neuen Standorts vorliegt."
         )
     },
 
@@ -47,6 +52,10 @@ kandidaten = {
             "Aufbau einer neuen Einheit von der Personalgewinnung bis zur "
             "Etablierung operativer Strukturen. Direkte Erfahrung in der "
             "Finanzdienstleistungsbranche hat sie nicht."
+        ),
+        "reflexion": (
+            "Die neue Information konkretisiert, was mit „Aufbau“ tatsächlich "
+            "gemeint war und welche Verantwortung sie dabei selbst trug."
         )
     },
 
@@ -64,6 +73,10 @@ kandidaten = {
             "Im Gespräch zeigt sich: Seine internationale Verantwortung bezog "
             "sich vor allem auf die Steuerung bereits bestehender Standorte. "
             "Bei deren Aufbau war er selbst nicht beteiligt."
+        ),
+        "reflexion": (
+            "„Verantwortung für mehrere Standorte“ und „Erfahrung mit dem Aufbau "
+            "von Standorten“ sind nicht dieselbe Information."
         )
     },
 
@@ -83,6 +96,10 @@ kandidaten = {
             "kaum hervorging: Sie war beim Eintritt in ihr aktuelles Unternehmen "
             "maßgeblich am Aufbau eines neuen österreichischen Standorts beteiligt "
             "und übernahm dort schrittweise Führungsverantwortung."
+        ),
+        "reflexion": (
+            "Das ursprüngliche Kurzprofil enthielt relevante Erfahrung, machte "
+            "deren konkreten Bezug zum Standortaufbau aber kaum sichtbar."
         )
     },
 
@@ -100,6 +117,11 @@ kandidaten = {
             "Im Gespräch wird deutlich: Die strategischen Wachstumsprojekte wurden "
             "zentral vorbereitet. Seine Verantwortung lag vor allem in der Umsetzung "
             "bereits definierter Konzepte und in der Führung bestehender Organisationen."
+        ),
+        "reflexion": (
+            "Bekannte Arbeitgeber und strategische Wachstumsprojekte können einen "
+            "starken ersten Eindruck erzeugen. Entscheidend bleibt, welche konkrete "
+            "Rolle die Person selbst übernommen hat."
         )
     }
 }
@@ -133,7 +155,6 @@ for key, value in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = value
 
-
 # ============================================================
 # HILFSFUNKTIONEN
 # ============================================================
@@ -162,12 +183,12 @@ def kandidatenkarte(name, daten, interview=False):
     st.write(daten["profil"])
 
     if interview:
-        st.markdown("#### 🔓 Neue Information aus dem Erstgespräch")
+        st.markdown("#### 🔓 Neue Interviewinformation")
         st.info(daten["interview"])
 
 
 # ============================================================
-# HEADER
+# KOPF
 # ============================================================
 
 st.title("MISSION: EXECUTIVE SEARCH")
@@ -177,9 +198,8 @@ st.caption(
     "dieser Simulation sind frei erfunden."
 )
 
-
 # ============================================================
-# PHASE 0 – SUCHAUFTRAG
+# PHASE 0 – MISSION
 # ============================================================
 
 if st.session_state.phase == 0:
@@ -196,11 +216,13 @@ und sucht eine neue Führungskraft:
 
 Das Executive-Search-Team hat fünf potenzielle Kandidat:innen identifiziert.
 
-### Eure Aufgabe
+### Eure Mission
 
-Sichtet die Profile und erstellt eine **Shortlist mit genau drei Personen**.
+Erstellt aus den fünf Profilen eine **Shortlist mit genau drei Personen**.
 
-Die erste Sichtung erfolgt bewusst unter Zeitdruck.
+Die erste Sichtung erfolgt bewusst schnell.
+
+Nach dem Start habt ihr:
 
 **90 Sekunden FIRST SCREENING**
 
@@ -230,196 +252,67 @@ elif st.session_state.phase == 1:
     if st.session_state.screening_start is None:
         st.session_state.screening_start = time.time()
 
-    @st.fragment(run_every="1s")
-    def screening_fragment():
+    elapsed = time.time() - st.session_state.screening_start
 
-        elapsed = time.time() - st.session_state.screening_start
+    # --------------------------------------------------------
+    # ZEITSTATUS
+    # --------------------------------------------------------
 
-        # ----------------------------------------------------
-        # ZEITPHASEN
-        # ----------------------------------------------------
+    if elapsed < 90:
+        rest = max(0, int(90 - elapsed))
+        modus = "screening"
 
-        if elapsed < 90:
-            remaining = max(0, 90 - int(elapsed))
-            mode = "screening"
+    elif elapsed < 105:
+        rest = max(0, int(105 - elapsed))
+        modus = "final"
 
-        elif elapsed < 105:
-            remaining = max(0, 105 - int(elapsed))
-            mode = "final"
+    else:
+        rest = 0
+        modus = "locked"
+        st.session_state.screening_locked = True
 
-        else:
-            remaining = 0
-            mode = "locked"
-            st.session_state.screening_locked = True
+    # --------------------------------------------------------
+    # TIMERANZEIGE
+    # --------------------------------------------------------
 
-        # ----------------------------------------------------
-        # COUNTDOWN
-        # ----------------------------------------------------
+    timer_placeholder = st.empty()
 
-        if mode == "screening":
+    if modus == "screening":
 
-            if remaining > 20:
-
-                st.markdown(
-                    f"""
-                    <div style="
-                        padding:18px;
-                        border-radius:12px;
-                        background:#eef4ff;
-                        text-align:center;
-                        margin-bottom:20px;
-                    ">
-                        <div style="
-                            font-size:15px;
-                            font-weight:700;
-                            letter-spacing:1px;
-                        ">
-                            FIRST SCREENING
-                        </div>
-
-                        <div style="
-                            font-size:42px;
-                            font-weight:800;
-                            margin-top:4px;
-                        ">
-                            {remaining}
-                        </div>
-
-                        <div style="font-size:14px;">
-                            SEKUNDEN
-                        </div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-            else:
-
-                st.markdown(
-                    f"""
-                    <div style="
-                        padding:20px;
-                        border-radius:12px;
-                        background:#ffe8e8;
-                        border:2px solid #d60000;
-                        text-align:center;
-                        margin-bottom:20px;
-                    ">
-                        <div style="
-                            color:#b00000;
-                            font-size:17px;
-                            font-weight:800;
-                        ">
-                            ⚠ FIRST SCREENING
-                        </div>
-
-                        <div style="
-                            color:#d00000;
-                            font-size:55px;
-                            font-weight:900;
-                        ">
-                            {remaining}
-                        </div>
-
-                        <div style="
-                            color:#b00000;
-                            font-weight:700;
-                        ">
-                            SEKUNDEN VERBLEIBEN
-                        </div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-        elif mode == "final":
-
-            st.markdown(
-                f"""
-                <div style="
-                    padding:25px;
-                    border-radius:12px;
-                    background:#ffdede;
-                    border:3px solid #c40000;
-                    text-align:center;
-                    margin-bottom:20px;
-                ">
-
-                    <div style="
-                        color:#a00000;
-                        font-size:22px;
-                        font-weight:900;
-                        letter-spacing:1px;
-                    ">
-                        🚨 FINAL DECISION
-                    </div>
-
-                    <div style="
-                        color:#c00000;
-                        font-size:70px;
-                        font-weight:900;
-                        line-height:1.1;
-                    ">
-                        {remaining}
-                    </div>
-
-                    <div style="
-                        color:#a00000;
-                        font-size:16px;
-                        font-weight:800;
-                    ">
-                        SEKUNDEN
-                    </div>
-
-                    <div style="
-                        margin-top:10px;
-                        font-weight:700;
-                    ">
-                        Legt jetzt eure endgültigen drei Personen fest.
-                    </div>
-
-                </div>
-                """,
-                unsafe_allow_html=True
+        if rest > 20:
+            timer_placeholder.info(
+                f"⏱️ FIRST SCREENING · Noch **{rest} Sekunden**"
             )
 
         else:
-
-            st.markdown(
-                """
-                <div style="
-                    padding:22px;
-                    border-radius:12px;
-                    background:#eeeeee;
-                    border:2px solid #555555;
-                    text-align:center;
-                    margin-bottom:20px;
-                ">
-                    <div style="
-                        font-size:23px;
-                        font-weight:900;
-                    ">
-                        🔒 AUSWAHL FIXIERT
-                    </div>
-
-                    <div style="margin-top:5px;">
-                        Die Entscheidungszeit ist abgelaufen.
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
+            timer_placeholder.error(
+                f"🔴 NOCH **{rest} SEKUNDEN** · "
+                "Bitte eure drei Personen auswählen!"
             )
 
-        # ----------------------------------------------------
-        # ANFORDERUNGSPROFIL
-        # ----------------------------------------------------
+    elif modus == "final":
 
-        st.subheader("Anforderungsprofil")
+        timer_placeholder.error(
+            f"🚨 **FINAL DECISION · {rest} SEKUNDEN**\n\n"
+            "Keine Detailanalyse mehr – legt jetzt eure drei Personen fest."
+        )
 
-        col1, col2 = st.columns(2)
+    else:
 
-        with col1:
-            st.markdown("""
+        timer_placeholder.error(
+            "🔒 **ZEIT ABGELAUFEN · AUSWAHL FIXIERT**"
+        )
+
+    # --------------------------------------------------------
+    # ANFORDERUNGSPROFIL
+    # --------------------------------------------------------
+
+    st.subheader("Anforderungsprofil")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
 **MUST-HAVES**
 
 ✓ Mehrjährige Führungserfahrung  
@@ -427,164 +320,192 @@ elif st.session_state.phase == 1:
 ✓ Erfahrung in komplexen Unternehmensstrukturen
 """)
 
-        with col2:
-            st.markdown("""
+    with col2:
+        st.markdown("""
 **NICE-TO-HAVES**
 
 ✓ Internationale Erfahrung  
 ✓ Kenntnisse der Finanzdienstleistungsbranche
 """)
 
-        st.divider()
+    st.divider()
 
-        st.subheader("FIRST SCREENING")
+    st.subheader("FIRST SCREENING")
 
-        if mode == "screening":
-            st.write(
-                "**Welche drei Personen nehmt ihr in die nächste Phase auf?**"
+    st.write(
+        "**Welche drei Personen nehmt ihr in die nächste Phase auf?**"
+    )
+
+    # --------------------------------------------------------
+    # AUSWAHL
+    # --------------------------------------------------------
+
+    auswahl = []
+
+    for name, daten in kandidaten.items():
+
+        with st.expander(name):
+
+            kandidatenkarte(name, daten)
+
+            checkbox_key = f"runde1_{name}"
+
+            if st.checkbox(
+                "Auf meine Shortlist",
+                key=checkbox_key,
+                disabled=st.session_state.screening_locked
+            ):
+                auswahl.append(name)
+
+    # --------------------------------------------------------
+    # TIMER AKTUALISIEREN
+    # --------------------------------------------------------
+
+    if not st.session_state.screening_locked:
+
+        if st.button(
+            "⟳ Countdown aktualisieren",
+            key="timer_refresh"
+        ):
+            st.rerun()
+
+        st.caption(
+            "Der Countdown läuft weiter. Die Anzeige aktualisiert sich "
+            "bei Interaktionen automatisch; mit dem Button könnt ihr "
+            "den aktuellen Stand zusätzlich abrufen."
+        )
+
+    st.divider()
+
+    # --------------------------------------------------------
+    # NACH ABLAUF
+    # --------------------------------------------------------
+
+    if st.session_state.screening_locked:
+
+        # Auswahl aus den gespeicherten Checkbox-Zuständen lesen
+        auswahl = []
+
+        for name in kandidaten:
+            if st.session_state.get(f"runde1_{name}", False):
+                auswahl.append(name)
+
+        st.subheader("🔒 Eure fixierte Vorauswahl")
+
+        if len(auswahl) == 3:
+
+            st.success("✓ Ihr habt genau drei Personen ausgewählt.")
+
+            for person in auswahl:
+                st.write("🎯", person)
+
+            st.markdown("### Was hat eure Entscheidung beeinflusst?")
+
+            ausgewaehlte_gruende = st.multiselect(
+                "Mehrfachauswahl möglich",
+                options=gruende,
+                key="entscheidungsgruende"
             )
 
-        elif mode == "final":
-            st.write(
-                "**FINAL DECISION: Prüft nur noch eure Auswahl und legt drei Personen fest.**"
+            sonstiges = ""
+
+            if "Sonstiges" in ausgewaehlte_gruende:
+                sonstiges = st.text_input(
+                    "Welcher weitere Grund war wichtig?",
+                    key="sonstiger_grund"
+                )
+
+            st.markdown("### Wie sicher seid ihr euch?")
+
+            sicherheit = st.slider(
+                "Entscheidungssicherheit",
+                min_value=0,
+                max_value=100,
+                value=70,
+                step=5,
+                format="%d%%",
+                key="sicherheit_runde1"
             )
 
-        else:
-            st.write(
-                "**Die Auswahl kann nicht mehr verändert werden.**"
-            )
+            if st.button(
+                "Shortlist 1.0 speichern",
+                type="primary",
+                key="shortlist1_speichern"
+            ):
 
-        # ----------------------------------------------------
-        # KANDIDAT:INNEN
-        # ----------------------------------------------------
-
-        for name, daten in kandidaten.items():
-
-            with st.expander(name):
-
-                kandidatenkarte(name, daten)
-
-                st.checkbox(
-                    "Auf meine Shortlist",
-                    key=f"runde1_{name}",
-                    disabled=(mode == "locked")
-                )
-
-        # ----------------------------------------------------
-        # NACH ABLAUF
-        # ----------------------------------------------------
-
-        if mode == "locked":
-
-            auswahl = []
-
-            for name in kandidaten:
-                if st.session_state.get(f"runde1_{name}", False):
-                    auswahl.append(name)
-
-            st.divider()
-
-            st.subheader("🔒 Eure fixierte Vorauswahl")
-
-            if len(auswahl) == 3:
-
-                st.success("✓ Drei Personen ausgewählt.")
-
-                for person in auswahl:
-                    st.write("🎯", person)
-
-                st.markdown(
-                    "### Was hat eure Entscheidung beeinflusst?"
-                )
-
-                ausgewaehlte_gruende = st.multiselect(
-                    "Mehrfachauswahl möglich",
-                    options=gruende,
-                    key="entscheidungsgruende"
-                )
-
-                sonstiges = ""
-
-                if "Sonstiges" in ausgewaehlte_gruende:
-
-                    sonstiges = st.text_input(
-                        "Welcher weitere Grund war wichtig?",
-                        key="sonstiger_grund"
+                if not ausgewaehlte_gruende:
+                    st.warning(
+                        "Bitte mindestens einen Entscheidungsgrund auswählen."
                     )
 
-                st.markdown(
-                    "### Wie sicher seid ihr euch?"
-                )
+                else:
+                    st.session_state.shortlist1 = auswahl.copy()
+                    st.session_state.gruende1 = ausgewaehlte_gruende.copy()
 
-                sicherheit = st.slider(
-                    "Entscheidungssicherheit",
-                    min_value=0,
-                    max_value=100,
-                    value=70,
-                    step=5,
-                    format="%d%%",
-                    key="sicherheit_runde1"
-                )
-
-                if st.button(
-                    "Shortlist 1.0 speichern",
-                    type="primary",
-                    key="shortlist1_speichern"
-                ):
-
-                    if not ausgewaehlte_gruende:
-
-                        st.warning(
-                            "Bitte mindestens einen Entscheidungsgrund auswählen."
+                    if sonstiges:
+                        st.session_state.gruende1.append(
+                            f"Sonstiges: {sonstiges}"
                         )
 
-                    else:
+                    st.session_state.sicherheit1 = sicherheit
+                    st.session_state.phase = 2
+                    st.rerun()
 
-                        st.session_state.shortlist1 = auswahl.copy()
-                        st.session_state.gruende1 = (
-                            ausgewaehlte_gruende.copy()
-                        )
+        else:
 
-                        if sonstiges:
-                            st.session_state.gruende1.append(
-                                f"Sonstiges: {sonstiges}"
-                            )
+            st.warning(
+                f"Ihr habt innerhalb der Zeit **{len(auswahl)} Personen** "
+                "ausgewählt. Für die Simulation werden genau drei benötigt."
+            )
 
-                        st.session_state.sicherheit1 = sicherheit
-                        st.session_state.phase = 2
+            st.write(
+                "Für den Demo-Prototyp könnt ihr die Runde neu starten. "
+                "Für die endgültige Version bauen wir hier noch eine "
+                "kontrollierte Notfalllösung ein."
+            )
 
-                        st.rerun()
-
-            else:
-
-                st.warning(
-                    f"Ihr habt **{len(auswahl)} Personen** ausgewählt. "
-                    "Für die Simulation werden genau drei benötigt."
-                )
-
-                st.write(
-                    "Die Entscheidungszeit ist beendet. "
-                    "Startet die Runde bitte erneut."
-                )
-
-                if st.button(
-                    "↻ First Screening neu starten",
-                    key="screening_restart"
-                ):
-                    reset_demo()
-
-    screening_fragment()
+            if st.button(
+                "↻ Screening neu starten",
+                key="screening_restart"
+            ):
+                reset_demo()
 
 
 # ============================================================
-# PHASE 2 – SHORTLIST 1.0 / STOP
+# PHASE 2 – ERSTER THEORIE-IMPULS
 # ============================================================
 
 elif st.session_state.phase == 2:
 
-    st.success("✓ SHORTLIST 1.0 GESPEICHERT")
+    st.success("✓ SHORTLIST 1.0 ABGESCHLOSSEN")
 
-    st.subheader("Eure erste Vorauswahl")
+    st.subheader("Was habt ihr gerade eigentlich gemacht?")
+
+    st.write("""
+Ihr habt Informationen aus der **beruflichen Vergangenheit**
+der Kandidat:innen verwendet, um einzuschätzen, wer für eine
+zukünftige Position geeignet sein könnte.
+""")
+
+    with st.expander(
+        "💡 THEORIE-IMPULS · Biografieorientierte Verfahren"
+    ):
+
+        st.markdown("""
+Bei **biografieorientierten Verfahren** wird Berufserfolg dadurch
+vorhergesagt, dass von vergangenem Verhalten beziehungsweise
+früher erbrachten Leistungen auf zukünftige Leistungen geschlossen wird.
+
+Zu den bedeutsamen biografieorientierten Verfahren werden in der
+Kursunterlage unter anderem die **Prüfung von Bewerbungsunterlagen**
+und das **Vorstellungsgespräch** gezählt.
+
+**Quelle:** Furtmüller & Zdravkovic, *Personalauswahl*, S. 297.
+""")
+
+    st.divider()
+
+    st.markdown("### Eure erste Entscheidung")
 
     for person in st.session_state.shortlist1:
         st.write("🎯", person)
@@ -601,20 +522,17 @@ elif st.session_state.phase == 2:
 
     st.divider()
 
-    st.markdown("""
-### ⏸️ STOP
+    st.warning("""
+🔓 **NEUE INFORMATIONEN SIND VERFÜGBAR**
 
-Bitte wartet auf das Signal der Lehrenden.
+Ihr erhaltet jetzt zusätzliche Informationen aus fiktiven
+Erstgesprächen.
 
-Die neuen Informationen werden gemeinsam freigegeben.
+Prüft danach eure ursprüngliche Entscheidung erneut.
 """)
 
-    st.divider()
-
-    # WICHTIG:
-    # Button für Runde 2 wieder klar sichtbar
     if st.button(
-        "🔓 SECOND LOOK starten",
+        "🎙️ SECOND LOOK starten",
         type="primary",
         key="second_look_start"
     ):
@@ -623,25 +541,43 @@ Die neuen Informationen werden gemeinsam freigegeben.
 
 
 # ============================================================
-# PHASE 3 – SECOND LOOK
+# PHASE 3 – SECOND LOOK / SHORTLIST 2.0
 # ============================================================
 
 elif st.session_state.phase == 3:
 
-    st.subheader("🔓 SECOND LOOK")
+    st.subheader("🎙️ SECOND LOOK")
 
-    st.markdown("""
-### Neue Informationen liegen vor
+    st.write("""
+Jetzt stehen zusätzliche Informationen zur Verfügung.
 
-Mit den Kandidat:innen wurden erste Gespräche geführt.
+Prüft **alle fünf Kandidat:innen erneut** und erstellt danach
+wieder eine Shortlist mit **genau drei Personen**.
+""")
 
-Ihr erhaltet jetzt zusätzliche Informationen, die beim
-ersten Screening noch nicht verfügbar waren.
+    with st.expander(
+        "🧭 DIAGNOSTIK-CHECK"
+    ):
 
-### Eure Aufgabe
+        st.markdown("""
+### Prüft eure Schlussfolgerung
 
-Prüft **alle Kandidat:innen erneut** und erstellt eine neue
-Shortlist mit **genau drei Personen**.
+**Was wissen wir tatsächlich?**
+
+↓
+
+**Was schließen wir daraus?**
+
+↓
+
+**Welche konkrete Anforderung betrifft diese Schlussfolgerung?**
+
+↓
+
+**Reicht die vorhandene Information für diesen Schluss?**
+
+*Dieser Vier-Schritt-Check ist eine didaktische Aufbereitung
+für unsere Simulation und kein wörtlich übernommenes Literaturmodell.*
 """)
 
     st.caption(
@@ -669,7 +605,7 @@ Shortlist mit **genau drei Personen**.
 
             if war_vorher_dabei:
                 st.caption(
-                    "🎯 War auf eurer Shortlist 1.0"
+                    "🎯 Diese Person war auf eurer Shortlist 1.0."
                 )
 
             if st.checkbox(
@@ -681,12 +617,12 @@ Shortlist mit **genau drei Personen**.
 
     st.divider()
 
-    st.subheader("Shortlist 2.0")
+    st.subheader("Eure Shortlist 2.0")
 
     if len(auswahl2) < 3:
 
         st.warning(
-            f"Noch {3 - len(auswahl2)} Person(en) auswählen."
+            f"Ihr habt {len(auswahl2)} von 3 Personen ausgewählt."
         )
 
     elif len(auswahl2) > 3:
@@ -703,10 +639,11 @@ Shortlist mit **genau drei Personen**.
             st.write("🎯", person)
 
         if st.button(
-            "Shortlist 2.0 übermitteln",
+            "🎯 Shortlist 2.0 bestätigen",
             type="primary",
             key="shortlist2_bestaetigen"
         ):
+
             st.session_state.shortlist2 = auswahl2.copy()
             st.session_state.phase = 4
             st.rerun()
@@ -718,7 +655,7 @@ Shortlist mit **genau drei Personen**.
 
 elif st.session_state.phase == 4:
 
-    st.subheader("EURE ENTSCHEIDUNG IM VERGLEICH")
+    st.subheader("🔍 EURE ENTSCHEIDUNG IM VERGLEICH")
 
     vorher = set(st.session_state.shortlist1)
     nachher = set(st.session_state.shortlist2)
@@ -729,144 +666,148 @@ elif st.session_state.phase == 4:
     col1, col2 = st.columns(2)
 
     with col1:
-
         st.markdown("### SHORTLIST 1.0")
-
         for person in st.session_state.shortlist1:
             st.write("🎯", person)
 
     with col2:
-
         st.markdown("### SHORTLIST 2.0")
-
         for person in st.session_state.shortlist2:
             st.write("🎯", person)
 
     st.divider()
 
+    # --------------------------------------------------------
+    # VERÄNDERUNG
+    # --------------------------------------------------------
+
     if vorher == nachher:
 
-        st.success(
-            "### Eure Shortlist ist unverändert."
-        )
+        st.success("""
+### Eure Shortlist ist gleich geblieben.
 
-        st.write(
-            "Die zusätzlichen Informationen haben nicht dazu geführt, "
-            "dass ihr eine andere Person aufgenommen habt."
-        )
+Die zusätzlichen Informationen haben eure Auswahl nicht verändert.
+
+Auch dann lohnt sich die Frage:
+**Haben sich eure Gründe für dieselbe Auswahl verändert?**
+""")
+
+        relevante_personen = list(st.session_state.shortlist2)
 
     else:
 
         st.warning(
-            "### Eure Entscheidung hat sich verändert."
+            "💡 **EURE ENTSCHEIDUNG HAT SICH VERÄNDERT.**"
         )
 
-        if raus:
+        relevante_personen = list(raus | rein)
 
-            st.markdown(
-                "## ↓ Nicht mehr auf der Shortlist"
-            )
+        for person in relevante_personen:
 
-            for person in raus:
+            daten = kandidaten[person]
 
-                daten = kandidaten[person]
+            if person in raus:
+                status = "↓ NICHT MEHR AUF DER SHORTLIST"
+            else:
+                status = "↑ NEU AUF DER SHORTLIST"
 
-                st.markdown(f"### {person}")
+            st.markdown(f"## {status}")
+            st.markdown(f"### {person}")
 
-                st.markdown(
-                    "**Information beim First Screening**"
-                )
-                st.write(daten["profil"])
+            st.markdown("**Was ihr zuerst wusstet:**")
+            st.write(daten["profil"])
 
-                st.markdown(
-                    "**Neue Information aus dem Gespräch**"
-                )
-                st.info(daten["interview"])
+            st.markdown("**Was ihr später erfahren habt:**")
+            st.info(daten["interview"])
 
-                st.divider()
+            st.divider()
 
-        if rein:
+    # --------------------------------------------------------
+    # DYNAMISCHE REFLEXION
+    # --------------------------------------------------------
 
-            st.markdown(
-                "## ↑ Neu auf der Shortlist"
-            )
+    st.subheader("🔎 INFORMATION ODER INTERPRETATION?")
 
-            for person in rein:
+    st.write("""
+Schaut euch genau die Kandidat:innen an, die für eure
+Entscheidung relevant waren.
 
-                daten = kandidaten[person]
-
-                st.markdown(f"### {person}")
-
-                st.markdown(
-                    "**Information beim First Screening**"
-                )
-                st.write(daten["profil"])
-
-                st.markdown(
-                    "**Neue Information aus dem Gespräch**"
-                )
-                st.info(daten["interview"])
-
-                st.divider()
-
-    st.markdown(
-        "### Was hat eure Entscheidung beeinflusst?"
-    )
-
-    veraenderungsgrund = st.text_area(
-        "Welche neue Information oder Überlegung war ausschlaggebend?",
-        placeholder="Zum Beispiel: Die zusätzliche Information über ...",
-        key="veraenderungsgrund"
-    )
-
-    if st.button(
-        "✓ Auswahlprozess abschließen",
-        type="primary",
-        key="prozess_abschliessen"
-    ):
-
-        st.session_state["veraenderungsgrund_final"] = (
-            veraenderungsgrund
-        )
-
-        st.session_state.phase = 5
-        st.rerun()
-
-
-# ============================================================
-# PHASE 5 – ENDE
-# ============================================================
-
-elif st.session_state.phase == 5:
-
-    st.markdown("# ✓ SEARCH COMPLETED")
-
-    st.markdown("""
-## Eure Shortlist 2.0 wurde übermittelt.
-
-Der Auswahlprozess in der Simulation ist abgeschlossen.
+**Was stand tatsächlich in den Informationen – und was habt ihr
+selbst daraus geschlossen?**
 """)
 
-    st.divider()
+    for person in relevante_personen:
 
-    for person in st.session_state.shortlist2:
-        st.markdown(f"### 🎯 {person}")
+        daten = kandidaten[person]
 
-    st.divider()
+        with st.expander(
+            f"Reflexion · {person}"
+        ):
+            st.write(daten["reflexion"])
 
-    st.info("""
-### Bitte bleibt bei eurer Entscheidung.
+            st.markdown("""
+Fragt euch:
 
-Die Ergebnisse werden jetzt gemeinsam ausgewertet.
+- Welche Information war tatsächlich vorhanden?
+- Welche Bedeutung haben wir ihr gegeben?
+- Welche konkrete Stellenanforderung wollten wir damit beurteilen?
+- Hat die neue Information unsere Interpretation bestätigt oder verändert?
 """)
-
-    st.markdown(
-        "## → Zurück zur gemeinsamen Präsentation"
-    )
 
     st.caption(
-        "MISSION: EXECUTIVE SEARCH · Simulation abgeschlossen"
+        "Die Reflexionshinweise sind Teil der didaktisch konstruierten "
+        "Demo. Sie werden später an die endgültigen Profile und an "
+        "Marcs Praxisfall angepasst."
     )
+
+    st.divider()
+
+    # --------------------------------------------------------
+    # THEORIE / GRENZEN
+    # --------------------------------------------------------
+
+    with st.expander(
+        "💡 THEORIE-IMPULS · Aussagekraft biografischer Informationen"
+    ):
+
+        st.markdown("""
+Biografische Informationen können für eine Eignungsprognose
+herangezogen werden. Entscheidend ist jedoch der Bezug zu den
+Anforderungen der konkreten Position.
+
+In der in der Kursunterlage dargestellten Übersicht wird für
+**Bewerbungsunterlagen eine prognostische Validität von .18**
+angeführt.
+
+Das bedeutet **nicht**, dass jede Form biografischer Information
+generell „schlecht“ oder nutzlos wäre. Der Wert bezieht sich auf
+die in der Unterlage dargestellte Verfahrensübersicht.
+
+**Quelle:** Furtmüller & Zdravkovic, *Personalauswahl*,
+Übersicht zur prognostischen Validität von Auswahlverfahren.
+""")
+
+    st.divider()
+
+    st.markdown("## TAKE-AWAY")
+
+    st.success("""
+### Vergangenheit ≠ automatisch Eignung
+
+**Biografische Information**
+
+↓
+
+**Interpretation**
+
+↓
+
+**Bezug zur konkreten Anforderung**
+
+↓
+
+**begründete Eignungsprognose**
+""")
 
     if st.button(
         "↻ Demo neu starten",
