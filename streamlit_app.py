@@ -306,76 +306,47 @@ for key, value in defaults.items():
 if st.session_state.phase == 0:
 
     st.markdown("""
-    <div class="exec-header">
-
-        <div class="exec-eyebrow">
-            EXECUTIVE SEARCH SIMULATION
-        </div>
-
-        <div class="exec-title">
-            MISSION: EXECUTIVE SEARCH
-        </div>
-
-        <div class="exec-subtitle">
-            Ihr übernehmt einen vertraulichen Suchauftrag
-            für eine strategisch wichtige Führungsposition.
-        </div>
-
-        <div class="confidential">
-            ● CONFIDENTIAL SEARCH MANDATE
-        </div>
-
-    </div>
-    """, unsafe_allow_html=True)
+<div class="exec-header">
+<div class="exec-eyebrow">EXECUTIVE SEARCH SIMULATION</div>
+<div class="exec-title">MISSION: EXECUTIVE SEARCH</div>
+<div class="exec-subtitle">
+Ihr übernehmt einen vertraulichen Suchauftrag für eine strategisch wichtige Führungsposition.
+</div>
+<div class="confidential">● CONFIDENTIAL SEARCH MANDATE</div>
+</div>
+""", unsafe_allow_html=True)
 
     st.markdown("""
-    <div class="process-row">
-        <div class="process-active">01 · BRIEFING</div>
-        <div class="process-inactive">02 · FIRST SCREENING</div>
-        <div class="process-inactive">03 · SECOND LOOK</div>
-        <div class="process-inactive">04 · FINAL SHORTLIST</div>
-    </div>
-    """, unsafe_allow_html=True)
+<div class="process-row">
+<div class="process-active">01 · BRIEFING</div>
+<div class="process-inactive">02 · FIRST SCREENING</div>
+<div class="process-inactive">03 · SECOND LOOK</div>
+<div class="process-inactive">04 · FINAL SHORTLIST</div>
+</div>
+""", unsafe_allow_html=True)
 
     st.markdown("""
-    <div class="mandate-card">
-
-        <div class="card-label">
-            SEARCH MANDATE
-        </div>
-
-        <div class="position-title">
-            Managing Director Austria
-        </div>
-
-        <div class="position-meta">
-            Internationales Unternehmen · Marktausbau Österreich
-            · Executive Leadership
-        </div>
-
-    </div>
-    """, unsafe_allow_html=True)
+<div class="mandate-card">
+<div class="card-label">SEARCH MANDATE</div>
+<div class="position-title">Managing Director Austria</div>
+<div class="position-meta">
+Internationales Unternehmen · Marktausbau Österreich · Executive Leadership
+</div>
+</div>
+""", unsafe_allow_html=True)
 
     st.markdown("""
-    <div class="mission-box">
-
-        <div class="mission-title">
-            EURE MISSION
-        </div>
-
-        <div class="mission-text">
-            Das Executive-Search-Team hat fünf potenzielle
-            Kandidat:innen identifiziert.<br><br>
-
-            Sichtet die verfügbaren Profile und erstellt eine
-            <strong>Shortlist mit genau drei Personen.</strong><br><br>
-
-            Die erste Sichtung erfolgt bewusst schnell –
-            ähnlich einer ersten Vorauswahl im Executive Search.
-        </div>
-
-    </div>
-    """, unsafe_allow_html=True)
+<div class="mission-box">
+<div class="mission-title">EURE MISSION</div>
+<div class="mission-text">
+Das Executive-Search-Team hat fünf potenzielle Kandidat:innen identifiziert.<br><br>
+Sichtet die verfügbaren Profile und erstellt eine
+<strong>Shortlist mit genau drei Personen.</strong><br><br>
+Die erste Sichtung erfolgt bewusst schnell –
+ähnlich einer ersten Vorauswahl im Executive Search.
+</div>
+</div>
+""", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
 
