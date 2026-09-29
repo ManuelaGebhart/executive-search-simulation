@@ -163,7 +163,85 @@ h1, h2, h3 {
     font-size: 12px;
     font-weight: 700;
 }
+.process-inactive {
+    flex: 1;
+    background: #e5e9ee;
+    color: #7b8794;
+    padding: 11px;
+    text-align: center;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 700;
+}
 
+
+/* =========================================================
+   FIRST SCREENING
+   ========================================================= */
+
+.phase-header {
+    background: #ffffff;
+    border: 1px solid #e2e7ed;
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin-bottom: 18px;
+    box-shadow: 0 3px 12px rgba(20, 35, 55, 0.04);
+}
+
+.phase-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    color: #68788b;
+    margin-bottom: 5px;
+}
+
+.phase-title {
+    font-size: 27px;
+    font-weight: 800;
+    color: #102239;
+    margin-bottom: 5px;
+}
+
+.phase-text {
+    font-size: 14px;
+    color: #647386;
+}
+
+.requirement-card {
+    background: #ffffff;
+    border: 1px solid #e2e7ed;
+    border-radius: 12px;
+    padding: 20px 22px;
+    min-height: 180px;
+    box-shadow: 0 2px 8px rgba(20, 35, 55, 0.04);
+}
+
+.requirement-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    color: #68788b;
+    margin-bottom: 12px;
+}
+
+.requirement-item {
+    color: #25384e;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.screening-note {
+    background: #eaf0f7;
+    border-left: 4px solid #183a61;
+    border-radius: 7px;
+    padding: 15px 18px;
+    color: #34465b;
+    margin: 20px 0;
+}
+
+</style>
+""", unsafe_allow_html=True)
 </style>
 """, unsafe_allow_html=True)
 
@@ -391,7 +469,25 @@ Die erste Sichtung erfolgt bewusst schnell –
 
 elif st.session_state.phase == 1:
 
-    st.info("🔒 CONFIDENTIAL SEARCH MANDATE")
+    st.markdown("""
+<div class="process-row">
+<div class="process-inactive">01 · BRIEFING</div>
+<div class="process-active">02 · FIRST SCREENING</div>
+<div class="process-inactive">03 · SECOND LOOK</div>
+<div class="process-inactive">04 · FINAL SHORTLIST</div>
+</div>
+""", unsafe_allow_html=True)
+
+    st.markdown("""
+<div class="phase-header">
+<div class="phase-label">CONFIDENTIAL SEARCH MANDATE</div>
+<div class="phase-title">First Screening</div>
+<div class="phase-text">
+Sichtet die verfügbaren Profile und entscheidet, welche drei Personen
+ihr in die nächste Phase des Auswahlprozesses aufnehmt.
+</div>
+</div>
+""", unsafe_allow_html=True)
 
     # --------------------------------------------------------
     # COUNTDOWN – FUNKTIONIERENDE VERSION BEIBEHALTEN
@@ -496,26 +592,43 @@ elif st.session_state.phase == 1:
         height=145
     )
 
-    st.subheader("Anforderungsprofil")
+    st.markdown("## Anforderungsprofil")
 
     col1, col2 = st.columns(2)
 
     with col1:
         st.markdown("""
-**MUST-HAVES**
+<div class="requirement-card">
+<div class="requirement-label">MUST-HAVES</div>
 
-✓ Mehrjährige Führungserfahrung  
-✓ Erfahrung mit Wachstum, Aufbau oder Expansion  
+<div class="requirement-item">
+✓ Mehrjährige Führungserfahrung
+</div>
+
+<div class="requirement-item">
+✓ Erfahrung mit Wachstum, Aufbau oder Expansion
+</div>
+
+<div class="requirement-item">
 ✓ Erfahrung in komplexen Unternehmensstrukturen
-""")
+</div>
+</div>
+""", unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
-**NICE-TO-HAVES**
+<div class="requirement-card">
+<div class="requirement-label">NICE-TO-HAVES</div>
 
-✓ Internationale Erfahrung  
+<div class="requirement-item">
+✓ Internationale Erfahrung
+</div>
+
+<div class="requirement-item">
 ✓ Kenntnisse der Finanzdienstleistungsbranche
-""")
+</div>
+</div>
+""", unsafe_allow_html=True)
 
     st.divider()
 
