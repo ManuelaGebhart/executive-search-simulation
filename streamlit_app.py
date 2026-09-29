@@ -9,9 +9,23 @@ TEXT="#142536"; MUTED="#667788"; GREEN="#2F8F67"; AMBER="#D79B32"; RED="#C94E55"
 
 st.markdown(f"""
 <style>
-.stApp {{background:{NAVY};}}
+.stApp {{
+background:
+radial-gradient(circle at 78% 8%, rgba(35,79,112,.55) 0%, rgba(35,79,112,0) 32%),
+linear-gradient(145deg,#0E2033 0%,#17324D 48%,#1D405D 100%);
+background-attachment:fixed;
+}}
 .block-container {{max-width:1180px;padding-top:1.2rem;padding-bottom:3rem;}}
 h1,h2,h3,p,label,div {{font-family:Arial,sans-serif;}}
+[data-testid="stMarkdownContainer"] > h1,
+[data-testid="stMarkdownContainer"] > h2,
+[data-testid="stMarkdownContainer"] > h3 {{color:{WHITE};}}
+[data-testid="stWidgetLabel"] p {{color:{SOFT} !important;font-weight:650;}}
+.main-card h1,.main-card h2,.main-card h3,.main-card p,
+.internal h1,.internal h2,.internal h3,.internal p,
+.metricbox h1,.metricbox h2,.metricbox h3,.metricbox p,
+.recruiter-shell h1,.recruiter-shell h2,.recruiter-shell h3,.recruiter-shell p {{color:{TEXT};}}
+
 [data-testid="stHeader"] {{background:transparent;}}
 .main-card {{background:white;border-radius:14px;padding:26px 28px;color:{TEXT};box-shadow:0 8px 28px rgba(0,0,0,.10);}}
 .hero {{padding:28px 30px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:{NAVY2};color:white;margin-bottom:18px;}}
@@ -41,6 +55,30 @@ h1,h2,h3,p,label,div {{font-family:Arial,sans-serif;}}
 .big {{font-size:31px;font-weight:850;color:{TEXT};}}
 .stButton>button {{border-radius:8px;font-weight:800;min-height:44px;}}
 div[data-testid="stMetric"] {{background:white;padding:12px;border-radius:10px;}}
+
+/* premium controls */
+div[data-baseweb="select"] > div {
+    background:#FFFFFF !important;
+    border:1px solid #CBD7E1 !important;
+    color:#142536 !important;
+}
+div[data-baseweb="select"] span {color:#142536 !important;}
+div[role="listbox"] {background:#FFFFFF !important;}
+div[role="option"] {color:#142536 !important;}
+div[data-testid="stMultiSelect"] span[data-baseweb="tag"] {
+    background:#E7F4ED !important;
+    color:#247653 !important;
+}
+div[data-testid="stMultiSelect"] span[data-baseweb="tag"] * {color:#247653 !important;}
+div[data-testid="stCheckbox"] label p {color:#EAF0F5 !important;}
+.recruiter-shell div[data-testid="stCheckbox"] label p {color:#142536 !important;}
+.final-choice {
+    background:#F3FAF6;border:1px solid #86C5A6;border-left:5px solid #2F8F67;
+    border-radius:10px;padding:14px 16px;margin:8px 0;
+}
+.reflection-box {
+    background:#F5F8FA;border-left:4px solid #6E879B;padding:15px;border-radius:7px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -108,7 +146,7 @@ if st.session_state.phase==0:
 elif st.session_state.phase==1:
     st.markdown('<div class="recruiter-shell">',unsafe_allow_html=True)
     st.markdown("""<div class="recruiter-top"><div><div style="font-size:11px;font-weight:800;opacity:.8">SEARCH WORKSPACE</div>
-    <div class="recruiter-title">First Screening · Managing Director Austria</div></div><div><b>10 PROFILE · 3 PLÄTZE</b></div></div>""",unsafe_allow_html=True)
+    <div class="recruiter-title">Recruiter Search · Managing Director Austria</div></div><div><b>10 PROFILE · SHORTLIST 3</b></div></div>""",unsafe_allow_html=True)
     if not st.session_state.shortlist:
         components.html("""<div id="t" style="font-family:Arial;font-weight:800;font-size:20px;color:#0A66C2">01:30</div>
         <script>let s=90;let e=document.getElementById('t');let x=setInterval(()=>{s--;let m=Math.floor(s/60),r=s%60;e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');if(s<=20)e.style.color='#C94E55';if(s<=0){clearInterval(x);e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';}},1000);</script>""",height=42)
@@ -130,16 +168,16 @@ elif st.session_state.phase==1:
 # ---------- 2 THEORY HANDOVER ----------
 elif st.session_state.phase==2:
     hero("SHORTLIST STEHT","10 Profile → 3 auf der Shortlist","Jetzt zurück zur Präsentation: Theorie-Check und Praxis-Check mit Marc.")
-    st.markdown("""<div class="main-card"><h3>Was passiert jetzt außerhalb der App?</h3>
-    <p><b>1.</b> Biografieorientierte Verfahren: Vergangenheit → Eignungsschluss → zukünftige Leistung.</p>
-    <p><b>2.</b> Diagnostik-Check: Was wissen wir? → Was schließen wir? → Welche Anforderung? → Reicht die Information?</p>
-    <p><b>3.</b> Praxis-Check mit Marc: Was sieht man beim Sourcing – und was erfährt man erst im Gespräch?</p>
-    <div class="lock">Die Shortlist bleibt gespeichert.</div></div>""",unsafe_allow_html=True)
+    st.markdown("""<div class="main-card">
+    <span class="status">SHORTLIST GESPEICHERT</span>
+    <h2 style="margin-top:14px">Jetzt zurück zur gemeinsamen Präsentation.</h2>
+    <p>Eure Auswahl bleibt gespeichert. Nach Theorie- und Praxis-Check geht es hier mit dem <b>Second Look</b> weiter.</p>
+    <div class="lock">Ihr müsst in der App jetzt nichts weiter tun.</div></div>""",unsafe_allow_html=True)
     c1,c2=st.columns(2)
     with c1:
         if st.button("← FIRST SCREENING ANSEHEN",use_container_width=True): goto(1)
     with c2:
-        if st.button("SECOND LOOK STARTEN →",use_container_width=True): goto(3)
+        if st.button("SECOND LOOK ÖFFNEN →",use_container_width=True): goto(3)
 
 # ---------- 3 SECOND LOOK ----------
 elif st.session_state.phase==3:
@@ -150,8 +188,12 @@ elif st.session_state.phase==3:
         st.markdown(f"""<div class="internal"><div class="internal-head"><div><div class="cid">{cid}</div><b>{c['role']}</b></div><span class="status">SHORTLISTED</span></div>
         <div class="small">WAS IHR BEREITS WUSSTET</div><p>{c['meta']}<br>{c['facts']}</p>
         <div class="newinfo"><b>NEUE INFORMATION AUS DEM GESPRÄCH</b><br>{c['new']}</div></div>""",unsafe_allow_html=True)
-        old=st.session_state.assessments.get(cid,"→ unverändert")
-        assessments[cid]=st.radio("Wie verändert das eure Einschätzung?",["↑ positiver","→ unverändert","↓ negativer"],index=["↑ positiver","→ unverändert","↓ negativer"].index(old),horizontal=True,key=f"ass_{cid}")
+        options=["Positiver","Unverändert","Negativer"]
+        old=st.session_state.assessments.get(cid,"Unverändert")
+        if old.startswith("↑"): old="Positiver"
+        elif old.startswith("↓"): old="Negativer"
+        elif old.startswith("→"): old="Unverändert"
+        assessments[cid]=st.selectbox("Wie verändert diese Information eure Einschätzung?",options,index=options.index(old),key=f"ass_{cid}")
     st.session_state.assessments=assessments
     c1,c2=st.columns(2)
     with c1:
@@ -169,7 +211,9 @@ elif st.session_state.phase==4:
             st.markdown(f"""<div class="metricbox"><div class="cid">{cid}</div><h3>{c['role']}</h3><p>{c['meta']}</p><p><b>Second Look:</b> {st.session_state.assessments.get(cid,'→ unverändert')}</p></div>""",unsafe_allow_html=True)
     idx=0
     if st.session_state.final_candidate in st.session_state.shortlist: idx=st.session_state.shortlist.index(st.session_state.final_candidate)
-    final=st.radio("Finale Empfehlung",st.session_state.shortlist,index=idx,horizontal=True)
+    final=st.selectbox("Wen empfehlt ihr final?",st.session_state.shortlist,index=idx)
+    fc=BYID[final]
+    st.markdown(f"""<div class="final-choice"><div class="cid">FINALE EMPFEHLUNG</div><b>{final} · {fc['role']}</b></div>""",unsafe_allow_html=True)
     reasons=st.multiselect("Welche Kriterien tragen eure finale Empfehlung?",CRITERIA,default=st.session_state.final_reasons)
     conf=st.slider("Wie sicher seid ihr euch jetzt?",0,100,st.session_state.final_confidence,5)
     c1,c2=st.columns(2)
@@ -187,11 +231,11 @@ elif st.session_state.phase==5:
     if len(reveal_ids)<2: reveal_ids=excluded[:2]
     for cid in reveal_ids:
         c=BYID[cid]
-        st.markdown(f"""<div class="internal"><div class="internal-head"><div><div class="cid">{cid}</div><b>{c['role']}</b></div><span style="color:{RED};font-weight:800">SCREENED OUT</span></div>
-        <p>{c['meta']}<br>{c['facts']}</p><div class="reveal"><b>WAS IM ERSTEN SCREENING NICHT SICHTBAR WAR</b><br>{c['reveal'] if c['reveal']!='—' else c['new']}</div></div>""",unsafe_allow_html=True)
+        st.markdown(f"""<div class="internal"><div class="internal-head"><div><div class="cid">{cid}</div><b>{c['role']}</b></div><span style="color:#667788;font-weight:800">IM FIRST SCREENING AUSGESCHIEDEN</span></div>
+        <p>{c['meta']}<br>{c['facts']}</p><div class="reflection-box"><b>WAS IM ERSTEN SCREENING NICHT SICHTBAR WAR</b><br>{c['reveal'] if c['reveal']!='—' else c['new']}</div></div>""",unsafe_allow_html=True)
         st.session_state.reveal[cid]=st.checkbox("Mit dieser Information hätten wir diese Person im First Screening näher geprüft.",value=st.session_state.reveal.get(cid,False),key=f"rev_{cid}")
-    st.markdown("### Gedankenexperiment")
-    st.caption("Keine zweite reale Auswahlrunde – nur Reflexion.")
+    st.markdown("""<div style="color:#FFFFFF;font-size:25px;font-weight:800;margin-top:22px">REFLEXIONSFRAGE</div>""",unsafe_allow_html=True)
+    st.markdown("""<div style="color:#DDE8F1;font-size:13px;margin-bottom:8px">Keine zweite reale Auswahlrunde – nur Reflexion.</div>""",unsafe_allow_html=True)
     change=st.radio("Würdet ihr eure finale Entscheidung ändern, wenn ihr heute alle Informationen gekannt hättet?",["Nein","Ja"],index=0 if st.session_state.counter_change=="Nein" else 1,horizontal=True)
     st.session_state.counter_change=change
     if change=="Ja":
