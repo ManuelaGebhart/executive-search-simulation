@@ -83,6 +83,21 @@ div[data-testid="stMultiSelect"] label p {{color:#F4F8FB !important;}}
 .reflection-box {{
     background:#F5F8FA;border-left:4px solid #6E879B;padding:15px;border-radius:7px;
 }}
+/* Readable glossary on dark pages */
+div[data-testid="stExpander"] {{
+    background:#FFFFFF !important;
+    border:1px solid #D6E0E8 !important;
+    border-radius:9px !important;
+    overflow:hidden;
+}}
+div[data-testid="stExpander"] summary,
+div[data-testid="stExpander"] summary * {{
+    color:#17324D !important;
+}}
+div[data-testid="stExpander"] [data-testid="stMarkdownContainer"] p,
+div[data-testid="stExpander"] [data-testid="stMarkdownContainer"] strong {{
+    color:#243746 !important;
+}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -184,7 +199,7 @@ PHASES=["Suchauftrag","First Screening","Theorie & Praxis","Second Look","Finale
 
 def progress():
     p=min(st.session_state.phase,6)
-    st.markdown(f"""<div class="progress-wrap"><div class="progress-line"><div class="progress-fill" style="width:{(p+1)/8*100}%"></div></div>
+    st.markdown(f"""<div class="progress-wrap"><div class="progress-line"><div class="progress-fill" style="width:{(p+1)/7*100}%"></div></div>
     <div class="progress-label"><span>{p+1:02d} / 07</span><span>{PHASES[p].upper()}</span></div></div>""",unsafe_allow_html=True)
 
 def hero(kicker,title,sub):
@@ -243,10 +258,10 @@ elif st.session_state.phase==1:
     div[data-testid="stSlider"] p,
     div[data-testid="stTextInput"] label p,
     div[data-testid="stMultiSelect"] label p {color:#243746 !important;}
-    .recruiter-brand{background:#FFFFFF;border:1px solid #D5DCE2;border-radius:8px;padding:11px 15px;margin-bottom:12px;display:flex;align-items:center;gap:13px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+    .recruiter-brand{background:#FFFFFF;border:1px solid #B9D5EE;border-top:6px solid #0A66C2;border-radius:8px;padding:11px 15px;margin-bottom:12px;display:flex;align-items:center;gap:13px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
     .recruiter-mark{width:34px;height:34px;border-radius:4px;background:#0A66C2;color:white;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px}
     .recruiter-search{flex:1;background:#EEF3F8;border:1px solid #C9D6E2;border-radius:4px;padding:9px 12px;color:#425466;font-size:13px}
-    .profile-card{background:#FFFFFF;border:1px solid #D5DCE2;border-radius:8px;padding:22px 25px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:10px}
+    .profile-card{background:#FFFFFF;border:1px solid #D5DCE2;border-left:5px solid #0A66C2;border-radius:8px;padding:22px 25px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:10px}
     .profile-top{display:flex;gap:17px;align-items:flex-start;border-bottom:1px solid #E3E8EC;padding-bottom:17px;margin-bottom:16px}
     .avatar{width:70px;height:70px;border-radius:50%;background:#DDE6ED;color:#52616D;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800}
     .profile-card h2{color:#1B1F23 !important;margin:0 0 3px;font-size:24px}
@@ -292,8 +307,6 @@ elif st.session_state.phase==1:
     for title,de,dur in c["career"]:
         exp_html += f'<div class="exp-row"><div class="exp-title">{title}</div><div class="exp-de">{de}</div><p>{dur}</p></div>'
 
-    placeholder = ""
-
     st.markdown(f"""<div class="profile-card">
       <div class="profile-top">
         <div class="avatar">{letter}</div>
@@ -310,7 +323,6 @@ elif st.session_state.phase==1:
       <p>{c['education']}</p>
       <h3>PROFILE HIGHLIGHTS · AUF EINEN BLICK</h3>
       <p>{c['facts']}</p>
-      {placeholder}
     </div>""",unsafe_allow_html=True)
 
     draft=list(st.session_state.screening_draft)
