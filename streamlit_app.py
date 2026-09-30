@@ -86,24 +86,97 @@ div[data-testid="stMultiSelect"] label p {{color:#F4F8FB !important;}}
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- Demo data ----------
+# ---------- Praxisfall von Marc + Demo-Platzhalter ----------
+# Candidate A basiert auf dem anonymisierten Profil von Marc.
+# B–J sind bewusst nur sparsame Platzhalter und werden später durch die realen Profile ersetzt.
 CANDIDATES = [
-{"id":"CANDIDATE 01","role":"Regional Director","meta":"Finanzdienstleistungen · 16 J. Erfahrung · 9 J. Führung","career":"Regional Director → Sales Director → Key Account Lead","facts":"DACH-Verantwortung · 120 Mitarbeitende · internationale Matrix","new":"Im Gespräch beschreibt die Person den Aufbau einer neuen Einheit von 12 auf 85 Mitarbeitende und konkrete Skalierungsentscheidungen.","reveal":"—"},
-{"id":"CANDIDATE 02","role":"Country Manager","meta":"Technologie · 14 J. Erfahrung · 7 J. Führung","career":"Country Manager → Head of Growth → Business Development","facts":"Österreich · Markteintritt · P&L-Verantwortung","new":"Die Person kann die Markteinführung belegen, hatte dabei aber deutlich weniger direkte Personalverantwortung als das Profil vermuten ließ.","reveal":"—"},
-{"id":"CANDIDATE 03","role":"Head of Operations","meta":"Industrie · 18 J. Erfahrung · 11 J. Führung","career":"Head of Operations → Plant Manager → Program Lead","facts":"Transformation · 180 Mitarbeitende · Prozessaufbau","new":"Im Gespräch wird sichtbar, dass die Person bereits zwei standortübergreifende Reorganisationen mit hoher Stakeholder-Komplexität geführt hat.","reveal":"—"},
-{"id":"CANDIDATE 04","role":"Commercial Director","meta":"FMCG · 15 J. Erfahrung · 8 J. Führung","career":"Commercial Director → Sales Lead → Area Manager","facts":"CEE · Wachstum · Vertrieb & Marketing","new":"Die Expansionsprojekte waren erfolgreich; die Person beschreibt jedoch wenig Erfahrung mit Aufbauorganisation und internen Strukturen.","reveal":"—"},
-{"id":"CANDIDATE 05","role":"Managing Director","meta":"Professional Services · 20 J. Erfahrung · 12 J. Führung","career":"Managing Director → Partner → Practice Lead","facts":"P&L · Österreich · Kundenentwicklung","new":"Im Gespräch zeigt sich breite Ergebnisverantwortung, aber der bisherige Kontext war stark partnergeführt und weniger hierarchisch.","reveal":"—"},
-{"id":"CANDIDATE 06","role":"Business Unit Lead","meta":"Healthcare · 13 J. Erfahrung · 6 J. Führung","career":"Business Unit Lead → Strategy Manager → Consultant","facts":"Wachstum · 45 Mitarbeitende · Strategie","new":"Die Person hat ein neues Geschäftsfeld von der Planung bis zum operativen Betrieb aufgebaut.","reveal":"Das Profil wirkte zunächst weniger senior. Tatsächlich verantwortete die Person den vollständigen Aufbau eines neuen Geschäftsfelds inklusive Budget, Recruiting und Go-to-Market."},
-{"id":"CANDIDATE 07","role":"Operations Director","meta":"Logistik · 17 J. Erfahrung · 10 J. Führung","career":"Operations Director → Site Lead → Project Manager","facts":"Standorte · Effizienz · 220 Mitarbeitende","new":"Die Person hat einen neuen Standort eröffnet und anschließend drei Standorte integriert.","reveal":"Im Kurzprofil war der Standortaufbau kaum sichtbar. Im Projektkontext führte die Person die Eröffnung inklusive Teamaufbau, Behörden und Betriebsstart."},
-{"id":"CANDIDATE 08","role":"VP Customer Experience","meta":"Telekommunikation · 15 J. Erfahrung · 7 J. Führung","career":"VP CX → Director Service → Transformation Lead","facts":"Transformation · digital · 95 Mitarbeitende","new":"Die Person verbindet Transformation mit direkter Ergebnis- und Führungsverantwortung.","reveal":"—"},
-{"id":"CANDIDATE 09","role":"Head of Market Development","meta":"Energie · 12 J. Erfahrung · 5 J. Führung","career":"Head of Market Development → Expansion Lead → Analyst","facts":"Neue Märkte · Regulierung · Partnerschaften","new":"Die Person hat Markteintritte vorbereitet, aber bisher keine Gesamtverantwortung für eine größere Organisation getragen.","reveal":"Die Person steuerte einen Markteintritt faktisch end-to-end, obwohl der Jobtitel nur 'Head of Market Development' lautete."},
-{"id":"CANDIDATE 10","role":"General Manager","meta":"Retail · 19 J. Erfahrung · 13 J. Führung","career":"General Manager → Regional Manager → Store Operations","facts":"P&L · Expansion · 300 Mitarbeitende","new":"Im Gespräch zeigt sich sehr konkrete Skalierungserfahrung, allerdings ausschließlich in stark standardisierten Strukturen.","reveal":"—"},
+{
+"id":"CANDIDATE A",
+"role":"Head of Brand, Marketing & Communication",
+"role_de":"Leitung Marke, Marketing & Kommunikation",
+"meta":"Süddeutschland · ca. 13 Jahre Berufserfahrung · offen für neue Positionen",
+"career":[
+    ("Head of Brand, Marketing & Communication","Leitung Marke, Marketing & Kommunikation","ca. 5 Jahre"),
+    ("Teamleitung International Advertising","Leitung internationale Werbung","ca. 1 Jahr"),
+    ("Projektleitung International Advertising","Projektleitung internationale Werbung","ca. 3 Jahre"),
+    ("Consultant Organisationsentwicklung & Prozessmanagement","Beratung Organisationsentwicklung & Geschäftsprozesse","mehrjährige Erfahrung"),
+    ("Traineeprogramm","Berufseinstiegsprogramm","frühere Station"),
+],
+"education":"Diplomstudium · Auslandsstudium in den USA",
+"facts":"Automobilkonzern · internationale Marken-/Werbeerfahrung · Organisations- und Prozessmanagement",
+"new":"Im Gespräch wird genauer geklärt, welche Führungsverantwortung, CRM-Nähe und Erfahrung mit komplexen Vertriebsstrukturen tatsächlich vorhanden ist.",
+"reveal":"—"
+},
+{
+"id":"CANDIDATE B","role":"Senior Brand Manager","role_de":"Senior Markenmanager:in",
+"meta":"Süddeutschland · Profil-Platzhalter","career":[("Senior Brand Manager","Senior Markenmanagement","mehrjährige Erfahrung")],
+"education":"Ausbildung / Studium folgt","facts":"Brand Management · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
+},
+{
+"id":"CANDIDATE C","role":"Head of CRM","role_de":"Leitung Kundenmanagement / CRM",
+"meta":"Deutschland · Profil-Platzhalter","career":[("Head of CRM","Leitung Kundenmanagement / CRM","mehrjährige Erfahrung")],
+"education":"Ausbildung / Studium folgt","facts":"CRM · digitale Kundenkommunikation · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
+},
+{
+"id":"CANDIDATE D","role":"Marketing Director","role_de":"Marketingleitung",
+"meta":"Deutschland · Profil-Platzhalter","career":[("Marketing Director","Marketingleitung","mehrjährige Erfahrung")],
+"education":"Ausbildung / Studium folgt","facts":"Marketing · Führung · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
+},
+{
+"id":"CANDIDATE E","role":"Brand & Customer Lead","role_de":"Leitung Marke & Kund:innen",
+"meta":"Deutschland · Profil-Platzhalter","career":[("Brand & Customer Lead","Leitung Marke & Kund:innen","mehrjährige Erfahrung")],
+"education":"Ausbildung / Studium folgt","facts":"Marke · Kund:innenmanagement · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
+},
+{
+"id":"CANDIDATE F","role":"Head of Marketing","role_de":"Leitung Marketing",
+"meta":"Deutschland · Profil-Platzhalter","career":[("Head of Marketing","Leitung Marketing","mehrjährige Erfahrung")],
+"education":"Ausbildung / Studium folgt","facts":"Marketing · Agentursteuerung · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"Zusatzinformation für den Blind-Spot-Check folgt."},
+{
+"id":"CANDIDATE G","role":"CRM & Digital Lead","role_de":"Leitung CRM & Digital",
+"meta":"Deutschland · Profil-Platzhalter","career":[("CRM & Digital Lead","Leitung CRM & Digital","mehrjährige Erfahrung")],
+"education":"Ausbildung / Studium folgt","facts":"CRM · Digital · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"Zusatzinformation für den Blind-Spot-Check folgt."},
+{
+"id":"CANDIDATE H","role":"Brand Director","role_de":"Leitung Markenführung",
+"meta":"Deutschland · Profil-Platzhalter","career":[("Brand Director","Leitung Markenführung","mehrjährige Erfahrung")],
+"education":"Ausbildung / Studium folgt","facts":"Markenführung · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
+},
+{
+"id":"CANDIDATE I","role":"Customer Engagement Lead","role_de":"Leitung Kundenaktivierung & -bindung",
+"meta":"Deutschland · Profil-Platzhalter","career":[("Customer Engagement Lead","Leitung Kundenaktivierung & -bindung","mehrjährige Erfahrung")],
+"education":"Ausbildung / Studium folgt","facts":"Kundenkommunikation · Loyalty · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"Zusatzinformation für den Blind-Spot-Check folgt."},
+{
+"id":"CANDIDATE J","role":"Marketing & Sponsoring Lead","role_de":"Leitung Marketing & Sponsoring",
+"meta":"Deutschland · Profil-Platzhalter","career":[("Marketing & Sponsoring Lead","Leitung Marketing & Sponsoring","mehrjährige Erfahrung")],
+"education":"Ausbildung / Studium folgt","facts":"Marketing · Sponsoring · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
+},
 ]
 BYID={c["id"]:c for c in CANDIDATES}
-CRITERIA=["Führungserfahrung","Aufbau / Expansion","Branchen- / Markterfahrung","Internationale Erfahrung","Funktions- / Rollenerfahrung","Karriereverlauf","Arbeitgeberhintergrund","Stabilität der Stationen","Sonstiges"]
+
+# Verständlich formulierte Verdichtung des ausführlichen Anforderungsprofils.
+CRITERIA=[
+    "Marke & Kundenmanagement (Brand / CRM)",
+    "Führungserfahrung",
+    "Komplexes oder reguliertes Umfeld",
+    "Vertriebs- & Markenpartner (B2B2C / Co-Branding)",
+    "Digitales Kundenmanagement / CRM",
+    "Marketingsteuerung",
+    "KI-Kompetenz (AI-Literacy)",
+    "Sonstiges"
+]
+
+GLOSSARY = {
+    "CRM – Customer Relationship Management":"Systematische Gestaltung und Steuerung von Kundenbeziehungen und Kundenkommunikation.",
+    "B2B2C – Business to Business to Consumer":"Das Unternehmen erreicht Endkund:innen über einen Geschäftspartner – hier über Finanzberater:innen.",
+    "Co-Branding":"Zwei Marken treten gemeinsam gegenüber Kund:innen auf.",
+    "Brand Management":"Strategische Führung und Weiterentwicklung einer Marke.",
+    "Customer Engagement":"Wie ein Unternehmen Kund:innen gezielt anspricht, aktiviert und langfristig bindet.",
+    "Loyalty-Programm":"Kundenbindungsprogramm.",
+    "Marketing Performance Management":"Messung und Steuerung des Erfolgs von Marketingmaßnahmen.",
+    "AI-Literacy":"Grundverständnis dafür, wie KI im Arbeitsbereich sinnvoll eingesetzt und beurteilt werden kann."
+}
 
 # ---------- state ----------
-defaults=dict(phase=0,max_phase=0,shortlist=[],criteria=[],criteria_other="",confidence1=60,assessments={},final_candidate=None,final_reasons=[],final_other="",final_confidence=70,reveal={},counter_change="Nein",counter_candidate=None)
+defaults=dict(phase=0,max_phase=0,shortlist=[],screening_index=0,screening_draft=[],criteria=[],criteria_other="",confidence1=60,assessments={},final_candidate=None,final_reasons=[],final_other="",final_confidence=70,reveal={},counter_change="Nein",counter_candidate=None)
 for k,v in defaults.items():
     if k not in st.session_state: st.session_state[k]=v
 
@@ -134,110 +207,159 @@ progress()
 
 # ---------- 0 BRIEFING ----------
 if st.session_state.phase==0:
-    hero("CONFIDENTIAL EXECUTIVE SEARCH","DER SUCHAUFTRAG","Demo-Case · finale Position und Anforderungen werden nach Marcs Praxisfall ersetzt.")
+    hero("CONFIDENTIAL EXECUTIVE SEARCH","DER SUCHAUFTRAG","Praxisfall · Head of Brand Marketing & CRM")
     st.markdown("""<div class="main-card">
-    <span class="tag">DEMO MANDATE</span><span class="status">ACTIVE</span>
-    <h2>Managing Director Austria</h2>
-    <p><b>Kontext:</b> Ein Unternehmen baut seine Präsenz in Österreich aus und sucht eine Führungspersönlichkeit für Aufbau, Wachstum und Steuerung.</p>
+    <span class="tag">SEARCH BRIEF</span><span class="status">ACTIVE</span>
+    <h2>Head of Brand Marketing & CRM</h2>
+    <p><b>Auf Deutsch:</b> Leitung Marke, Marketing & Kundenmanagement</p>
+    <p><b>Unternehmen:</b> große Versicherung in Süddeutschland · <b>Führung:</b> ca. 20 Mitarbeitende, darunter 3 Führungskräfte.</p>
+    <p><b>Besonderheit:</b> Die Versicherung verkauft überwiegend über selbstständige Finanzberater:innen. Die neue Führungskraft muss daher Versicherung, Vertriebspartner und Kund:innen gleichzeitig im Blick behalten.</p>
     <hr>
-    <h3>Für die Demo arbeiten wir mit drei Kernanforderungen</h3>
-    <p>✓ Führung größerer Teams &nbsp;&nbsp; ✓ Aufbau / Expansion &nbsp;&nbsp; ✓ Steuerung komplexer Strukturen</p>
-    <p class="small">Hinweis: Diese Anforderungen sind Platzhalter. Sie werden mit dem realen Suchauftrag aus Marcs Praxis ersetzt.</p>
+    <h3>Für das erste Screening achten wir besonders auf:</h3>
+    <p>
+    ✓ <b>Marke & Kundenmanagement</b> – langjährige Erfahrung in Brand und/oder CRM<br>
+    ✓ <b>Führung</b> – Teams und idealerweise auch Führungskräfte leiten<br>
+    ✓ <b>Komplexes / reguliertes Umfeld</b> – z. B. Versicherung, Banking oder ähnlich<br>
+    ✓ <b>Vertriebs- & Markenpartner</b> – mehrere Unternehmen/Marken spielen zusammen (B2B2C / Co-Branding)<br>
+    ✓ <b>Digitales Kundenmanagement / CRM</b> – digitale Kommunikation, Kundendaten, personalisierte Kontakte<br>
+    ✓ <b>Marketingsteuerung</b> – Kampagnen, Agenturen, Medien, Sponsoring und Erfolgsmessung
+    </p>
+    <div class="newinfo"><b>Zusätzlich ausdrücklich gefordert:</b> KI-Kompetenz (AI-Literacy) – also ein Grundverständnis dafür, wie KI in Marketing und Kundenmanagement sinnvoll eingesetzt werden kann.</div>
+    <p class="small">Diese Kurzfassung ist bewusst einfacher als das vollständige Anforderungsprofil. Die finalen 4–6 Screening-Kriterien stimmen wir noch mit Marc ab.</p>
     </div>""",unsafe_allow_html=True)
-    if st.button("FIRST SCREENING STARTEN →",use_container_width=True): goto(1)
+
+    with st.expander("BEGRIFFE KURZ ERKLÄRT · Was bedeutet was?"):
+        for term, expl in GLOSSARY.items():
+            st.markdown(f"**{term}**  \n{expl}")
+
+    if st.button("FIRST SCREENING · ERSTE SICHTUNG STARTEN →",use_container_width=True): goto(1)
 
 # ---------- 1 SCREENING ----------
 elif st.session_state.phase==1:
-    # Phase-specific Recruiter look: intentionally much brighter than the internal Search pages.
-    st.markdown(f"""
+    st.markdown("""
     <style>
-    .stApp {{
-        background:#F3F2EF !important;
-    }}
+    .stApp {background:#F3F2EF !important;}
     [data-testid="stWidgetLabel"] p,
-    div[data-testid="stCheckbox"] label p,
     div[data-testid="stSlider"] p,
     div[data-testid="stTextInput"] label p,
-    div[data-testid="stMultiSelect"] label p {{
-        color:#243746 !important;
-    }}
-    .recruiter-brand {{
-        background:#FFFFFF;border:1px solid #D7DEE4;border-radius:10px;
-        padding:13px 16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;
-        box-shadow:0 1px 2px rgba(0,0,0,.05);
-    }}
-    .recruiter-mark {{
-        width:34px;height:34px;border-radius:5px;background:#0A66C2;color:white;
-        display:flex;align-items:center;justify-content:center;font-weight:900;font-size:19px;
-    }}
-    .recruiter-search {{
-        flex:1;background:#EEF3F8;border:1px solid #C9D6E2;border-radius:5px;
-        padding:9px 12px;color:#425466;font-size:13px;
-    }}
-    .recruiter-meta {{font-size:11px;color:#667788;font-weight:800;letter-spacing:.4px;}}
-    .candidate {{
-        min-height:148px;background:white;border:1px solid #D7DEE4;border-radius:8px;
-        padding:15px 17px;margin:7px 0 2px;box-shadow:0 1px 2px rgba(0,0,0,.04);
-    }}
-    .candidate:hover {{border-color:#9ABCE0;box-shadow:0 2px 7px rgba(10,102,194,.10);}}
-    .candidate h4 {{color:#1B1F23 !important;font-size:16px;margin:3px 0 6px;}}
-    .candidate p {{color:#52616D !important;font-size:12.5px;line-height:1.35;}}
-    .shortlist-open {{
-        background:#E8F2FB;border:1px solid #B7D4EF;color:#075AAB;
-        border-radius:8px;padding:13px 16px;margin:14px 0;font-weight:850;
-    }}
-    .shortlist-complete {{
-        background:#E6F4EC;border:1px solid #8CC7A9;color:#216C4C;
-        border-radius:8px;padding:13px 16px;margin:14px 0;font-weight:900;
-    }}
+    div[data-testid="stMultiSelect"] label p {color:#243746 !important;}
+    .recruiter-brand{background:#FFFFFF;border:1px solid #D5DCE2;border-radius:8px;padding:11px 15px;margin-bottom:12px;display:flex;align-items:center;gap:13px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+    .recruiter-mark{width:34px;height:34px;border-radius:4px;background:#0A66C2;color:white;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px}
+    .recruiter-search{flex:1;background:#EEF3F8;border:1px solid #C9D6E2;border-radius:4px;padding:9px 12px;color:#425466;font-size:13px}
+    .profile-card{background:#FFFFFF;border:1px solid #D5DCE2;border-radius:8px;padding:22px 25px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:10px}
+    .profile-top{display:flex;gap:17px;align-items:flex-start;border-bottom:1px solid #E3E8EC;padding-bottom:17px;margin-bottom:16px}
+    .avatar{width:70px;height:70px;border-radius:50%;background:#DDE6ED;color:#52616D;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800}
+    .profile-card h2{color:#1B1F23 !important;margin:0 0 3px;font-size:24px}
+    .profile-card h3{color:#1B1F23 !important;margin:15px 0 8px;font-size:15px}
+    .profile-card p{color:#52616D !important;font-size:13px;line-height:1.45;margin:3px 0}
+    .role-de{color:#667788;font-size:13px;font-weight:650;margin-bottom:5px}
+    .exp-row{border-left:2px solid #D7E0E7;padding:2px 0 10px 14px;margin-left:6px}
+    .exp-title{color:#1B1F23;font-weight:800;font-size:13px}
+    .exp-de{color:#667788;font-size:12px}
+    .placeholder-note{background:#FFF7E8;border-left:4px solid #D79B32;padding:10px 12px;border-radius:5px;color:#6B552B;font-size:12px;margin-top:12px}
+    .shortlist-open{background:#E8F2FB;border:1px solid #B7D4EF;color:#075AAB;border-radius:7px;padding:11px 14px;font-weight:850}
+    .shortlist-complete{background:#E6F4EC;border:1px solid #8CC7A9;color:#216C4C;border-radius:7px;padding:11px 14px;font-weight:900}
     </style>
     """,unsafe_allow_html=True)
 
     st.markdown("""<div class="recruiter-brand">
-        <div class="recruiter-mark">R</div>
-        <div style="min-width:210px"><b style="color:#1B1F23">Recruiter Search</b><div class="recruiter-meta">EXECUTIVE SEARCH WORKSPACE</div></div>
-        <div class="recruiter-search">Managing Director Austria · 10 Profile</div>
-        <div class="recruiter-meta">SHORTLIST 3</div>
+      <div class="recruiter-mark">R</div>
+      <div><b style="color:#1B1F23">Recruiter Search</b><div style="font-size:10px;color:#667788;font-weight:800">EXECUTIVE SEARCH WORKSPACE</div></div>
+      <div class="recruiter-search">Head of Brand Marketing & CRM · Deutschland</div>
+      <div style="font-size:11px;color:#667788;font-weight:800">10 RESULTS</div>
     </div>""",unsafe_allow_html=True)
 
     if not st.session_state.shortlist:
-        components.html("""<div id="t" style="font-family:Arial;font-weight:800;font-size:20px;color:#0A66C2">01:30</div>
-        <script>let s=90;let e=document.getElementById('t');let x=setInterval(()=>{s--;let m=Math.floor(s/60),r=s%60;e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');if(s<=20)e.style.color='#C94E55';if(s<=0){clearInterval(x);e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';}},1000);</script>""",height=42)
+        components.html("""<div id="t" style="font-family:Arial;font-weight:800;font-size:18px;color:#0A66C2">01:30</div>
+        <script>let s=90,e=document.getElementById('t');let x=setInterval(()=>{s--;let m=Math.floor(s/60),r=s%60;e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');if(s<=20)e.style.color='#C94E55';if(s<=0){clearInterval(x);e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';}},1000);</script>""",height=38)
 
-    draft=[]
-    cols=st.columns(2)
+    # Compact A–J result navigation. Green = currently on shortlist.
+    nav_cols=st.columns(10)
     for i,c in enumerate(CANDIDATES):
-        with cols[i%2]:
-            st.markdown(f"""<div class="candidate"><div class="cid">{c['id']}</div><h4>{c['role']}</h4>
-            <p><b>{c['meta']}</b></p><p>{c['career']}</p><p>{c['facts']}</p></div>""",unsafe_allow_html=True)
-            default=c["id"] in st.session_state.shortlist
-            if st.checkbox("AUF DIE SHORTLIST",value=default,key=f"sl_{c['id']}"):
-                draft.append(c["id"])
+        letter=c["id"].split()[-1]
+        on_shortlist=c["id"] in st.session_state.screening_draft
+        label=("✓ " if on_shortlist else "")+letter
+        with nav_cols[i]:
+            if st.button(label,key=f"candnav_{i}",use_container_width=True):
+                st.session_state.screening_index=i
+                st.rerun()
 
+    idx=st.session_state.screening_index
+    c=CANDIDATES[idx]
+    letter=c["id"].split()[-1]
+
+    exp_html=""
+    for title,de,dur in c["career"]:
+        exp_html += f'<div class="exp-row"><div class="exp-title">{title}</div><div class="exp-de">{de}</div><p>{dur}</p></div>'
+
+    placeholder = "" if c["id"]=="CANDIDATE A" else '<div class="placeholder-note"><b>DEMO-PLATZHALTER</b> · Dieses Profil wird durch Marcs anonymisiertes Originalprofil ersetzt.</div>'
+
+    st.markdown(f"""<div class="profile-card">
+      <div class="profile-top">
+        <div class="avatar">{letter}</div>
+        <div>
+          <div style="font-size:10px;color:#0A66C2;font-weight:850;letter-spacing:.8px">{c['id']} · {idx+1} / 10</div>
+          <h2>{c['role']}</h2>
+          <div class="role-de">{c['role_de']}</div>
+          <p><b>{c['meta']}</b></p>
+        </div>
+      </div>
+      <h3>EXPERIENCE · BERUFSERFAHRUNG</h3>
+      {exp_html}
+      <h3>EDUCATION · AUSBILDUNG</h3>
+      <p>{c['education']}</p>
+      <h3>PROFILE HIGHLIGHTS · AUF EINEN BLICK</h3>
+      <p>{c['facts']}</p>
+      {placeholder}
+    </div>""",unsafe_allow_html=True)
+
+    draft=list(st.session_state.screening_draft)
+    is_selected=c["id"] in draft
+    a,b,cnav=st.columns([1,1.5,1])
+    with a:
+        if st.button("← VORHERIGES PROFIL",disabled=idx==0,use_container_width=True):
+            st.session_state.screening_index=max(0,idx-1); st.rerun()
+    with b:
+        if is_selected:
+            if st.button("✓ AUF SHORTLIST · ENTFERNEN",use_container_width=True):
+                draft.remove(c["id"]); st.session_state.screening_draft=draft; st.rerun()
+        else:
+            if st.button("＋ AUF DIE SHORTLIST",disabled=len(draft)>=3,use_container_width=True):
+                draft.append(c["id"]); st.session_state.screening_draft=draft; st.rerun()
+    with cnav:
+        if st.button("NÄCHSTES PROFIL →",disabled=idx==9,use_container_width=True):
+            st.session_state.screening_index=min(9,idx+1); st.rerun()
+
+    draft=st.session_state.screening_draft
     status_cls="shortlist-complete" if len(draft)==3 else "shortlist-open"
-    status_text="SHORTLIST KOMPLETT · 3 / 3 ausgewählt ✓" if len(draft)==3 else f"SHORTLIST · {len(draft)} / 3 ausgewählt"
+    chosen=" · ".join(x.split()[-1] for x in draft) if draft else "noch niemand"
+    status_text=f"SHORTLIST KOMPLETT · 3 / 3 ✓ · {chosen}" if len(draft)==3 else f"SHORTLIST · {len(draft)} / 3 · {chosen}"
     st.markdown(f'<div class="{status_cls}">{status_text}</div>',unsafe_allow_html=True)
 
-    selected_criteria=st.multiselect(
-        "Welche Kriterien haben eure Auswahl besonders beeinflusst?",
-        CRITERIA,default=st.session_state.criteria
-    )
-    criteria_other=st.text_input(
-        "Sonstiges – welches Kriterium?",
-        value=st.session_state.criteria_other,
-        placeholder="z. B. Ausbildung, Unternehmensgröße, Gesamteindruck …"
-    ) if "Sonstiges" in selected_criteria else ""
-    confidence=st.slider("Wie sicher seid ihr euch bei eurer Shortlist?",0,100,st.session_state.confidence1,5)
+    with st.expander("SEARCH BRIEF & BEGRIFFE NOCHMAL ANSEHEN"):
+        st.markdown("**Wichtig im First Screening:** Marke & Kundenmanagement · Führung · komplexes/reguliertes Umfeld · Vertriebs-/Markenpartner · digitales Kundenmanagement/CRM · Marketingsteuerung · zusätzlich KI-Kompetenz.")
+        for term, expl in GLOSSARY.items():
+            st.markdown(f"**{term}:** {expl}")
 
-    if st.button("SHORTLIST BESTÄTIGEN",disabled=len(draft)!=3,use_container_width=True):
-        st.session_state.shortlist=draft
-        st.session_state.criteria=selected_criteria
-        st.session_state.criteria_other=criteria_other
-        st.session_state.confidence1=confidence
-        goto(2)
+    if len(draft)==3:
+        st.markdown("### Was hat eure Auswahl tatsächlich beeinflusst?")
+        selected_criteria=st.multiselect(
+            "Mehrfachauswahl möglich",
+            CRITERIA,default=st.session_state.criteria
+        )
+        criteria_other=st.text_input(
+            "Sonstiges – welches Kriterium?",
+            value=st.session_state.criteria_other,
+            placeholder="z. B. Ausbildung, Unternehmensgröße, Gesamteindruck …"
+        ) if "Sonstiges" in selected_criteria else ""
+        confidence=st.slider("Wie sicher seid ihr euch bei eurer Shortlist?",0,100,st.session_state.confidence1,5)
 
-    if st.session_state.shortlist:
-        nav(0,2,"ZUR THEORIE & PRAXIS →")
+        if st.button("SHORTLIST BESTÄTIGEN →",use_container_width=True):
+            st.session_state.shortlist=list(draft)
+            st.session_state.criteria=selected_criteria
+            st.session_state.criteria_other=criteria_other
+            st.session_state.confidence1=confidence
+            goto(2)
 
 # ---------- 2 THEORY HANDOVER ----------
 elif st.session_state.phase==2:
@@ -300,7 +422,7 @@ elif st.session_state.phase==4:
 elif st.session_state.phase==5:
     hero("ENTSCHEIDUNG STEHT","BLIND-SPOT CHECK","Der simulierte Search-Prozess ist abgeschlossen. Jetzt beginnt die Reflexion.")
     excluded=[c["id"] for c in CANDIDATES if c["id"] not in st.session_state.shortlist]
-    reveal_ids=[x for x in ["CANDIDATE 06","CANDIDATE 07","CANDIDATE 09"] if x in excluded][:2]
+    reveal_ids=[x for x in ["CANDIDATE F","CANDIDATE G","CANDIDATE I"] if x in excluded][:2]
     if len(reveal_ids)<2: reveal_ids=excluded[:2]
 
     for cid in reveal_ids:
