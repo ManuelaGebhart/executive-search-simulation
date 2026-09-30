@@ -180,12 +180,12 @@ defaults=dict(phase=0,max_phase=0,shortlist=[],screening_index=0,screening_draft
 for k,v in defaults.items():
     if k not in st.session_state: st.session_state[k]=v
 
-PHASES=["Suchauftrag","First Screening","Theorie & Praxis","Second Look","Finale Entscheidung","Blind-Spot Check","Live-Auswertung","Take-away"]
+PHASES=["Suchauftrag","First Screening","Theorie & Praxis","Second Look","Finale Entscheidung","Blind-Spot Check","Team fertig"]
 
 def progress():
-    p=min(st.session_state.phase,7)
+    p=min(st.session_state.phase,6)
     st.markdown(f"""<div class="progress-wrap"><div class="progress-line"><div class="progress-fill" style="width:{(p+1)/8*100}%"></div></div>
-    <div class="progress-label"><span>{p+1:02d} / 08</span><span>{PHASES[p].upper()}</span></div></div>""",unsafe_allow_html=True)
+    <div class="progress-label"><span>{p+1:02d} / 07</span><span>{PHASES[p].upper()}</span></div></div>""",unsafe_allow_html=True)
 
 def hero(kicker,title,sub):
     st.markdown(f"""<div class="hero"><div class="eyebrow">{kicker}</div><h1>{title}</h1><p>{sub}</p></div>""",unsafe_allow_html=True)
@@ -225,7 +225,7 @@ if st.session_state.phase==0:
     ✓ <b>Marketingsteuerung</b> – Kampagnen, Agenturen, Medien, Sponsoring und Erfolgsmessung
     </p>
     <div class="newinfo"><b>Zusätzlich ausdrücklich gefordert:</b> KI-Kompetenz (AI-Literacy) – also ein Grundverständnis dafür, wie KI in Marketing und Kundenmanagement sinnvoll eingesetzt werden kann.</div>
-    <p class="small">Diese Kurzfassung ist bewusst einfacher als das vollständige Anforderungsprofil. Die finalen 4–6 Screening-Kriterien stimmen wir noch mit Marc ab.</p>
+    <p class="small">Der Search Brief ist für das First Screening bewusst auf die entscheidungsrelevanten Anforderungen verdichtet.</p>
     </div>""",unsafe_allow_html=True)
 
     with st.expander("BEGRIFFE KURZ ERKLÄRT · Was bedeutet was?"):
@@ -292,7 +292,7 @@ elif st.session_state.phase==1:
     for title,de,dur in c["career"]:
         exp_html += f'<div class="exp-row"><div class="exp-title">{title}</div><div class="exp-de">{de}</div><p>{dur}</p></div>'
 
-    placeholder = "" if c["id"]=="CANDIDATE A" else '<div class="placeholder-note"><b>DEMO-PLATZHALTER</b> · Dieses Profil wird durch Marcs anonymisiertes Originalprofil ersetzt.</div>'
+    placeholder = ""
 
     st.markdown(f"""<div class="profile-card">
       <div class="profile-top">
@@ -375,7 +375,7 @@ elif st.session_state.phase==2:
 
 # ---------- 3 SECOND LOOK ----------
 elif st.session_state.phase==3:
-    hero("INTERNES ASSESSMENT","SECOND LOOK","Nur eure ursprüngliche Top 3 erhält zusätzliche Information.")
+    hero("SECOND LOOK","Neue Information.","Nur eure ursprüngliche Top 3 erhält zusätzliche Information.")
     assessments={}
     for cid in st.session_state.shortlist:
         c=BYID[cid]
@@ -488,24 +488,5 @@ elif st.session_state.phase==6:
     c3.metric("Sicherheit vorher",f"{st.session_state.confidence1}%")
     c4.metric("Sicherheit final",f"{st.session_state.final_confidence}%")
 
-    c1,c2=st.columns(2)
-    with c1:
-        if st.button("← ZUR REFLEXION",use_container_width=True): goto(5)
-    with c2:
-        if st.button("ZUM TAKE-AWAY →",use_container_width=True): goto(7)
-
-# ---------- 7 TAKEAWAY ----------
-elif st.session_state.phase==7:
-    hero("SEARCH COMPLETED","Biografische Information ≠ Eignung.","Die App endet hier – die gemeinsame Einordnung erfolgt in der Präsentation.")
-    st.markdown("""<div class="main-card"><div class="big">Information → Interpretation → Anforderungsbezug → Eignungsprognose</div>
-    <br><p>Biografische Informationen können relevant sein. Entscheidend ist, <b>welche konkrete Anforderung</b> sie betreffen und wie belastbar der daraus gezogene Eignungsschluss ist.</p>
-    <p class="small">Die theoretische Einordnung und die Quellen bleiben bewusst in der PowerPoint – nicht in der Auswahl-App.</p></div>""",unsafe_allow_html=True)
-    c1,c2=st.columns(2)
-    with c1:
-        if st.button("← LIVE-AUSWERTUNG",use_container_width=True): goto(6)
-    with c2:
-        if st.button("DEMO NEU STARTEN",use_container_width=True):
-            for k,v in defaults.items(): st.session_state[k]=v
-            for k in list(st.session_state.keys()):
-                if k.startswith(("sl_","ass_","rev_")): del st.session_state[k]
-            st.rerun()
+    if st.button("← ZUR REFLEXION",use_container_width=True):
+        goto(5)
