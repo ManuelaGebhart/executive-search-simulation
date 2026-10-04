@@ -1,6 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 from collections import Counter
+import json, uuid, urllib.request, urllib.error
 
 st.set_page_config(page_title="Executive Search Simulation", page_icon="◼", layout="wide")
 
@@ -101,69 +102,91 @@ div[data-testid="stExpander"] [data-testid="stMarkdownContainer"] strong {{
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- Praxisfall von Marc + Demo-Platzhalter ----------
-# Candidate A basiert auf dem anonymisierten Profil von Marc.
-# B–J sind bewusst nur sparsame Platzhalter und werden später durch die realen Profile ersetzt.
+# ---------- Anonymisierte Praxisprofile ----------
+# Interne Zuordnung (nicht in der Teilnehmeroberfläche sichtbar):
+# A=N, B=K, C=R, D=A, E=G, F=I, G=Q, H=L, I=F, J=E.
+# Die Reihenfolge wurde bewusst gemischt, damit die interne Rankingreihenfolge nicht erkennbar ist.
 CANDIDATES = [
 {
-"id":"CANDIDATE A",
-"role":"Head of Brand, Marketing & Communication",
-"role_de":"Leitung Marke, Marketing & Kommunikation",
-"meta":"Süddeutschland · ca. 13 Jahre Berufserfahrung · offen für neue Positionen",
-"career":[
-    ("Head of Brand, Marketing & Communication","Leitung Marke, Marketing & Kommunikation","ca. 5 Jahre"),
-    ("Teamleitung International Advertising","Leitung internationale Werbung","ca. 1 Jahr"),
-    ("Projektleitung International Advertising","Projektleitung internationale Werbung","ca. 3 Jahre"),
-    ("Consultant Organisationsentwicklung & Prozessmanagement","Beratung Organisationsentwicklung & Geschäftsprozesse","mehrjährige Erfahrung"),
-    ("Traineeprogramm","Berufseinstiegsprogramm","frühere Station"),
-],
-"education":"Diplomstudium · Auslandsstudium in den USA",
-"facts":"Automobilkonzern · internationale Marken-/Werbeerfahrung · Organisations- und Prozessmanagement",
-"new":"Im Gespräch wird genauer geklärt, welche Führungsverantwortung, CRM-Nähe und Erfahrung mit komplexen Vertriebsstrukturen tatsächlich vorhanden ist.",
-"reveal":"—"
-},
+"id":"CANDIDATE A","source":"N","role":"Head of Marketing · Digitalbank","role_de":"Leitung Marketing · Digitalbank",
+"meta":"Süddeutschland (Bayern) · ca. 9 Jahre Berufserfahrung · offen für neue Positionen",
+"career":[("Head of Marketing · Managementteam","Leitung Marketing","ca. 2 Jahre"),("Associate Director Strategy (B2C)","Strategie B2C","ca. 2,5 Jahre"),("Associate Director Pricing","Pricing","ca. 7 Monate"),("Senior Consultant","Markenberatung","ca. 1,5 Jahre"),("Consultant","Markenberatung","ca. 2 Jahre")],
+"education":"Studium nicht näher angegeben · berufsbegleitendes CMO-Programm an einer US-Business-School",
+"facts":"Finanzdienstleistung · Brand & Growth · KPI/ROI · B2C/B2B",
+"second":["Disziplinarische Führung von 4 Teams mit 24 Mitarbeitenden, davon 4 Teamleiter:innen.","Premium-Repositionierung mit messbaren Ergebnissen; Social-Media-Kanäle mit Agentur aufgebaut.","CRM und Customer Lifetime Value liegen im eigenen Bereich Marketing Operations.","Gesamtpaket zuletzt ca. 150.000–170.000 EUR; Zielrahmen muss geklärt werden.","Sofort verfügbar, aber mehrere parallele Bewerbungsprozesse in München."],
+"blind":["24 Mitarbeitende in 4 Teams, davon 4 Teamleiter:innen.","CRM und Customer Lifetime Value im eigenen Verantwortungsbereich.","Sofort verfügbar; mehrere parallele Bewerbungsprozesse." ]},
 {
-"id":"CANDIDATE B","role":"Senior Brand Manager","role_de":"Senior Markenmanager:in",
-"meta":"Süddeutschland · Profil-Platzhalter","career":[("Senior Brand Manager","Senior Markenmanagement","mehrjährige Erfahrung")],
-"education":"Ausbildung / Studium folgt","facts":"Brand Management · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
-},
+"id":"CANDIDATE B","source":"K","role":"Senior Brand Marketing Manager · Telekommunikation","role_de":"Senior Markenmarketing · Telekommunikation",
+"meta":"Westdeutschland · ca. 11 Jahre Berufserfahrung",
+"career":[("Senior Brand Marketing Manager","Senior Markenmarketing","ca. 5 Jahre"),("Marketing & Brand Manager","Marketing & Marke · Fluggesellschaft","ca. 6 Jahre"),("Projektmanager","Medien","ca. 3 Monate")],
+"education":"Wirtschaftsstudium an einer Universität in den Niederlanden · einjähriger Aufenthalt in den USA",
+"facts":"Branding · Sponsoring · Telekommunikation & Airline · Auszeichnung in einem Wirtschaftsmedium",
+"second":["Keine Führungsverantwortung – weder disziplinarisch noch als Teamleitung.","Keine CRM-Erfahrung genannt.","Aktuell sehr zufrieden; offen für Neues, aber nicht aktiv suchend.","Aktuelles Paket ca. 132.000 EUR gesamt.","Lebt in Nordrhein-Westfalen; Umzug nach München grundsätzlich vorstellbar."],
+"blind":["Keine Führungsverantwortung – weder disziplinarisch noch als Teamleitung.","Keine CRM-Erfahrung genannt.","Aktuelles Paket ca. 132.000 EUR gesamt." ]},
 {
-"id":"CANDIDATE C","role":"Head of CRM","role_de":"Leitung Kundenmanagement / CRM",
-"meta":"Deutschland · Profil-Platzhalter","career":[("Head of CRM","Leitung Kundenmanagement / CRM","mehrjährige Erfahrung")],
-"education":"Ausbildung / Studium folgt","facts":"CRM · digitale Kundenkommunikation · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
-},
+"id":"CANDIDATE C","source":"R","role":"Leitung Marketing & Kommunikation · Versicherung","role_de":"Co-Leadership Marketing & Kommunikation",
+"meta":"Süddeutschland (Bayern) · ca. 16 Jahre Berufserfahrung · offen für neue Positionen",
+"career":[("Leitung Marketing & Kommunikation","Co-Leadership · Versicherung","ca. 1,5 Jahre"),("Head of Brand, Media & Advertising","Marke, Media & Werbung","ca. 3,5 Jahre"),("Head of Sponsoring","Sponsoring","ca. 2 Jahre"),("Senior Project Manager Innovation","Innovation","ca. 1 Jahr"),("Business Development / Strategy & Communications","Versicherung B2B/B2B2C","mehrere Jahre")],
+"education":"Abschluss an einer privaten Hochschule in Deutschland",
+"facts":"Versicherung · Brand · Sponsoring · Daten & KI · B2C/B2B/B2B2C",
+"second":["Disziplinarische Führung von 26 Mitarbeitenden, davon 3 Teamleitungen als direkte Führungskräfte.","Refresh einer Versicherungsmarke, ca. 40 Mio. EUR Budget und messbare Full-Funnel-Steuerung.","KI-gestützte Kampagnenaussteuerung und Content-Produktion; KI-Leitlinien mitentwickelt.","Wechselmotivation sehr hoch: alleinige Verantwortung und Finanzberatervertrieb reizen besonders.","Gehaltsvorstellung 220.000–240.000 EUR gesamt; kein Spielraum nach unten."],
+"blind":["26 Mitarbeitende, davon 3 Teamleitungen als direkte Führungskräfte.","KI-gestützte Kampagnenaussteuerung und interne KI-Leitlinien.","Gehaltsvorstellung 220.000–240.000 EUR – deutlich über dem festen Rahmen." ]},
 {
-"id":"CANDIDATE D","role":"Marketing Director","role_de":"Marketingleitung",
-"meta":"Deutschland · Profil-Platzhalter","career":[("Marketing Director","Marketingleitung","mehrjährige Erfahrung")],
-"education":"Ausbildung / Studium folgt","facts":"Marketing · Führung · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
-},
+"id":"CANDIDATE D","source":"A","role":"Head of Brand, Marketing & Communication · Automotive","role_de":"Leitung Marke, Marketing & Kommunikation · Premiummarke",
+"meta":"Süddeutschland (Bayern) · ca. 13 Jahre Berufserfahrung · offen für neue Positionen",
+"career":[("Head of Brand, Marketing & Communication","Premiummarke · Automobil","ca. 5 Jahre"),("Teamleitung International Advertising","Internationale Werbung","ca. 1 Jahr"),("Projektleitung International Advertising","Internationale Werbung","ca. 3 Jahre"),("Consultant Organisationsentwicklung & Prozessmanagement","Sales & Marketing","ca. 3,5 Jahre"),("Konzern-Traineeprogramm","Führungsnachwuchs","ca. 1,5 Jahre")],
+"education":"Diplomstudium an einer deutschen Universität · Auslandsstudium USA",
+"facts":"Premium-Automobilmarke · internationale Werbung · Organisations- und Prozessmanagement",
+"second":["Nur fachliche Führung von Projektteams mit 2–6 Personen; keine disziplinarische Führung.","Positionierung und Markenidentität einer Premium-Submarke mit aufgebaut; globale Filmkampagnen gesteuert.","Beschäftigt sich im aktuellen Projekt mit KI im Marketing.","Wechselmotivation sehr hoch: mehr Gestaltungsspielraum und erstmals mehr Führungsverantwortung.","Aktuelles Paket ca. 140.000 EUR plus Dienstwagen."],
+"blind":["Nur fachliche Führung von Projektteams mit 2–6 Personen; keine disziplinarische Führung.","Wechselmotivation sehr hoch – sucht erstmals mehr Führungsverantwortung.","Aktuelles Paket ca. 140.000 EUR plus Dienstwagen." ]},
 {
-"id":"CANDIDATE E","role":"Brand & Customer Lead","role_de":"Leitung Marke & Kund:innen",
-"meta":"Deutschland · Profil-Platzhalter","career":[("Brand & Customer Lead","Leitung Marke & Kund:innen","mehrjährige Erfahrung")],
-"education":"Ausbildung / Studium folgt","facts":"Marke · Kund:innenmanagement · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
-},
+"id":"CANDIDATE E","source":"G","role":"Brand Strategist & Marketing Expert · selbstständig","role_de":"Markenstrategie & Marketing · zuvor Versicherung",
+"meta":"Süddeutschland (Bayern) · ca. 19 Jahre Berufserfahrung",
+"career":[("Brand Strategist & Marketing Expert","Selbstständig","ca. 3 Jahre"),("Co-Founder","HR-Tech-Start-up B2B","ca. 2 Jahre"),("Director Market Management","Versicherung · Ausland","ca. 1,5 Jahre"),("Senior Global Brand Manager & Global Social Media Lead","Versicherung · Holding","langjährige Station"),("CRM Specialist","Automobilkonzern","frühe Station")],
+"education":"Abschluss an einer Business School in Deutschland",
+"facts":"Versicherung · globale Marke · CRM · Customer Engagement · Start-up & Beratung",
+"second":["Seit rund 5 Jahren selbstständig; davor gut 10 Jahre im Versicherungskonzern.","Früher 5 Teams mit rund 25 Mitarbeitenden geführt; seit 5 Jahren keine Führungsverantwortung.","Im Interview kein Bezug zu KI.","Möchte zurück in eine Vollzeit-Führungsrolle, würde aber gern kleine Beratungsmandate behalten.","Gehaltsvorstellung 130.000–150.000 EUR."],
+"blind":["Früher 5 Teams mit rund 25 Mitarbeitenden geführt; seit 5 Jahren keine Führungsverantwortung.","Im Interview kein Bezug zu KI.","Gehaltsvorstellung 130.000–150.000 EUR." ]},
 {
-"id":"CANDIDATE F","role":"Head of Marketing","role_de":"Leitung Marketing",
-"meta":"Deutschland · Profil-Platzhalter","career":[("Head of Marketing","Leitung Marketing","mehrjährige Erfahrung")],
-"education":"Ausbildung / Studium folgt","facts":"Marketing · Agentursteuerung · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"Zusatzinformation für den Blind-Spot-Check folgt."},
+"id":"CANDIDATE F","source":"I","role":"Head of Brand & Creative Studio · Versicherung","role_de":"Leitung Marke & Inhouse-Kreation · Versicherung",
+"meta":"Westdeutschland · ca. 17 Jahre Berufserfahrung im selben Versicherungskonzern",
+"career":[("Head of Brand & Creative Studio","Versicherung","ca. 9 Monate"),("Head of Marketing Creative","Versicherung","ca. 3 Jahre"),("Head of Distribution Partner Activation & Storytelling","Vertriebspartner-Aktivierung","ca. 2 Jahre"),("Head of Distribution Partner Communication","Vertriebspartner-Kommunikation","ca. 1,5 Jahre"),("Employer Branding / HR / CEO-Assistenz","Versicherungskonzern","mehrere frühere Stationen")],
+"education":"Duales Studium mit Berufsausbildung · Promotion an einer deutschen Universität",
+"facts":"Versicherung · Brand · Makler & Exklusivagenturen · Change · KI in Kreativprozessen",
+"second":["Seit 7 Jahren disziplinarische Führung; aktuell 17 Mitarbeitende, aber keine Führungskräfte unter sich.","Laufbahn begann in der Kommunikation für Makler und Exklusivagenturen.","Gehalt ca. 148.500–162.000 EUR gesamt.","Umzug von Nordrhein-Westfalen nach München noch offen, grundsätzlich vorstellbar.","6 Monate Kündigungsfrist."],
+"blind":["Seit 7 Jahren disziplinarische Führung; aktuell 17 Mitarbeitende.","Erfahrung mit Kommunikation für Makler und Exklusivagenturen.","Umzug nach München noch offen; 6 Monate Kündigungsfrist." ]},
 {
-"id":"CANDIDATE G","role":"CRM & Digital Lead","role_de":"Leitung CRM & Digital",
-"meta":"Deutschland · Profil-Platzhalter","career":[("CRM & Digital Lead","Leitung CRM & Digital","mehrjährige Erfahrung")],
-"education":"Ausbildung / Studium folgt","facts":"CRM · Digital · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"Zusatzinformation für den Blind-Spot-Check folgt."},
+"id":"CANDIDATE G","source":"Q","role":"Senior Director Brand Marketing · Sportartikel","role_de":"Globale Markenführung · Sport & Olympia",
+"meta":"Süddeutschland (Bayern) · ca. 22 Jahre Berufserfahrung · offen für neue Positionen",
+"career":[("Senior Director Brand Marketing · Multi-Category Sports & Olympia","Sportartikelkonzern","ca. 8 Monate"),("Senior Director / Director Brand Marketing · Outdoor","Sportartikelkonzern","ca. 5 Jahre"),("Senior Manager / Manager Brand Marketing","Sportartikelkonzern","mehrere Jahre"),("Global Head of Marketing","Outdoor-Marke","ca. 2 Jahre"),("Private Banking / Vorstandassistenz","Großbank","ca. 5 Jahre")],
+"education":"Duales BWL-Studium · Master Marketing Management · Executive Education an einer US-Business-School",
+"facts":"Globale Markenführung · Olympia & Sponsoring · internationale Partner · frühere Banking-Erfahrung",
+"second":["Disziplinarische Führung von 22 Mitarbeitenden, davon 3 Teamleitungen.","Co-Branding mit globalen Markenpartnern und Sportverbänden; kennt aus der Bankzeit die Perspektive von Finanzberater:innen.","Bisher schnelle Konsumgüterkultur; kaum regulatorische Freigaben. Lange Gremienwege werden kritisch gesehen.","Sucht Gesamtverantwortung für eine Marke und findet die Transformation einer Versicherungsmarke spannend.","Aktuelles Paket 159.500 EUR; erwartet mindestens dasselbe."],
+"blind":["22 Mitarbeitende, davon 3 Teamleitungen.","Co-Branding mit globalen Partnern; frühere Perspektive als Finanzberater:in.","Kaum Erfahrung mit langen regulatorischen Freigaben; solche Prozesse werden kritisch gesehen." ]},
 {
-"id":"CANDIDATE H","role":"Brand Director","role_de":"Leitung Markenführung",
-"meta":"Deutschland · Profil-Platzhalter","career":[("Brand Director","Leitung Markenführung","mehrjährige Erfahrung")],
-"education":"Ausbildung / Studium folgt","facts":"Markenführung · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
-},
+"id":"CANDIDATE H","source":"L","role":"Head of Marketing · Pharma","role_de":"Leitung Marketing · Pharma / Consumer Health",
+"meta":"Süddeutschland (Bayern) · ca. 14 Jahre Brand Management · offen für neue Positionen",
+"career":[("Head of Marketing","Pharmaunternehmen","ca. 4,5 Jahre"),("Brand Director","FMCG","ca. 3 Jahre"),("Head of Brand Teams DACH","FMCG","ca. 1 Jahr"),("Head of Brand Teams DACH","Pharma/Chemie","ca. 1,5 Jahre"),("Senior Brand Manager","Konsumgüter / Consumer Health","ca. 5 Jahre")],
+"education":"Im Profil nicht angegeben",
+"facts":"FMCG-Schule · Pharma / Consumer Health · Brand Management · Profil enthält kaum Tätigkeitsdetails",
+"second":["Führung bis zu 8 Mitarbeitenden, davon 4 direkt und 1 Teamleitung.","Keine CRM-Erfahrung.","Im Interview kein Bezug zu KI.","Zuletzt ca. 194.000 EUR; würde 160.000 EUR gesamt akzeptieren.","Wohnt in München; 3–4 Bürotage grundsätzlich vereinbar."],
+"blind":["Keine CRM-Erfahrung.","Im Interview kein Bezug zu KI.","Zuletzt ca. 194.000 EUR; würde für die Rolle 160.000 EUR gesamt akzeptieren." ]},
 {
-"id":"CANDIDATE I","role":"Customer Engagement Lead","role_de":"Leitung Kundenaktivierung & -bindung",
-"meta":"Deutschland · Profil-Platzhalter","career":[("Customer Engagement Lead","Leitung Kundenaktivierung & -bindung","mehrjährige Erfahrung")],
-"education":"Ausbildung / Studium folgt","facts":"Kundenkommunikation · Loyalty · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"Zusatzinformation für den Blind-Spot-Check folgt."},
+"id":"CANDIDATE I","source":"F","role":"Principal AI & Brand Marketing Communications Operations · Telekommunikation","role_de":"KI-Transformation & Marken-/Kommunikationssteuerung",
+"meta":"Süddeutschland (Bayern) · ca. 17 Jahre im selben Konzern · offen für neue Positionen",
+"career":[("Principal AI & BMC Operations","KI & Brand/MarCom Operations","ca. 1,5 Jahre"),("Head of Communications and Campaigns","Kommunikation & Kampagnen","ca. 6 Monate parallel"),("Director Brand & Marketing Communications · kommissarisch","Bereichsleitung","ca. 1 Jahr"),("Head of Brand Strategy & Brand Management","Markenstrategie","ca. 1,5 Jahre"),("Teamleitung Digital Marketing","Social, Content, Community","ca. 2,5 Jahre")],
+"education":"Duales Studium an einer Hochschule in Baden-Württemberg",
+"facts":"Telekommunikation · Markenrepositionierung · Kampagnen · digitale Customer Journey · starker KI-Schwerpunkt",
+"second":["Als Acting Director rund 70 Mitarbeitende geführt, davon 3 Abteilungsleitungen; aktuell 10 Mitarbeitende.","Markenrepositionierung, 360°-Kampagnen und Budget über 90 Mio. EUR.","Klarer KI-Schwerpunkt: generative KI, Marken in Sprachmodellen und verändertes Suchverhalten.","Paket ca. 150.000 EUR plus Dienstwagen/Altersvorsorge; ca. 50.000 EUR Aktien würden beim Wechsel verfallen.","6 Monate Kündigungsfrist, voraussichtlich auf 2–3 Monate verkürzbar."],
+"blind":["Als Acting Director rund 70 Mitarbeitende geführt, davon 3 Abteilungsleitungen.","Klarer Schwerpunkt auf generativer KI und Sichtbarkeit von Marken in Sprachmodellen.","Paket ca. 150.000 EUR; beim Wechsel würden Aktien im Wert von ca. 50.000 EUR verfallen." ]},
 {
-"id":"CANDIDATE J","role":"Marketing & Sponsoring Lead","role_de":"Leitung Marketing & Sponsoring",
-"meta":"Deutschland · Profil-Platzhalter","career":[("Marketing & Sponsoring Lead","Leitung Marketing & Sponsoring","mehrjährige Erfahrung")],
-"education":"Ausbildung / Studium folgt","facts":"Marketing · Sponsoring · weitere Angaben folgen","new":"Zusatzinformation folgt nach Marcs Profil.","reveal":"—"
-},
+"id":"CANDIDATE J","source":"E","role":"Head of B2B Brand & Marketing Communications · Telekommunikation","role_de":"Leitung B2B-Marke & Marketingkommunikation",
+"meta":"Süddeutschland (Bayern) · ca. 18 Jahre Berufserfahrung",
+"career":[("Head of B2B Brand & Marketing Communications","Telekommunikation","ca. 9 Monate"),("Head of B2B Marketing","Telekommunikation","ca. 1,5 Jahre"),("Manager Proposition & Go-to-Market","B2B","ca. 5 Jahre"),("Teamleiter Offer Management","B2B","ca. 9 Monate"),("Senior Marketing / Acquisition Manager","B2B/B2C","mehrere Jahre")],
+"education":"Universitätsstudium in Deutschland · Fachrichtung nicht angegeben",
+"facts":"B2B-Marke · Kampagnen · Events & Messen · Agentursteuerung · Telekommunikation",
+"second":["Seit 14 Jahren im selben Konzern; nicht aktiv auf der Suche.","2 Teams mit gut 20 Mitarbeitenden; Bericht direkt an ein Vorstandsmitglied.","Die Zielrolle wäre eher Seitwärts- oder Rückschritt; Motivation im Gespräch gering.","Gehalt über 175.000 EUR inklusive Bonus, zuzüglich Zusatzleistungen.","Wohnt in München und ist an den Standort gebunden."],
+"blind":["2 Teams mit gut 20 Mitarbeitenden; Bericht direkt an ein Vorstandsmitglied.","Die Rolle wäre eher Seitwärts- oder Rückschritt; geringe Wechselmotivation.","Gehalt über 175.000 EUR inklusive Bonus – oberhalb des Rahmens." ]},
 ]
 BYID={c["id"]:c for c in CANDIDATES}
 
@@ -191,11 +214,49 @@ GLOSSARY = {
 }
 
 # ---------- state ----------
-defaults=dict(phase=0,max_phase=0,shortlist=[],screening_index=0,screening_draft=[],criteria=[],criteria_other="",confidence1=60,assessments={},final_candidate=None,final_reasons=[],final_other="",final_confidence=70,reveal={},counter_change="Nein",counter_candidate=None)
+defaults=dict(participant_id=str(uuid.uuid4()),submitted=False,phase=0,max_phase=0,shortlist=[],screening_index=0,screening_draft=[],criteria=[],criteria_other="",confidence1=60,assessments={},final_candidate=None,final_reasons=[],final_other="",final_confidence=70,reveal={},counter_change="Nein",counter_candidate=None)
 for k,v in defaults.items():
     if k not in st.session_state: st.session_state[k]=v
 
-PHASES=["Suchauftrag","First Screening","Theorie & Praxis","Second Look","Finale Entscheidung","Blind-Spot Check","Team fertig"]
+PHASES=["Suchauftrag","First Screening","Theorie & Praxis","Second Look","Finale Entscheidung","Blind-Spot Check","Fertig"]
+
+
+def submit_result():
+    """Speichert anonym aggregierbare Ergebnisse zentral, wenn Supabase-Secrets gesetzt sind.
+    Ohne Secrets bleibt die App vollständig als Demo nutzbar."""
+    if st.session_state.submitted:
+        return True, "bereits gespeichert"
+    try:
+        url=st.secrets.get("SUPABASE_URL", "").rstrip("/")
+        key=st.secrets.get("SUPABASE_KEY", "")
+    except Exception:
+        url=key=""
+    if not url or not key:
+        return False, "Demo-Modus: zentrale Live-Speicherung ist noch nicht verbunden."
+    payload={
+        "participant_id":st.session_state.participant_id,
+        "shortlist":st.session_state.shortlist,
+        "criteria":st.session_state.criteria,
+        "criteria_other":st.session_state.criteria_other,
+        "confidence_first":st.session_state.confidence1,
+        "assessments":st.session_state.assessments,
+        "final_candidate":st.session_state.final_candidate,
+        "final_reasons":st.session_state.final_reasons,
+        "final_other":st.session_state.final_other,
+        "confidence_final":st.session_state.final_confidence,
+        "blindspot":st.session_state.reveal
+    }
+    req=urllib.request.Request(
+        url+"/rest/v1/executive_search_results",
+        data=json.dumps(payload).encode("utf-8"), method="POST",
+        headers={"apikey":key,"Authorization":"Bearer "+key,"Content-Type":"application/json"}
+    )
+    try:
+        urllib.request.urlopen(req,timeout=8).read()
+        st.session_state.submitted=True
+        return True, "Ergebnis anonym für die Live-Auswertung gespeichert."
+    except Exception as e:
+        return False, "Live-Speicherung derzeit nicht erreichbar; deine lokale Session bleibt erhalten."
 
 def progress():
     p=min(st.session_state.phase,6)
@@ -240,7 +301,8 @@ if st.session_state.phase==0:
     ✓ <b>Marketingsteuerung</b> – Kampagnen, Agenturen, Medien, Sponsoring und Erfolgsmessung
     </p>
     <div class="newinfo"><b>Zusätzlich ausdrücklich gefordert:</b> KI-Kompetenz (AI-Literacy) – also ein Grundverständnis dafür, wie KI in Marketing und Kundenmanagement sinnvoll eingesetzt werden kann.</div>
-    <p class="small">Der Search Brief ist für das First Screening bewusst auf die entscheidungsrelevanten Anforderungen verdichtet.</p>
+    <div class="newinfo"><b>Rahmenbedingungen:</b> max. 160.000 EUR Gesamtvergütung inkl. Bonus (Fixum ca. 130–135 Tsd. EUR) · München · mindestens 3, gewünscht 3–4 Bürotage/Woche · Start möglichst früh.</div>
+    <p class="small">Gehalt, konkrete Mobilität und Verfügbarkeit der Kandidat:innen stehen nicht in den Profilen; diese Informationen werden erst im Interview sichtbar.</p>
     </div>""",unsafe_allow_html=True)
 
     with st.expander("BEGRIFFE KURZ ERKLÄRT · Was bedeutet was?"):
@@ -285,8 +347,8 @@ elif st.session_state.phase==1:
     </div>""",unsafe_allow_html=True)
 
     if not st.session_state.shortlist:
-        components.html("""<div id="t" style="font-family:Arial;font-weight:800;font-size:18px;color:#0A66C2">01:30</div>
-        <script>let s=90,e=document.getElementById('t');let x=setInterval(()=>{s--;let m=Math.floor(s/60),r=s%60;e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');if(s<=20)e.style.color='#C94E55';if(s<=0){clearInterval(x);e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';}},1000);</script>""",height=38)
+        components.html("""<div id="t" style="font-family:Arial;font-weight:800;font-size:18px;color:#0A66C2">03:30</div>
+        <script>let s=210,e=document.getElementById('t');let x=setInterval(()=>{s--;let m=Math.floor(s/60),r=s%60;e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');if(s<=20)e.style.color='#C94E55';if(s<=0){clearInterval(x);e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';}},1000);</script>""",height=38)
 
     # Compact A–J result navigation. Green = currently on shortlist.
     nav_cols=st.columns(10)
@@ -354,7 +416,7 @@ elif st.session_state.phase==1:
             st.markdown(f"**{term}:** {expl}")
 
     if len(draft)==3:
-        st.markdown("### Was hat eure Auswahl tatsächlich beeinflusst?")
+        st.markdown("### Was hat deine Auswahl tatsächlich beeinflusst?")
         selected_criteria=st.multiselect(
             "Mehrfachauswahl möglich",
             CRITERIA,default=st.session_state.criteria
@@ -364,7 +426,7 @@ elif st.session_state.phase==1:
             value=st.session_state.criteria_other,
             placeholder="z. B. Ausbildung, Unternehmensgröße, Gesamteindruck …"
         ) if "Sonstiges" in selected_criteria else ""
-        confidence=st.slider("Wie sicher seid ihr euch bei eurer Shortlist?",0,100,st.session_state.confidence1,5)
+        confidence=st.slider("Wie sicher bist du dir bei deiner Shortlist?",0,100,st.session_state.confidence1,5)
 
         if st.button("SHORTLIST BESTÄTIGEN →",use_container_width=True):
             st.session_state.shortlist=list(draft)
@@ -377,7 +439,7 @@ elif st.session_state.phase==1:
 elif st.session_state.phase==2:
     hero("SHORTLIST GESPEICHERT","Jetzt zurück zur Präsentation.","Nach Theorie-Check und Praxis-Check mit Marc geht es hier mit dem Second Look weiter.")
     st.markdown("""<div class="lock" style="font-size:15px;padding:14px 16px">
-    ✓ Eure Auswahl ist gespeichert. In der App müsst ihr jetzt nichts tun.
+    ✓ Deine Auswahl ist gespeichert. In der App müsst ihr jetzt nichts tun.
     </div>""",unsafe_allow_html=True)
     c1,c2=st.columns(2)
     with c1:
@@ -387,19 +449,19 @@ elif st.session_state.phase==2:
 
 # ---------- 3 SECOND LOOK ----------
 elif st.session_state.phase==3:
-    hero("SECOND LOOK","Neue Information.","Nur eure ursprüngliche Top 3 erhält zusätzliche Information.")
+    hero("SECOND LOOK","Neue Information.","Nur deine ursprüngliche Top 3 erhält zusätzliche Interviewinformationen.")
     assessments={}
     for cid in st.session_state.shortlist:
         c=BYID[cid]
         st.markdown(f"""<div class="internal"><div class="internal-head"><div><div class="cid">{cid}</div><b>{c['role']}</b></div><span class="status">SHORTLISTED</span></div>
         <div class="small">WAS IHR BEREITS WUSSTET</div><p>{c['meta']}<br>{c['facts']}</p>
-        <div class="newinfo"><b>NEUE INFORMATION AUS DEM GESPRÄCH</b><br>{c['new']}</div></div>""",unsafe_allow_html=True)
+        <div class="newinfo"><b>PRIORISIERTE INFORMATIONEN AUS DEM ERSTINTERVIEW</b><br>{''.join(f'• {x}<br>' for x in c['second'])}</div></div>""",unsafe_allow_html=True)
         options=["Positiver","Unverändert","Negativer"]
         old=st.session_state.assessments.get(cid,"Unverändert")
         if old.startswith("↑"): old="Positiver"
         elif old.startswith("↓"): old="Negativer"
         elif old.startswith("→"): old="Unverändert"
-        assessments[cid]=st.selectbox("Wie verändert diese Information eure Einschätzung?",options,index=options.index(old),key=f"ass_{cid}")
+        assessments[cid]=st.selectbox("Wie verändert diese Information deine Einschätzung?",options,index=options.index(old),key=f"ass_{cid}")
     st.session_state.assessments=assessments
     c1,c2=st.columns(2)
     with c1:
@@ -409,7 +471,7 @@ elif st.session_state.phase==3:
 
 # ---------- 4 FINAL ----------
 elif st.session_state.phase==4:
-    hero("FINALE ENTSCHEIDUNG","Eine Person. Eine Empfehlung.","Wählt genau eine Person aus eurer ursprünglichen Top 3.")
+    hero("FINALE ENTSCHEIDUNG","Eine Person. Eine Empfehlung.","Wähle genau eine Person aus deiner ursprünglichen Top 3.")
     cols=st.columns(3)
     for i,cid in enumerate(st.session_state.shortlist):
         c=BYID[cid]
@@ -417,12 +479,12 @@ elif st.session_state.phase==4:
             st.markdown(f"""<div class="metricbox"><div class="cid">{cid}</div><h3>{c['role']}</h3><p>{c['meta']}</p><p><b>Second Look:</b> {st.session_state.assessments.get(cid,'→ unverändert')}</p></div>""",unsafe_allow_html=True)
     idx=0
     if st.session_state.final_candidate in st.session_state.shortlist: idx=st.session_state.shortlist.index(st.session_state.final_candidate)
-    final=st.selectbox("Wen empfehlt ihr final?",st.session_state.shortlist,index=idx)
+    final=st.selectbox("Wen empfiehlst du final?",st.session_state.shortlist,index=idx)
     fc=BYID[final]
     st.markdown(f"""<div class="final-choice"><div class="cid">FINALE EMPFEHLUNG</div><b>{final} · {fc['role']}</b></div>""",unsafe_allow_html=True)
-    reasons=st.multiselect("Welche Kriterien tragen eure finale Empfehlung?",CRITERIA,default=st.session_state.final_reasons)
+    reasons=st.multiselect("Welche Kriterien tragen deine finale Empfehlung?",CRITERIA,default=st.session_state.final_reasons)
     final_other=st.text_input("Sonstiges – welches Kriterium?",value=st.session_state.final_other,placeholder="z. B. Ausbildung, Unternehmensgröße, Gesamteindruck …",key="final_other_input") if "Sonstiges" in reasons else ""
-    conf=st.slider("Wie sicher seid ihr euch jetzt?",0,100,st.session_state.final_confidence,5)
+    conf=st.slider("Wie sicher bist du dir jetzt?",0,100,st.session_state.final_confidence,5)
     c1,c2=st.columns(2)
     with c1:
         if st.button("← ZURÜCK",use_container_width=True): goto(3)
@@ -432,68 +494,41 @@ elif st.session_state.phase==4:
 
 # ---------- 5 REVEAL ----------
 elif st.session_state.phase==5:
-    hero("ENTSCHEIDUNG STEHT","BLIND-SPOT CHECK","Der simulierte Search-Prozess ist abgeschlossen. Jetzt beginnt die Reflexion.")
+    hero("ENTSCHEIDUNG STEHT","BLIND-SPOT CHECK","Alle sieben ausgeschiedenen Profile. Je 2–3 Informationen, die im First Screening noch nicht sichtbar waren.")
     excluded=[c["id"] for c in CANDIDATES if c["id"] not in st.session_state.shortlist]
-    reveal_ids=[x for x in ["CANDIDATE F","CANDIDATE G","CANDIDATE I"] if x in excluded][:2]
-    if len(reveal_ids)<2: reveal_ids=excluded[:2]
-
-    for cid in reveal_ids:
+    for cid in excluded:
         c=BYID[cid]
+        reveal_html="".join(f"• {x}<br>" for x in c["blind"])
         st.markdown(f"""<div class="internal"><div class="internal-head"><div><div class="cid">{cid}</div><b>{c['role']}</b></div>
         <span style="color:#667788;font-weight:800">IM FIRST SCREENING AUSGESCHIEDEN</span></div>
-        <p>{c['meta']}<br>{c['facts']}</p>
-        <div class="reflection-box"><b>WAS IM ERSTEN SCREENING NICHT SICHTBAR WAR</b><br>
-        {c['reveal'] if c['reveal']!='—' else c['new']}</div></div>""",unsafe_allow_html=True)
+        <div class="reflection-box"><b>WAS IM ERSTEN SCREENING NICHT SICHTBAR WAR</b><br>{reveal_html}</div></div>""",unsafe_allow_html=True)
         st.session_state.reveal[cid]=st.checkbox(
-            "Mit dieser Information hätten wir diese Person im First Screening näher geprüft.",
+            "Mit diesen Informationen hätte ich diese Person im First Screening näher geprüft.",
             value=st.session_state.reveal.get(cid,False),key=f"rev_{cid}"
         )
-
-    st.markdown("""<div style="color:#FFFFFF;font-size:25px;font-weight:850;margin-top:24px">REFLEXIONSFRAGE</div>
-    <div style="color:#DDE8F1;font-size:13px;margin:4px 0 12px">Keine zweite reale Auswahlrunde – nur Reflexion.</div>""",unsafe_allow_html=True)
-
-    change=st.selectbox(
-        "Würdet ihr eure finale Entscheidung ändern, wenn ihr diese zusätzlichen Informationen vorher gekannt hättet?",
-        ["Nein","Ja"],
-        index=0 if st.session_state.counter_change=="Nein" else 1,
-        key="counter_change_select"
-    )
-    st.session_state.counter_change=change
-
-    if change=="Ja":
-        # Only people who were actually in the decision story:
-        # original Top 3 + the excluded candidates shown in the Blind-Spot reveal.
-        eligible=[]
-        for cid in list(st.session_state.shortlist)+list(reveal_ids):
-            if cid not in eligible and cid != st.session_state.final_candidate:
-                eligible.append(cid)
-        old=st.session_state.counter_candidate
-        idx=eligible.index(old) if old in eligible else 0
-        st.session_state.counter_candidate=st.selectbox(
-            "Welche Person würdet ihr stattdessen wählen?",
-            eligible,index=idx,key="counter_candidate_select"
-        )
-    else:
-        st.session_state.counter_candidate=None
-
+    st.markdown("""<div style="color:#DDE8F1;font-size:13px;margin:14px 0 12px"><b>Wichtig:</b> Keine zweite Auswahlrunde. Die ausgeschiedenen Profile bleiben ausgeschieden. Es geht nur um die Reflexion deiner frühen Vorauswahl.</div>""",unsafe_allow_html=True)
     c1,c2=st.columns(2)
     with c1:
         if st.button("← ZURÜCK",use_container_width=True): goto(4)
     with c2:
-        if st.button("REFLEXION ABSCHLIESSEN →",use_container_width=True): goto(6)
+        if st.button("BLIND-SPOT CHECK ABSCHLIESSEN →",use_container_width=True): goto(6)
 
 # ---------- 6 LIVE HANDOVER ----------
 elif st.session_state.phase==6:
-    hero("LIVE-AUSWERTUNG","Euer Team ist fertig.","Die gemeinsame Auswertung gehört jetzt wieder auf die große Leinwand – nicht auf jedes einzelne Gerät.")
+    hero("LIVE-AUSWERTUNG","Deine Auswahl ist abgeschlossen.","Die gemeinsame Auswertung gehört jetzt wieder auf die große Leinwand – nicht auf dein Gerät.")
+    ok,msg=submit_result()
+    if ok:
+        st.success(msg)
+    else:
+        st.info(msg)
     st.markdown("""<div class="main-card">
-        <span class="status">TEAM-ERGEBNIS VOLLSTÄNDIG</span>
+        <span class="status">ERGEBNIS VOLLSTÄNDIG</span>
         <h2 style="margin-top:14px">Zurück zur gemeinsamen Präsentation.</h2>
-        <p>Wir vergleichen gleich die Ergebnisse aller Search Teams: Shortlists, Auswahlkriterien,
-        Second-Look-Veränderungen, finale Empfehlungen und Blind-Spot-Reaktionen.</p>
+        <p>Wir vergleichen gleich anonym aggregiert: Shortlists, Auswahlkriterien, Second-Look-Veränderungen, finale Empfehlungen und Blind-Spot-Reaktionen zu allen sieben ausgeschiedenen Profilen.</p>
         <div class="lock">Die gemeinsame Auswertung wird von der Moderation gezeigt.</div>
     </div>""",unsafe_allow_html=True)
 
-    st.markdown("### Euer Ergebnis auf einen Blick")
+    st.markdown("### Dein Ergebnis auf einen Blick")
     c1,c2,c3,c4=st.columns(4)
     c1.metric("Top 3",", ".join(x.split()[-1] for x in st.session_state.shortlist))
     c2.metric("Finale Empfehlung",(st.session_state.final_candidate or "—").replace("CANDIDATE ","C"))
