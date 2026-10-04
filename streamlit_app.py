@@ -111,7 +111,7 @@ CANDIDATES = [
 "id":"CANDIDATE A","source":"N","role":"Head of Marketing · Digitalbank","role_de":"Leitung Marketing · Digitalbank",
 "meta":"Süddeutschland (Bayern) · ca. 9 Jahre Berufserfahrung · offen für neue Positionen",
 "career":[("Head of Marketing · Managementteam","Leitung Marketing","ca. 2 Jahre"),("Associate Director Strategy (B2C)","Strategie B2C","ca. 2,5 Jahre"),("Associate Director Pricing","Pricing","ca. 7 Monate"),("Senior Consultant","Markenberatung","ca. 1,5 Jahre"),("Consultant","Markenberatung","ca. 2 Jahre")],
-"education":"Studium nicht näher angegeben · berufsbegleitendes CMO-Programm an einer US-Business-School",
+"education":"Studium nicht näher angegeben · berufsbegleitendes CMO-Programm (Weiterbildung für Chief Marketing Officers / Marketingleitungen) an einer US-Business-School",
 "facts":"Finanzdienstleistung · Brand & Growth · KPI/ROI · B2C/B2B",
 "second":["Disziplinarische Führung von 4 Teams mit 24 Mitarbeitenden, davon 4 Teamleiter:innen.","Premium-Repositionierung mit messbaren Ergebnissen; Social-Media-Kanäle mit Agentur aufgebaut.","CRM und Customer Lifetime Value liegen im eigenen Bereich Marketing Operations.","Gesamtpaket zuletzt ca. 150.000–170.000 EUR; Zielrahmen muss geklärt werden.","Sofort verfügbar, aber mehrere parallele Bewerbungsprozesse in München."],
 "blind":["24 Mitarbeitende in 4 Teams, davon 4 Teamleiter:innen.","CRM und Customer Lifetime Value im eigenen Verantwortungsbereich.","Sofort verfügbar; mehrere parallele Bewerbungsprozesse." ]},
@@ -199,6 +199,12 @@ CRITERIA=[
     "Digitales Kundenmanagement / CRM",
     "Marketingsteuerung",
     "KI-Kompetenz (AI-Literacy)",
+    "Berufserfahrung / Dauer",
+    "Branchenkenntnis",
+    "Position / Seniorität",
+    "Internationale Erfahrung",
+    "Unternehmens- / Konzernerfahrung",
+    "Ausbildung",
     "Sonstiges"
 ]
 
@@ -214,11 +220,11 @@ GLOSSARY = {
 }
 
 # ---------- state ----------
-defaults=dict(participant_id=str(uuid.uuid4()),submitted=False,phase=0,max_phase=0,shortlist=[],screening_index=0,screening_draft=[],criteria=[],criteria_other="",confidence1=60,assessments={},final_candidate=None,final_reasons=[],final_other="",final_confidence=70,reveal={},counter_change="Nein",counter_candidate=None)
+defaults=dict(participant_id=str(uuid.uuid4()),submitted=False,phase=0,max_phase=0,shortlist=[],screening_index=0,screening_draft=[],criteria=[],criteria_other="",confidence1=60,assessments={},second_ranking=[],final_candidate=None,final_reasons=[],final_other="",final_confidence=70,reveal={},counter_change="Nein",counter_candidate=None)
 for k,v in defaults.items():
     if k not in st.session_state: st.session_state[k]=v
 
-PHASES=["Suchauftrag","First Screening","Theorie & Praxis","Second Look","Finale Entscheidung","Blind-Spot Check","Fertig"]
+PHASES=["Suchauftrag","First Screening","Theorie & Praxis","Second Look","Finale Entscheidung","Übergang","Blind-Spot Check","Fertig"]
 
 
 def submit_result():
@@ -240,6 +246,7 @@ def submit_result():
         "criteria_other":st.session_state.criteria_other,
         "confidence_first":st.session_state.confidence1,
         "assessments":st.session_state.assessments,
+        "second_ranking":st.session_state.second_ranking,
         "final_candidate":st.session_state.final_candidate,
         "final_reasons":st.session_state.final_reasons,
         "final_other":st.session_state.final_other,
@@ -259,9 +266,9 @@ def submit_result():
         return False, "Live-Speicherung derzeit nicht erreichbar; deine lokale Session bleibt erhalten."
 
 def progress():
-    p=min(st.session_state.phase,6)
-    st.markdown(f"""<div class="progress-wrap"><div class="progress-line"><div class="progress-fill" style="width:{(p+1)/7*100}%"></div></div>
-    <div class="progress-label"><span>{p+1:02d} / 07</span><span>{PHASES[p].upper()}</span></div></div>""",unsafe_allow_html=True)
+    p=min(st.session_state.phase,7)
+    st.markdown(f"""<div class="progress-wrap"><div class="progress-line"><div class="progress-fill" style="width:{(p+1)/8*100}%"></div></div>
+    <div class="progress-label"><span>{p+1:02d} / 08</span><span>{PHASES[p].upper()}</span></div></div>""",unsafe_allow_html=True)
 
 def hero(kicker,title,sub):
     st.markdown(f"""<div class="hero"><div class="eyebrow">{kicker}</div><h1>{title}</h1><p>{sub}</p></div>""",unsafe_allow_html=True)
@@ -292,17 +299,16 @@ if st.session_state.phase==0:
     <p><b>Besonderheit:</b> Die Versicherung verkauft überwiegend über selbstständige Finanzberater:innen. Die neue Führungskraft muss daher Versicherung, Vertriebspartner und Kund:innen gleichzeitig im Blick behalten.</p>
     <hr>
     <h3>Für das erste Screening achten wir besonders auf:</h3>
-    <p>
-    ✓ <b>Marke & Kundenmanagement</b> – langjährige Erfahrung in Brand und/oder CRM<br>
-    ✓ <b>Führung</b> – Teams und idealerweise auch Führungskräfte leiten<br>
-    ✓ <b>Komplexes / reguliertes Umfeld</b> – z. B. Versicherung, Banking oder ähnlich<br>
-    ✓ <b>Vertriebs- & Markenpartner</b> – mehrere Unternehmen/Marken spielen zusammen (B2B2C / Co-Branding)<br>
-    ✓ <b>Digitales Kundenmanagement / CRM</b> – digitale Kommunikation, Kundendaten, personalisierte Kontakte<br>
-    ✓ <b>Marketingsteuerung</b> – Kampagnen, Agenturen, Medien, Sponsoring und Erfolgsmessung
-    </p>
+    <div style="display:grid;grid-template-columns:minmax(220px,290px) 1fr;gap:6px 16px;line-height:1.45">
+      <div>✓ <b>Marke & Kundenmanagement</b></div><div>langjährige Erfahrung in Brand und/oder CRM</div>
+      <div>✓ <b>Führung</b></div><div>Teams und idealerweise auch Führungskräfte leiten</div>
+      <div>✓ <b>Komplexes / reguliertes Umfeld</b></div><div>z. B. Versicherung, Banking oder ähnlich</div>
+      <div>✓ <b>Vertriebs- & Markenpartner</b></div><div>mehrere Unternehmen/Marken spielen zusammen (B2B2C / Co-Branding)</div>
+      <div>✓ <b>Digitales Kundenmanagement / CRM</b></div><div>digitale Kommunikation, Kundendaten, personalisierte Kontakte</div>
+      <div>✓ <b>Marketingsteuerung</b></div><div>Kampagnen, Agenturen, Medien, Sponsoring und Erfolgsmessung</div>
+    </div>
     <div class="newinfo"><b>Zusätzlich ausdrücklich gefordert:</b> KI-Kompetenz (AI-Literacy) – also ein Grundverständnis dafür, wie KI in Marketing und Kundenmanagement sinnvoll eingesetzt werden kann.</div>
     <div class="newinfo"><b>Rahmenbedingungen:</b> max. 160.000 EUR Gesamtvergütung inkl. Bonus (Fixum ca. 130–135 Tsd. EUR) · München · mindestens 3, gewünscht 3–4 Bürotage/Woche · Start möglichst früh.</div>
-    <p class="small">Gehalt, konkrete Mobilität und Verfügbarkeit der Kandidat:innen stehen nicht in den Profilen; diese Informationen werden erst im Interview sichtbar.</p>
     </div>""",unsafe_allow_html=True)
 
     with st.expander("BEGRIFFE KURZ ERKLÄRT · Was bedeutet was?"):
@@ -347,8 +353,14 @@ elif st.session_state.phase==1:
     </div>""",unsafe_allow_html=True)
 
     if not st.session_state.shortlist:
-        components.html("""<div id="t" style="font-family:Arial;font-weight:800;font-size:18px;color:#0A66C2">03:30</div>
-        <script>let s=210,e=document.getElementById('t');let x=setInterval(()=>{s--;let m=Math.floor(s/60),r=s%60;e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');if(s<=20)e.style.color='#C94E55';if(s<=0){clearInterval(x);e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';}},1000);</script>""",height=38)
+        components.html("""
+        <style>
+          #warn{display:none;margin-top:5px;font-family:Arial;font-size:12px;font-weight:800;color:#C94E55}
+          .blink{animation:blink 0.8s step-end infinite}@keyframes blink{50%{opacity:.25}}
+        </style>
+        <div id="t" style="font-family:Arial;font-weight:800;font-size:18px;color:#0A66C2">04:00</div>
+        <div id="warn">NOCH 30 SEKUNDEN · Bitte Auswahl abschließen.</div>
+        <script>let s=240,e=document.getElementById('t'),w=document.getElementById('warn');let x=setInterval(()=>{s--;let m=Math.floor(s/60),r=s%60;e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');if(s<=30&&s>0){e.style.color='#C94E55';e.classList.add('blink');w.style.display='block';}if(s<=0){clearInterval(x);e.classList.remove('blink');e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';w.innerText='Die Auswahl bleibt offen – bitte jetzt abschließen.';}},1000);</script>""",height=58)
 
     # Compact A–J result navigation. Green = currently on shortlist.
     nav_cols=st.columns(10)
@@ -416,6 +428,14 @@ elif st.session_state.phase==1:
             st.markdown(f"**{term}:** {expl}")
 
     if len(draft)==3:
+        st.markdown("### Deine persönliche Top 3 · bitte auf Rang 1–3 bringen")
+        rank1=st.selectbox("Rang 1",draft,index=0,key="rank1")
+        remaining2=[x for x in draft if x!=rank1]
+        rank2=st.selectbox("Rang 2",remaining2,index=0,key="rank2")
+        rank3=[x for x in remaining2 if x!=rank2][0]
+        st.markdown(f"**Rang 3:** {rank3}")
+        ranked=[rank1,rank2,rank3]
+
         st.markdown("### Was hat deine Auswahl tatsächlich beeinflusst?")
         selected_criteria=st.multiselect(
             "Mehrfachauswahl möglich",
@@ -424,12 +444,12 @@ elif st.session_state.phase==1:
         criteria_other=st.text_input(
             "Sonstiges – welches Kriterium?",
             value=st.session_state.criteria_other,
-            placeholder="z. B. Ausbildung, Unternehmensgröße, Gesamteindruck …"
+            placeholder="z. B. Gesamteindruck oder ein anderer eigener Grund …"
         ) if "Sonstiges" in selected_criteria else ""
         confidence=st.slider("Wie sicher bist du dir bei deiner Shortlist?",0,100,st.session_state.confidence1,5)
 
         if st.button("SHORTLIST BESTÄTIGEN →",use_container_width=True):
-            st.session_state.shortlist=list(draft)
+            st.session_state.shortlist=ranked
             st.session_state.criteria=selected_criteria
             st.session_state.criteria_other=criteria_other
             st.session_state.confidence1=confidence
@@ -449,20 +469,25 @@ elif st.session_state.phase==2:
 
 # ---------- 3 SECOND LOOK ----------
 elif st.session_state.phase==3:
-    hero("SECOND LOOK","Neue Information.","Nur deine ursprüngliche Top 3 erhält zusätzliche Interviewinformationen.")
-    assessments={}
+    hero("SECOND LOOK","Gleiche drei. Neue Informationen.","Prüfe die priorisierten Informationen aus dem Erstinterview – und ordne deine Top 3 danach erneut.")
     for cid in st.session_state.shortlist:
         c=BYID[cid]
         st.markdown(f"""<div class="internal"><div class="internal-head"><div><div class="cid">{cid}</div><b>{c['role']}</b></div><span class="status">SHORTLISTED</span></div>
-        <div class="small">WAS IHR BEREITS WUSSTET</div><p>{c['meta']}<br>{c['facts']}</p>
+        <div class="small">WAS DU BEREITS WUSSTEST</div><p>{c['meta']}<br>{c['facts']}</p>
         <div class="newinfo"><b>PRIORISIERTE INFORMATIONEN AUS DEM ERSTINTERVIEW</b><br>{''.join(f'• {x}<br>' for x in c['second'])}</div></div>""",unsafe_allow_html=True)
-        options=["Positiver","Unverändert","Negativer"]
-        old=st.session_state.assessments.get(cid,"Unverändert")
-        if old.startswith("↑"): old="Positiver"
-        elif old.startswith("↓"): old="Negativer"
-        elif old.startswith("→"): old="Unverändert"
-        assessments[cid]=st.selectbox("Wie verändert diese Information deine Einschätzung?",options,index=options.index(old),key=f"ass_{cid}")
-    st.session_state.assessments=assessments
+
+    st.markdown("### Hat sich deine Reihenfolge verändert?")
+    st.caption("Es bleiben dieselben drei Personen. Ordne nur Rang 1–3 nach den neuen Informationen neu.")
+    base=list(st.session_state.second_ranking or st.session_state.shortlist)
+    r1=st.selectbox("Neuer Rang 1",st.session_state.shortlist,index=st.session_state.shortlist.index(base[0]) if base and base[0] in st.session_state.shortlist else 0,key="second_rank1")
+    rem=[x for x in st.session_state.shortlist if x!=r1]
+    preferred2=base[1] if len(base)>1 and base[1] in rem else rem[0]
+    r2=st.selectbox("Neuer Rang 2",rem,index=rem.index(preferred2),key="second_rank2")
+    r3=[x for x in rem if x!=r2][0]
+    st.markdown(f"**Neuer Rang 3:** {r3}")
+    newrank=[r1,r2,r3]
+    st.session_state.second_ranking=newrank
+    st.session_state.assessments={cid:{"vorher":st.session_state.shortlist.index(cid)+1,"nachher":newrank.index(cid)+1} for cid in st.session_state.shortlist}
     c1,c2=st.columns(2)
     with c1:
         if st.button("← ZURÜCK",use_container_width=True): goto(2)
@@ -473,13 +498,14 @@ elif st.session_state.phase==3:
 elif st.session_state.phase==4:
     hero("FINALE ENTSCHEIDUNG","Eine Person. Eine Empfehlung.","Wähle genau eine Person aus deiner ursprünglichen Top 3.")
     cols=st.columns(3)
-    for i,cid in enumerate(st.session_state.shortlist):
+    for i,cid in enumerate(st.session_state.second_ranking or st.session_state.shortlist):
         c=BYID[cid]
         with cols[i]:
-            st.markdown(f"""<div class="metricbox"><div class="cid">{cid}</div><h3>{c['role']}</h3><p>{c['meta']}</p><p><b>Second Look:</b> {st.session_state.assessments.get(cid,'→ unverändert')}</p></div>""",unsafe_allow_html=True)
+            st.markdown(f"""<div class="metricbox"><div class="cid">{cid}</div><h3>{c['role']}</h3><p>{c['meta']}</p><p><b>Ranking:</b> vorher Rang {st.session_state.shortlist.index(cid)+1} · nach Second Look Rang {(st.session_state.second_ranking or st.session_state.shortlist).index(cid)+1}</p></div>""",unsafe_allow_html=True)
     idx=0
-    if st.session_state.final_candidate in st.session_state.shortlist: idx=st.session_state.shortlist.index(st.session_state.final_candidate)
-    final=st.selectbox("Wen empfiehlst du final?",st.session_state.shortlist,index=idx)
+    final_pool=st.session_state.second_ranking or st.session_state.shortlist
+    if st.session_state.final_candidate in final_pool: idx=final_pool.index(st.session_state.final_candidate)
+    final=st.selectbox("Wen empfiehlst du final?",final_pool,index=idx)
     fc=BYID[final]
     st.markdown(f"""<div class="final-choice"><div class="cid">FINALE EMPFEHLUNG</div><b>{final} · {fc['role']}</b></div>""",unsafe_allow_html=True)
     reasons=st.multiselect("Welche Kriterien tragen deine finale Empfehlung?",CRITERIA,default=st.session_state.final_reasons)
@@ -492,8 +518,14 @@ elif st.session_state.phase==4:
         if st.button("ENTSCHEIDUNG BESTÄTIGEN",use_container_width=True):
             st.session_state.final_candidate=final; st.session_state.final_reasons=reasons; st.session_state.final_other=final_other; st.session_state.final_confidence=conf; goto(5)
 
-# ---------- 5 REVEAL ----------
+# ---------- 5 PAUSE BEFORE BLIND SPOT ----------
 elif st.session_state.phase==5:
+    hero("ENTSCHEIDUNG GESPEICHERT","Bitte kurz Blick nach vorne.","Deine finale Empfehlung steht. Der nächste Schritt wird gemeinsam eingeführt.")
+    st.markdown("""<div class="main-card"><span class="status">STOPP</span><h2 style="margin-top:14px">Noch nicht weiterklicken.</h2><p>Wir erklären jetzt gemeinsam, warum wir noch einmal auf die sieben bereits ausgeschiedenen Profile schauen.</p></div>""",unsafe_allow_html=True)
+    if st.button("BLIND-SPOT CHECK ÖFFNEN →",use_container_width=True): goto(6)
+
+# ---------- 6 REVEAL ----------
+elif st.session_state.phase==6:
     hero("ENTSCHEIDUNG STEHT","BLIND-SPOT CHECK","Alle sieben ausgeschiedenen Profile. Je 2–3 Informationen, die im First Screening noch nicht sichtbar waren.")
     excluded=[c["id"] for c in CANDIDATES if c["id"] not in st.session_state.shortlist]
     for cid in excluded:
@@ -509,31 +541,30 @@ elif st.session_state.phase==5:
     st.markdown("""<div style="color:#DDE8F1;font-size:13px;margin:14px 0 12px"><b>Wichtig:</b> Keine zweite Auswahlrunde. Die ausgeschiedenen Profile bleiben ausgeschieden. Es geht nur um die Reflexion deiner frühen Vorauswahl.</div>""",unsafe_allow_html=True)
     c1,c2=st.columns(2)
     with c1:
-        if st.button("← ZURÜCK",use_container_width=True): goto(4)
+        if st.button("← ZURÜCK",use_container_width=True): goto(5)
     with c2:
-        if st.button("BLIND-SPOT CHECK ABSCHLIESSEN →",use_container_width=True): goto(6)
+        if st.button("BLIND-SPOT CHECK ABSCHLIESSEN →",use_container_width=True): goto(7)
 
-# ---------- 6 LIVE HANDOVER ----------
-elif st.session_state.phase==6:
+# ---------- 7 LIVE HANDOVER ----------
+elif st.session_state.phase==7:
     hero("LIVE-AUSWERTUNG","Deine Auswahl ist abgeschlossen.","Die gemeinsame Auswertung gehört jetzt wieder auf die große Leinwand – nicht auf dein Gerät.")
     ok,msg=submit_result()
     if ok:
         st.success(msg)
     else:
         st.info(msg)
-    st.markdown("""<div class="main-card">
-        <span class="status">ERGEBNIS VOLLSTÄNDIG</span>
-        <h2 style="margin-top:14px">Zurück zur gemeinsamen Präsentation.</h2>
-        <p>Wir vergleichen gleich anonym aggregiert: Shortlists, Auswahlkriterien, Second-Look-Veränderungen, finale Empfehlungen und Blind-Spot-Reaktionen zu allen sieben ausgeschiedenen Profilen.</p>
-        <div class="lock">Die gemeinsame Auswertung wird von der Moderation gezeigt.</div>
-    </div>""",unsafe_allow_html=True)
-
     st.markdown("### Dein Ergebnis auf einen Blick")
-    c1,c2,c3,c4=st.columns(4)
-    c1.metric("Top 3",", ".join(x.split()[-1] for x in st.session_state.shortlist))
-    c2.metric("Finale Empfehlung",(st.session_state.final_candidate or "—").replace("CANDIDATE ","C"))
-    c3.metric("Sicherheit vorher",f"{st.session_state.confidence1}%")
-    c4.metric("Sicherheit final",f"{st.session_state.final_confidence}%")
+    first_rank="  ·  ".join(f"{i+1}. {cid.replace('CANDIDATE ','C')}" for i,cid in enumerate(st.session_state.shortlist))
+    second_rank="  ·  ".join(f"{i+1}. {cid.replace('CANDIDATE ','C')}" for i,cid in enumerate(st.session_state.second_ranking or st.session_state.shortlist))
+    st.markdown(f"""<div class="main-card">
+      <span class="status">ERGEBNIS VOLLSTÄNDIG</span>
+      <h3 style="margin-top:14px">Deine erste Top 3</h3><p style="font-size:20px;font-weight:850">{first_rank}</p>
+      <h3>Deine Top 3 nach dem Second Look</h3><p style="font-size:20px;font-weight:850">{second_rank}</p>
+      <h3>Finale Empfehlung</h3><p style="font-size:24px;font-weight:900">{(st.session_state.final_candidate or '—').replace('CANDIDATE ','C')}</p>
+    </div>""",unsafe_allow_html=True)
+    c1,c2=st.columns(2)
+    c1.metric("Sicherheit First Screening",f"{st.session_state.confidence1}%")
+    c2.metric("Sicherheit final",f"{st.session_state.final_confidence}%")
 
-    if st.button("← ZUR REFLEXION",use_container_width=True):
-        goto(5)
+    if st.button("← ZUM BLIND-SPOT CHECK",use_container_width=True):
+        goto(6)
