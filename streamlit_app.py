@@ -319,6 +319,15 @@ if st.session_state.phase==0:
 
 # ---------- 1 SCREENING ----------
 elif st.session_state.phase==1:
+    # First-Screening-Ranking wie im Second Look: drei Dropdowns statt Rang-Buttons je Profil.
+    _rank_keys = ["first_rank1_v3", "first_rank2_v3", "first_rank3_v3"]
+    _rank_vals = [st.session_state.get(k) for k in _rank_keys]
+    _rank_vals = [v for v in _rank_vals if v and v != "— auswählen —"]
+    if len(_rank_vals) == len(set(_rank_vals)):
+        st.session_state.screening_draft = list(_rank_vals)
+    elif any(k in st.session_state for k in _rank_keys):
+        st.session_state.screening_draft = []
+
     st.markdown("""
     <style>
     .stApp {background:#F3F2EF !important;}
@@ -401,34 +410,27 @@ elif st.session_state.phase==1:
       <p>{c['facts']}</p>
     </div>""",unsafe_allow_html=True)
 
-    draft=list(st.session_state.screening_draft)
-    current_rank=(draft.index(c["id"])+1) if c["id"] in draft else None
-
-    st.markdown("#### Dieses Profil einordnen")
+    # Die Profile werden nur gesichtet; die Rangfolge wird gesammelt wie beim Second Look vergeben.
+    st.markdown("### Deine persönliche Top 3 · bitte auf Rang 1–3 bringen")
+    st.caption("Wähle drei unterschiedliche Kandidat:innen. Die Reihenfolge entspricht deiner persönlichen Shortlist.")
+    rank_options=["— auswählen —"]+[c_["id"] for c_ in CANDIDATES]
+    previous=list(st.session_state.screening_draft)
+    defaults=(previous+[None,None,None])[:3]
     rcols=st.columns(3)
-    for rank_no,col in enumerate(rcols, start=1):
+    selections=[]
+    for pos,col in enumerate(rcols, start=1):
         with col:
-            occupied = len(draft) >= rank_no and draft[rank_no-1] != c["id"]
-            label = f"✓ RANG {rank_no}" if current_rank==rank_no else f"RANG {rank_no}"
-            if st.button(label, key=f"screen_rank_{idx}_{rank_no}", use_container_width=True):
-                candidate_id=c["id"]
-                old_rank=draft.index(candidate_id) if candidate_id in draft else None
-                target=rank_no-1
-                if old_rank is not None:
-                    draft.pop(old_rank)
-                    if old_rank < target:
-                        target -= 1
-                if target < len(draft):
-                    displaced=draft[target]
-                    draft[target]=candidate_id
-                    if old_rank is not None:
-                        insert_at=min(old_rank, len(draft))
-                        draft.insert(insert_at, displaced)
-                else:
-                    draft.append(candidate_id)
-                draft=draft[:3]
-                st.session_state.screening_draft=draft
-                st.rerun()
+            default=defaults[pos-1]
+            idx_default=rank_options.index(default) if default in rank_options else 0
+            selections.append(st.selectbox(f"Rang {pos}", rank_options, index=idx_default, key=f"first_rank{pos}_v3"))
+
+    chosen=[v for v in selections if v != "— auswählen —"]
+    duplicate=len(chosen) != len(set(chosen))
+    if duplicate:
+        st.warning("Bitte vergib jeden Rang an eine andere Person.")
+        st.session_state.screening_draft=[]
+    else:
+        st.session_state.screening_draft=chosen
 
     a,b=st.columns(2)
     with a:
