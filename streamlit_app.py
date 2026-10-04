@@ -20,7 +20,7 @@ background-attachment:fixed;
 h1,h2,h3,p,label,div {{font-family:Arial,sans-serif;}}
 [data-testid="stMarkdownContainer"] > h1,
 [data-testid="stMarkdownContainer"] > h2,
-[data-testid="stMarkdownContainer"] > h3 {{color:{WHITE};}}
+[data-testid="stMarkdownContainer"] > h3 {{color:{WHITE} !important;}}
 [data-testid="stWidgetLabel"] p {{color:{SOFT} !important;font-weight:650;}}
 .main-card h1,.main-card h2,.main-card h3,.main-card p,
 .internal h1,.internal h2,.internal h3,.internal p,
@@ -352,15 +352,17 @@ elif st.session_state.phase==1:
       <div style="font-size:11px;color:#667788;font-weight:800">10 RESULTS</div>
     </div>""",unsafe_allow_html=True)
 
-    if not st.session_state.shortlist:
+    if len(st.session_state.screening_draft) < 3:
         components.html("""
         <style>
-          #warn{display:none;margin-top:5px;font-family:Arial;font-size:12px;font-weight:800;color:#C94E55}
+          body{margin:0;background:transparent}
+          #timerbox{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#FFFFFF;border:2px solid #B9D5EE;border-radius:10px;padding:9px 16px;font-family:Arial;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+          #t{font-weight:900;font-size:32px;line-height:1;color:#0A66C2;letter-spacing:1px}
+          #warn{display:none;margin-top:7px;font-size:14px;font-weight:900;color:#C94E55;text-align:center}
           .blink{animation:blink 0.8s step-end infinite}@keyframes blink{50%{opacity:.25}}
         </style>
-        <div id="t" style="font-family:Arial;font-weight:800;font-size:18px;color:#0A66C2">04:00</div>
-        <div id="warn">NOCH 30 SEKUNDEN · Bitte Auswahl abschließen.</div>
-        <script>let s=240,e=document.getElementById('t'),w=document.getElementById('warn');let x=setInterval(()=>{s--;let m=Math.floor(s/60),r=s%60;e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');if(s<=30&&s>0){e.style.color='#C94E55';e.classList.add('blink');w.style.display='block';}if(s<=0){clearInterval(x);e.classList.remove('blink');e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';w.innerText='Die Auswahl bleibt offen – bitte jetzt abschließen.';}},1000);</script>""",height=58)
+        <div id="timerbox"><div id="t">04:00</div><div id="warn">NOCH 30 SEKUNDEN · Bitte Auswahl abschließen.</div></div>
+        <script>let s=240,e=document.getElementById('t'),w=document.getElementById('warn');let x=setInterval(()=>{s--;let m=Math.floor(s/60),r=s%60;e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');if(s<=30&&s>0){e.style.color='#C94E55';e.classList.add('blink');w.style.display='block';}if(s<=0){clearInterval(x);e.classList.remove('blink');e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';w.innerText='Die Auswahl bleibt offen – bitte jetzt abschließen.';}},1000);</script>""",height=82)
 
     # Compact A–J result navigation. Green = currently on shortlist.
     nav_cols=st.columns(10)
@@ -400,26 +402,49 @@ elif st.session_state.phase==1:
     </div>""",unsafe_allow_html=True)
 
     draft=list(st.session_state.screening_draft)
-    is_selected=c["id"] in draft
-    a,b,cnav=st.columns([1,1.5,1])
+    current_rank=(draft.index(c["id"])+1) if c["id"] in draft else None
+
+    st.markdown("#### Dieses Profil einordnen")
+    rcols=st.columns(3)
+    for rank_no,col in enumerate(rcols, start=1):
+        with col:
+            occupied = len(draft) >= rank_no and draft[rank_no-1] != c["id"]
+            label = f"✓ RANG {rank_no}" if current_rank==rank_no else f"RANG {rank_no}"
+            if st.button(label, key=f"screen_rank_{idx}_{rank_no}", use_container_width=True):
+                candidate_id=c["id"]
+                old_rank=draft.index(candidate_id) if candidate_id in draft else None
+                target=rank_no-1
+                if old_rank is not None:
+                    draft.pop(old_rank)
+                    if old_rank < target:
+                        target -= 1
+                if target < len(draft):
+                    displaced=draft[target]
+                    draft[target]=candidate_id
+                    if old_rank is not None:
+                        insert_at=min(old_rank, len(draft))
+                        draft.insert(insert_at, displaced)
+                else:
+                    draft.append(candidate_id)
+                draft=draft[:3]
+                st.session_state.screening_draft=draft
+                st.rerun()
+
+    a,b=st.columns(2)
     with a:
         if st.button("← VORHERIGES PROFIL",disabled=idx==0,use_container_width=True):
             st.session_state.screening_index=max(0,idx-1); st.rerun()
     with b:
-        if is_selected:
-            if st.button("✓ AUF SHORTLIST · ENTFERNEN",use_container_width=True):
-                draft.remove(c["id"]); st.session_state.screening_draft=draft; st.rerun()
-        else:
-            if st.button("＋ AUF DIE SHORTLIST",disabled=len(draft)>=3,use_container_width=True):
-                draft.append(c["id"]); st.session_state.screening_draft=draft; st.rerun()
-    with cnav:
         if st.button("NÄCHSTES PROFIL →",disabled=idx==9,use_container_width=True):
             st.session_state.screening_index=min(9,idx+1); st.rerun()
 
     draft=st.session_state.screening_draft
     status_cls="shortlist-complete" if len(draft)==3 else "shortlist-open"
-    chosen=" · ".join(x.split()[-1] for x in draft) if draft else "noch niemand"
-    status_text=f"SHORTLIST KOMPLETT · 3 / 3 ✓ · {chosen}" if len(draft)==3 else f"SHORTLIST · {len(draft)} / 3 · {chosen}"
+    if draft:
+        chosen=" · ".join(f"Rang {i+1}: {cid.split()[-1]}" for i,cid in enumerate(draft))
+    else:
+        chosen="noch niemand eingeordnet"
+    status_text=f"TOP 3 KOMPLETT ✓ · {chosen}" if len(draft)==3 else f"TOP 3 · {len(draft)} / 3 · {chosen}"
     st.markdown(f'<div class="{status_cls}">{status_text}</div>',unsafe_allow_html=True)
 
     with st.expander("SEARCH BRIEF & BEGRIFFE NOCHMAL ANSEHEN"):
@@ -428,13 +453,9 @@ elif st.session_state.phase==1:
             st.markdown(f"**{term}:** {expl}")
 
     if len(draft)==3:
-        st.markdown("### Deine persönliche Top 3 · bitte auf Rang 1–3 bringen")
-        rank1=st.selectbox("Rang 1",draft,index=0,key="rank1")
-        remaining2=[x for x in draft if x!=rank1]
-        rank2=st.selectbox("Rang 2",remaining2,index=0,key="rank2")
-        rank3=[x for x in remaining2 if x!=rank2][0]
-        st.markdown(f"**Rang 3:** {rank3}")
-        ranked=[rank1,rank2,rank3]
+        ranked=list(draft)
+        st.markdown("### Deine persönliche Top 3")
+        st.markdown(" · ".join(f"**Rang {i+1}: {cid}**" for i,cid in enumerate(ranked)))
 
         st.markdown("### Was hat deine Auswahl tatsächlich beeinflusst?")
         selected_criteria=st.multiselect(
@@ -477,22 +498,30 @@ elif st.session_state.phase==3:
         <div class="newinfo"><b>PRIORISIERTE INFORMATIONEN AUS DEM ERSTINTERVIEW</b><br>{''.join(f'• {x}<br>' for x in c['second'])}</div></div>""",unsafe_allow_html=True)
 
     st.markdown("### Hat sich deine Reihenfolge verändert?")
-    st.caption("Es bleiben dieselben drei Personen. Ordne nur Rang 1–3 nach den neuen Informationen neu.")
+    st.caption("Es bleiben dieselben drei Personen. Vergib Rang 1–3 nach den neuen Informationen erneut.")
     base=list(st.session_state.second_ranking or st.session_state.shortlist)
-    r1=st.selectbox("Neuer Rang 1",st.session_state.shortlist,index=st.session_state.shortlist.index(base[0]) if base and base[0] in st.session_state.shortlist else 0,key="second_rank1")
-    rem=[x for x in st.session_state.shortlist if x!=r1]
-    preferred2=base[1] if len(base)>1 and base[1] in rem else rem[0]
-    r2=st.selectbox("Neuer Rang 2",rem,index=rem.index(preferred2),key="second_rank2")
-    r3=[x for x in rem if x!=r2][0]
-    st.markdown(f"**Neuer Rang 3:** {r3}")
+    opts=list(st.session_state.shortlist)
+    rc1,rc2,rc3=st.columns(3)
+    with rc1:
+        r1=st.selectbox("Neuer Rang 1",opts,index=opts.index(base[0]),key="second_rank1_v2")
+    with rc2:
+        r2=st.selectbox("Neuer Rang 2",opts,index=opts.index(base[1]),key="second_rank2_v2")
+    with rc3:
+        r3=st.selectbox("Neuer Rang 3",opts,index=opts.index(base[2]),key="second_rank3_v2")
     newrank=[r1,r2,r3]
-    st.session_state.second_ranking=newrank
-    st.session_state.assessments={cid:{"vorher":st.session_state.shortlist.index(cid)+1,"nachher":newrank.index(cid)+1} for cid in st.session_state.shortlist}
+    valid_rank=len(set(newrank))==3
+    if not valid_rank:
+        st.error("Bitte jede Person genau einmal vergeben: Rang 1, Rang 2 und Rang 3.")
+    else:
+        st.markdown("<div class='lock'>✓ Ranking vollständig: "+" · ".join(f"Rang {i+1}: {cid}" for i,cid in enumerate(newrank))+"</div>",unsafe_allow_html=True)
     c1,c2=st.columns(2)
     with c1:
         if st.button("← ZURÜCK",use_container_width=True): goto(2)
     with c2:
-        if st.button("ZUR FINALEN ENTSCHEIDUNG →",use_container_width=True): goto(4)
+        if st.button("RANKING ÜBERNEHMEN · ZUR FINALEN ENTSCHEIDUNG →",disabled=not valid_rank,use_container_width=True):
+            st.session_state.second_ranking=newrank
+            st.session_state.assessments={cid:{"vorher":st.session_state.shortlist.index(cid)+1,"nachher":newrank.index(cid)+1} for cid in st.session_state.shortlist}
+            goto(4)
 
 # ---------- 4 FINAL ----------
 elif st.session_state.phase==4:
@@ -554,17 +583,32 @@ elif st.session_state.phase==7:
     else:
         st.info(msg)
     st.markdown("### Dein Ergebnis auf einen Blick")
-    first_rank="  ·  ".join(f"{i+1}. {cid.replace('CANDIDATE ','C')}" for i,cid in enumerate(st.session_state.shortlist))
-    second_rank="  ·  ".join(f"{i+1}. {cid.replace('CANDIDATE ','C')}" for i,cid in enumerate(st.session_state.second_ranking or st.session_state.shortlist))
+    first_rank="  ·  ".join(f"{i+1}. {cid.split()[-1]}" for i,cid in enumerate(st.session_state.shortlist))
+    second_rank="  ·  ".join(f"{i+1}. {cid.split()[-1]}" for i,cid in enumerate(st.session_state.second_ranking or st.session_state.shortlist))
     st.markdown(f"""<div class="main-card">
       <span class="status">ERGEBNIS VOLLSTÄNDIG</span>
       <h3 style="margin-top:14px">Deine erste Top 3</h3><p style="font-size:20px;font-weight:850">{first_rank}</p>
       <h3>Deine Top 3 nach dem Second Look</h3><p style="font-size:20px;font-weight:850">{second_rank}</p>
-      <h3>Finale Empfehlung</h3><p style="font-size:24px;font-weight:900">{(st.session_state.final_candidate or '—').replace('CANDIDATE ','C')}</p>
+      <h3>Finale Empfehlung</h3><p style="font-size:24px;font-weight:900">{(st.session_state.final_candidate or '—').split()[-1] if st.session_state.final_candidate else '—'}</p>
     </div>""",unsafe_allow_html=True)
     c1,c2=st.columns(2)
     c1.metric("Sicherheit First Screening",f"{st.session_state.confidence1}%")
     c2.metric("Sicherheit final",f"{st.session_state.final_confidence}%")
+
+    if st.session_state.final_candidate:
+        fc=BYID[st.session_state.final_candidate]
+        final_info="".join(f"<li>{x}</li>" for x in fc["second"])
+        reasons_txt=" · ".join(st.session_state.final_reasons + ([st.session_state.final_other] if st.session_state.final_other else [])) or "keine zusätzlichen Kriterien angegeben"
+        st.markdown(f"""<div class="main-card" style="margin-top:14px">
+          <span class="tag">DISKUSSGRUNDLAGE</span>
+          <h2 style="margin-top:12px">Deine finale Empfehlung: {st.session_state.final_candidate}</h2>
+          <p><b>{fc['role']}</b><br>{fc['role_de']}</p>
+          <p><b>Profil:</b> {fc['meta']}</p>
+          <p>{fc['facts']}</p>
+          <h3>Zusatzinformationen aus dem Second Look</h3>
+          <ul>{final_info}</ul>
+          <p><b>Deine Entscheidungsgründe:</b> {reasons_txt}</p>
+        </div>""",unsafe_allow_html=True)
 
     if st.button("← ZUM BLIND-SPOT CHECK",use_container_width=True):
         goto(6)
