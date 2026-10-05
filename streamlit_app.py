@@ -239,19 +239,31 @@ def submit_result():
         url=key=""
     if not url or not key:
         return False, "Demo-Modus: zentrale Live-Speicherung ist noch nicht verbunden."
+    first = list(st.session_state.shortlist or [])
+    second = list(st.session_state.second_ranking or st.session_state.shortlist or [])
+    final_reason_parts = list(st.session_state.final_reasons or [])
+    if st.session_state.final_other:
+        final_reason_parts.append(st.session_state.final_other)
     payload={
         "participant_id":st.session_state.participant_id,
-        "shortlist":st.session_state.shortlist,
-        "criteria":st.session_state.criteria,
-        "criteria_other":st.session_state.criteria_other,
+        "first_rank_1": first[0] if len(first) > 0 else None,
+        "first_rank_2": first[1] if len(first) > 1 else None,
+        "first_rank_3": first[2] if len(first) > 2 else None,
+        "first_criteria": {
+            "selected": st.session_state.criteria,
+            "other": st.session_state.criteria_other,
+            "assessments": st.session_state.assessments,
+        },
+        "first_reason": st.session_state.criteria_other or None,
         "confidence_first":st.session_state.confidence1,
-        "assessments":st.session_state.assessments,
-        "second_ranking":st.session_state.second_ranking,
+        "second_rank_1": second[0] if len(second) > 0 else None,
+        "second_rank_2": second[1] if len(second) > 1 else None,
+        "second_rank_3": second[2] if len(second) > 2 else None,
         "final_candidate":st.session_state.final_candidate,
-        "final_reasons":st.session_state.final_reasons,
-        "final_other":st.session_state.final_other,
+        "final_reason":" · ".join(final_reason_parts) if final_reason_parts else None,
         "confidence_final":st.session_state.final_confidence,
-        "blindspot":st.session_state.reveal
+        "blind_spot":st.session_state.reveal,
+        "completed":True,
     }
     req=urllib.request.Request(
         url+"/rest/v1/executive_search_results",
@@ -584,12 +596,12 @@ elif st.session_state.phase==7:
         st.success(msg)
     else:
         st.info(msg)
-    st.markdown("### Dein Ergebnis auf einen Blick")
+    st.markdown('<h3 style="color:#FFFFFF !important;">Dein Ergebnis auf einen Blick</h3>', unsafe_allow_html=True)
     first_rank="  ·  ".join(f"{i+1}. {cid.split()[-1]}" for i,cid in enumerate(st.session_state.shortlist))
     second_rank="  ·  ".join(f"{i+1}. {cid.split()[-1]}" for i,cid in enumerate(st.session_state.second_ranking or st.session_state.shortlist))
     st.markdown(f"""<div class="main-card">
       <span class="status">ERGEBNIS VOLLSTÄNDIG</span>
-      <h3 style="margin-top:14px">Deine erste Top 3</h3><p style="font-size:20px;font-weight:850">{first_rank}</p>
+      <h3 style="margin-top:14px">Deine ersten Top 3</h3><p style="font-size:20px;font-weight:850">{first_rank}</p>
       <h3>Deine Top 3 nach dem Second Look</h3><p style="font-size:20px;font-weight:850">{second_rank}</p>
       <h3>Finale Empfehlung</h3><p style="font-size:24px;font-weight:900">{(st.session_state.final_candidate or '—').split()[-1] if st.session_state.final_candidate else '—'}</p>
     </div>""",unsafe_allow_html=True)
