@@ -139,6 +139,8 @@ p,
     border-radius: 16px;
     padding: 12px 18px;
     overflow-x: auto;
+    margin-top: 8px;
+    margin-bottom: 18px;
 }
 
 .live-table {
@@ -156,6 +158,10 @@ p,
 
 .live-table th {
     font-weight: 800;
+}
+
+.live-table tr:last-child td {
+    border-bottom: none;
 }
 
 
@@ -305,6 +311,7 @@ def short_candidate(value):
     return (
         str(value)
         .replace("KANDIDAT ", "")
+        .replace("KANDIDATIN ", "")
         .replace("CANDIDATE ", "")
         .strip()
     )
@@ -319,19 +326,11 @@ def show_counter(
     st.subheader(title)
 
     if not counter:
-
-        st.caption(
-            "Noch keine Daten vorhanden."
-        )
-
+        st.caption("Noch keine Daten vorhanden.")
         return
 
     items = counter.most_common()
-
-    max_value = (
-        max(value for _, value in items)
-        or 1
-    )
+    max_value = max(value for _, value in items) or 1
 
     bars = []
 
@@ -339,30 +338,31 @@ def show_counter(
 
         width = max(
             4,
-            round(
-                value / max_value * 100
-            )
+            round(value / max_value * 100)
         )
 
+        # WICHTIG:
+        # HTML bewusst als EINZEILIGER String.
+        # Dadurch interpretiert Streamlit die HTML-Tags
+        # nicht als Markdown-Codeblock.
         bars.append(
-            f"""
-            <div class="live-bar-row">
-                <div class="live-bar-label">{label}</div>
-                <div class="live-bar-track">
-                    <div
-                        class="live-bar-fill"
-                        style="width:{width}%">
-                    </div>
-                </div>
-                <div class="live-bar-value">{value}</div>
-            </div>
-            """
+            f'<div class="live-bar-row">'
+            f'<div class="live-bar-label">{label}</div>'
+            f'<div class="live-bar-track">'
+            f'<div class="live-bar-fill" style="width:{width}%"></div>'
+            f'</div>'
+            f'<div class="live-bar-value">{value}</div>'
+            f'</div>'
         )
 
-    st.markdown(
+    chart_html = (
         '<div class="live-chart">'
         + ''.join(bars)
-        + '</div>',
+        + '</div>'
+    )
+
+    st.markdown(
+        chart_html,
         unsafe_allow_html=True,
     )
 
@@ -646,7 +646,7 @@ if total_second > 0:
 
 
     # --------------------------------------------------------
-    # ZWEI KENNZAHLEN
+    # ZWEI SINNVOLLE KENNZAHLEN
     # --------------------------------------------------------
 
     c1, c2 = st.columns(2)
@@ -664,27 +664,25 @@ if total_second > 0:
             )
         )
 
-        st.markdown(
-            f"""
-            <div style="
-                background:#ffffff;
-                border-radius:12px;
-                padding:14px 18px;
-                margin-top:-8px;
-                margin-bottom:18px;
-                color:#14283B;
-                font-size:1rem;
-            ">
-                <strong style="color:#14283B !important;">
-                    {moved_pct} %
-                </strong>
+        changed_info_html = (
+            '<div style="'
+            'background:#ffffff;'
+            'border-radius:12px;'
+            'padding:14px 18px;'
+            'margin-top:-8px;'
+            'margin-bottom:18px;'
+            'color:#14283B;'
+            'font-size:1rem;'
+            '">'
+            f'<strong style="color:#14283B !important;">{moved_pct} %</strong> '
+            '<span style="color:#14283B !important;">'
+            'haben ihre Top 3 nach den zusätzlichen Informationen neu gereiht.'
+            '</span>'
+            '</div>'
+        )
 
-                <span style="color:#14283B !important;">
-                    haben ihre Top 3 nach den zusätzlichen
-                    Informationen neu gereiht.
-                </span>
-            </div>
-            """,
+        st.markdown(
+            changed_info_html,
             unsafe_allow_html=True,
         )
 
@@ -701,26 +699,25 @@ if total_second > 0:
             )
         )
 
-        st.markdown(
-            f"""
-            <div style="
-                background:#ffffff;
-                border-radius:12px;
-                padding:14px 18px;
-                margin-top:-8px;
-                margin-bottom:18px;
-                color:#14283B;
-                font-size:1rem;
-            ">
-                <strong style="color:#14283B !important;">
-                    {unchanged_pct} %
-                </strong>
+        unchanged_info_html = (
+            '<div style="'
+            'background:#ffffff;'
+            'border-radius:12px;'
+            'padding:14px 18px;'
+            'margin-top:-8px;'
+            'margin-bottom:18px;'
+            'color:#14283B;'
+            'font-size:1rem;'
+            '">'
+            f'<strong style="color:#14283B !important;">{unchanged_pct} %</strong> '
+            '<span style="color:#14283B !important;">'
+            'blieben bei ihrer ursprünglichen Reihenfolge.'
+            '</span>'
+            '</div>'
+        )
 
-                <span style="color:#14283B !important;">
-                    blieben bei ihrer ursprünglichen Reihenfolge.
-                </span>
-            </div>
-            """,
+        st.markdown(
+            unchanged_info_html,
             unsafe_allow_html=True,
         )
 
@@ -765,9 +762,7 @@ if total_second > 0:
 
 
                 # Beispiel:
-                # Rang 3 -> Rang 1
-                # ergibt +2 Rangplätze
-
+                # Rang 3 -> Rang 1 = +2
                 change = (
                     old_rank - new_rank
                 )
@@ -792,27 +787,9 @@ if total_second > 0:
 
 
     st.markdown(
-        """
-        <div style="
-            color:#ffffff;
-            font-size:1rem;
-            margin-bottom:18px;
-        ">
-
-            Die Werte zeigen die Veränderung der Rangplätze
-            über alle Teilnehmenden hinweg.
-
-            <strong style="color:#ffffff !important;">
-                + bedeutet: nach oben gerückt.
-            </strong>
-
-            <strong style="color:#ffffff !important;">
-                − bedeutet: nach unten gerückt.
-            </strong>
-
-        </div>
-        """,
-        unsafe_allow_html=True,
+        "Die Werte zeigen die Veränderung der Rangplätze über alle "
+        "Teilnehmenden hinweg. **+ bedeutet: nach oben gerückt. "
+        "− bedeutet: nach unten gerückt.**"
     )
 
 
@@ -860,59 +837,40 @@ if total_second > 0:
                 interpretation = "nach unten"
 
 
+            # Auch hier bewusst EINZEILIGES HTML
             rows_html.append(
-                f"""
-                <tr>
-                    <td>
-                        <strong>{cand}</strong>
-                    </td>
-
-                    <td>
-                        {gained}
-                    </td>
-
-                    <td>
-                        {lost}
-                    </td>
-
-                    <td>
-                        <strong>{result}</strong>
-                    </td>
-
-                    <td>
-                        {interpretation}
-                    </td>
-                </tr>
-                """
+                f'<tr>'
+                f'<td><strong>{cand}</strong></td>'
+                f'<td>{gained}</td>'
+                f'<td>{lost}</td>'
+                f'<td><strong>{result}</strong></td>'
+                f'<td>{interpretation}</td>'
+                f'</tr>'
             )
 
 
+        movement_table_html = (
+            '<div class="live-table-wrap">'
+            '<table class="live-table">'
+            '<thead>'
+            '<tr>'
+            '<th>Profil</th>'
+            '<th>Rangplätze gewonnen</th>'
+            '<th>Rangplätze verloren</th>'
+            '<th>Netto</th>'
+            '<th>Tendenz</th>'
+            '</tr>'
+            '</thead>'
+            '<tbody>'
+            + ''.join(rows_html)
+            + '</tbody>'
+            '</table>'
+            '</div>'
+        )
+
+
         st.markdown(
-            """
-            <div class="live-table-wrap">
-
-                <table class="live-table">
-
-                    <thead>
-                        <tr>
-                            <th>Profil</th>
-                            <th>Rangplätze gewonnen</th>
-                            <th>Rangplätze verloren</th>
-                            <th>Netto</th>
-                            <th>Tendenz</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-            """
-            + "".join(rows_html)
-            + """
-                    </tbody>
-
-                </table>
-
-            </div>
-            """,
+            movement_table_html,
             unsafe_allow_html=True,
         )
 
@@ -990,71 +948,38 @@ if blind_total:
         )
 
 
+        # Bewusst EINZEILIGES HTML
         rows_html.append(
-            f"""
-            <tr>
-
-                <td>
-                    {cand}
-                </td>
-
-                <td>
-                    {yes_count}
-                </td>
-
-                <td>
-                    {total}
-                </td>
-
-                <td>
-                    <strong>{yes_share}</strong>
-                </td>
-
-            </tr>
-            """
+            f'<tr>'
+            f'<td>{cand}</td>'
+            f'<td>{yes_count}</td>'
+            f'<td>{total}</td>'
+            f'<td><strong>{yes_share}</strong></td>'
+            f'</tr>'
         )
 
 
+    blind_table_html = (
+        '<div class="live-table-wrap">'
+        '<table class="live-table">'
+        '<thead>'
+        '<tr>'
+        '<th>Kandidat:in</th>'
+        '<th>Ja – hätte ich näher geprüft</th>'
+        '<th>Antworten gesamt</th>'
+        '<th>Ja-Anteil</th>'
+        '</tr>'
+        '</thead>'
+        '<tbody>'
+        + ''.join(rows_html)
+        + '</tbody>'
+        '</table>'
+        '</div>'
+    )
+
+
     st.markdown(
-        """
-        <div class="live-table-wrap">
-
-            <table class="live-table">
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Kandidat:in
-                        </th>
-
-                        <th>
-                            Ja – hätte ich näher geprüft
-                        </th>
-
-                        <th>
-                            Antworten gesamt
-                        </th>
-
-                        <th>
-                            Ja-Anteil
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-        """
-        + "".join(rows_html)
-        + """
-                </tbody>
-
-            </table>
-
-        </div>
-        """,
+        blind_table_html,
         unsafe_allow_html=True,
     )
 
