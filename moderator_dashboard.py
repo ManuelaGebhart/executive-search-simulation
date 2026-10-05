@@ -1,7 +1,6 @@
 import json
 import urllib.request
 from collections import Counter
-from html import escape
 
 import streamlit as st
 
@@ -18,7 +17,7 @@ st.set_page_config(
 
 
 # ============================================================
-# DESIGN / CSS
+# DESIGN
 # ============================================================
 
 st.markdown(
@@ -44,16 +43,16 @@ st.markdown(
     padding-bottom: 4rem;
 }
 
+.stApp > header {
+    background: transparent;
+}
+
+
 /* ---------------------------------------------------------
    SCHRIFT AUF BLAUEM HINTERGRUND
 --------------------------------------------------------- */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
+h1, h2, h3, h4, h5, h6,
 p,
 [data-testid="stCaptionContainer"],
 [data-testid="stMarkdownContainer"] {
@@ -65,10 +64,6 @@ p,
     color: inherit !important;
 }
 
-.stApp > header {
-    background: transparent;
-}
-
 
 /* ---------------------------------------------------------
    METRIC-KARTEN
@@ -77,7 +72,8 @@ p,
 [data-testid="stMetric"] {
     background: #FFFFFF;
     border-radius: 16px;
-    padding: 18px 22px;
+    padding: 20px 22px;
+    min-height: 145px;
 }
 
 [data-testid="stMetric"] * {
@@ -86,25 +82,14 @@ p,
 
 
 /* ---------------------------------------------------------
-   DATAFRAME
---------------------------------------------------------- */
-
-[data-testid="stDataFrame"] {
-    background: #FFFFFF;
-    border-radius: 16px;
-    padding: 8px;
-}
-
-
-/* ---------------------------------------------------------
-   BALKENDIAGRAMME
+   DIAGRAMM-KARTEN
 --------------------------------------------------------- */
 
 .live-chart {
     background: #FFFFFF;
     border-radius: 16px;
     padding: 22px 24px;
-    margin: 8px 0 18px 0;
+    margin: 8px 0 18px;
 }
 
 .live-bar-row {
@@ -115,15 +100,13 @@ p,
     margin: 14px 0;
 }
 
-.live-bar-label {
-    color: #14283B !important;
-    font-weight: 700;
-    line-height: 1.25;
-}
-
+.live-bar-label,
 .live-bar-value {
     color: #14283B !important;
     font-weight: 700;
+}
+
+.live-bar-value {
     text-align: right;
     font-size: 1.05rem;
 }
@@ -143,14 +126,15 @@ p,
 
 
 /* ---------------------------------------------------------
-   BLIND-SPOT-TABELLE
+   TABELLEN
 --------------------------------------------------------- */
 
 .live-table-wrap {
     background: #FFFFFF;
     border-radius: 16px;
-    padding: 12px 18px;
+    padding: 14px 20px;
     overflow-x: auto;
+    margin-top: 10px;
 }
 
 .live-table {
@@ -161,7 +145,7 @@ p,
 .live-table th,
 .live-table td {
     color: #14283B !important;
-    padding: 12px 10px;
+    padding: 14px 12px;
     border-bottom: 1px solid #E4EAF0;
     text-align: left;
 }
@@ -176,7 +160,26 @@ p,
 
 
 /* ---------------------------------------------------------
-   MOBILE / KLEINERE BILDSCHIRME
+   ERKLÄRUNGSBOX SECOND LOOK
+--------------------------------------------------------- */
+
+.second-look-explanation {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 12px;
+    padding: 15px 18px;
+    margin: 8px 0 20px 0;
+    color: #FFFFFF !important;
+    font-size: 1rem;
+}
+
+.second-look-explanation strong {
+    color: #FFFFFF !important;
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
 --------------------------------------------------------- */
 
 @media (max-width: 800px) {
@@ -195,7 +198,7 @@ p,
 
 
 # ============================================================
-# KOPFBEREICH
+# KOPF
 # ============================================================
 
 st.title("LIVE-AUSWERTUNG · EXECUTIVE SEARCH")
@@ -206,7 +209,7 @@ st.caption(
 
 
 # ============================================================
-# SUPABASE VERBINDUNG
+# SUPABASE
 # ============================================================
 
 try:
@@ -238,7 +241,7 @@ if not SUPABASE_URL or not SERVICE_KEY:
 
 
 # ============================================================
-# DATEN AUS SUPABASE LADEN
+# DATEN LADEN
 # ============================================================
 
 def load_rows():
@@ -294,7 +297,7 @@ if st.button(
 
 
 # ============================================================
-# ANZAHL ABGESCHLOSSENER ENTSCHEIDUNGEN
+# TEILNEHMENDE
 # ============================================================
 
 st.metric(
@@ -324,6 +327,7 @@ def short_candidate(value):
     return (
         str(value)
         .replace("KANDIDAT ", "")
+        .replace("KANDIDATIN ", "")
         .replace("CANDIDATE ", "")
         .strip()
     )
@@ -347,10 +351,10 @@ def show_counter(
 
     items = counter.most_common()
 
-    max_value = max(
-        value
-        for _, value in items
-    ) or 1
+    max_value = (
+        max(value for _, value in items)
+        or 1
+    )
 
     bars = []
 
@@ -363,36 +367,45 @@ def show_counter(
             )
         )
 
-        safe_label = escape(str(label))
-        safe_value = escape(str(value))
+        bars.append(
+            f"""
+            <div class="live-bar-row">
 
-        bar_html = (
-            '<div class="live-bar-row">'
-            f'<div class="live-bar-label">{safe_label}</div>'
-            '<div class="live-bar-track">'
-            f'<div class="live-bar-fill" style="width:{width}%"></div>'
-            '</div>'
-            f'<div class="live-bar-value">{safe_value}</div>'
-            '</div>'
+                <div class="live-bar-label">
+                    {label}
+                </div>
+
+                <div class="live-bar-track">
+                    <div
+                        class="live-bar-fill"
+                        style="width:{width}%">
+                    </div>
+                </div>
+
+                <div class="live-bar-value">
+                    {value}
+                </div>
+
+            </div>
+            """
         )
 
-        bars.append(bar_html)
-
-    chart_html = (
-        '<div class="live-chart">'
-        + "".join(bars)
-        + '</div>'
-    )
-
     st.markdown(
-        chart_html,
-        unsafe_allow_html=True
+        '<div class="live-chart">'
+        + ''.join(bars)
+        + '</div>',
+        unsafe_allow_html=True,
     )
 
 
 # ============================================================
-# 1 · FIRST SCREENING
+# DATEN AUFBEREITEN
 # ============================================================
+
+
+# ------------------------------------------------------------
+# 1. FIRST SCREENING
+# ------------------------------------------------------------
 
 first_frequency = Counter()
 first_points = Counter()
@@ -423,9 +436,9 @@ for row in rows:
             }[rank]
 
 
-# ============================================================
-# 2 · AUSWAHLKRITERIEN
-# ============================================================
+# ------------------------------------------------------------
+# 2. AUSWAHLKRITERIEN
+# ------------------------------------------------------------
 
 criteria = Counter()
 
@@ -455,14 +468,16 @@ for row in rows:
             criteria[str(item)] += 1
 
 
-# ============================================================
-# 3 · SECOND LOOK
-# ============================================================
+# ------------------------------------------------------------
+# 3. SECOND LOOK
+# ------------------------------------------------------------
 
 moved = 0
 unchanged = 0
 
-movement_by_candidate = Counter()
+net_movement = Counter()
+upward_moves = Counter()
+downward_moves = Counter()
 
 
 for row in rows:
@@ -481,6 +496,9 @@ for row in rows:
         for i in (1, 2, 3)
     ]
 
+
+    # Nur vollständige Rankings vergleichen
+
     if all(first) and all(second):
 
         if first == second:
@@ -489,20 +507,46 @@ for row in rows:
         else:
             moved += 1
 
+
+        # Rangbewegungen pro Kandidat:in
+
         for cand in set(first) & set(second):
 
-            delta = (
-                first.index(cand)
-                - second.index(cand)
+            old_rank = (
+                first.index(cand) + 1
             )
 
-            if delta != 0:
-                movement_by_candidate[cand] += 1
+            new_rank = (
+                second.index(cand) + 1
+            )
 
 
-# ============================================================
-# 4 · FINALE EMPFEHLUNGEN
-# ============================================================
+            # Beispiel:
+            # Rang 3 -> Rang 1
+            # 3 - 1 = +2
+            # Kandidat:in gewinnt 2 Plätze
+
+            change = (
+                old_rank - new_rank
+            )
+
+
+            net_movement[cand] += change
+
+
+            if change > 0:
+
+                upward_moves[cand] += change
+
+
+            elif change < 0:
+
+                downward_moves[cand] += abs(change)
+
+
+# ------------------------------------------------------------
+# 4. FINALE EMPFEHLUNGEN
+# ------------------------------------------------------------
 
 finals = Counter(
     short_candidate(
@@ -513,9 +557,9 @@ finals = Counter(
 )
 
 
-# ============================================================
-# 5 · BLIND-SPOT CHECK
-# ============================================================
+# ------------------------------------------------------------
+# 5. BLIND SPOT
+# ------------------------------------------------------------
 
 blind_yes = Counter()
 blind_total = Counter()
@@ -523,9 +567,11 @@ blind_total = Counter()
 
 for row in rows:
 
-    obj = row.get(
-        "blind_spot"
-    ) or {}
+    obj = (
+        row.get("blind_spot")
+        or {}
+    )
+
 
     if isinstance(obj, str):
 
@@ -534,6 +580,7 @@ for row in rows:
 
         except Exception:
             obj = {}
+
 
     if isinstance(obj, dict):
 
@@ -548,6 +595,7 @@ for row in rows:
 
             blind_total[cand] += 1
 
+
             yes = (
                 answer is True
                 or str(answer)
@@ -558,17 +606,18 @@ for row in rows:
                     "yes",
                     "true",
                     "1",
-                    "würde ich näher prüfen"
+                    "würde ich näher prüfen",
                 }
             )
+
 
             if yes:
                 blind_yes[cand] += 1
 
 
-# ============================================================
-# 6 · SICHERHEIT
-# ============================================================
+# ------------------------------------------------------------
+# 6. SICHERHEIT
+# ------------------------------------------------------------
 
 conf_first = [
     r.get("confidence_first")
@@ -578,6 +627,7 @@ conf_first = [
         (int, float)
     )
 ]
+
 
 conf_final = [
     r.get("confidence_final")
@@ -590,19 +640,15 @@ conf_final = [
 
 
 # ============================================================
-# DARSTELLUNG
-# ============================================================
-
-
-# ------------------------------------------------------------
 # 1 · FIRST SCREENING
-# ------------------------------------------------------------
+# ============================================================
 
 st.markdown("---")
 
 st.header(
     "1 · First Screening"
 )
+
 
 c1, c2 = st.columns(2)
 
@@ -623,15 +669,16 @@ with c2:
     )
 
 
-# ------------------------------------------------------------
-# 2 · AUSWAHLKRITERIEN
-# ------------------------------------------------------------
+# ============================================================
+# 2 · KRITERIEN
+# ============================================================
 
 st.markdown("---")
 
 st.header(
     "2 · Welche Kriterien haben die Auswahl geprägt?"
 )
+
 
 show_counter(
     "Auswahlkriterien im First Screening",
@@ -640,9 +687,9 @@ show_counter(
 )
 
 
-# ------------------------------------------------------------
+# ============================================================
 # 3 · SECOND LOOK
-# ------------------------------------------------------------
+# ============================================================
 
 st.markdown("---")
 
@@ -651,36 +698,262 @@ st.header(
 )
 
 
-a, b, c = st.columns(3)
-
-
-a.metric(
-    "Rangfolge verändert",
-    moved
-)
-
-b.metric(
-    "Rangfolge unverändert",
-    unchanged
-)
-
-c.metric(
-    "Ausgewertete Second Looks",
+total_second = (
     moved + unchanged
 )
 
 
-if movement_by_candidate:
+if total_second > 0:
 
-    show_counter(
-        "Bei welchen Profilen änderte sich die Position?",
-        movement_by_candidate
+    moved_pct = round(
+        moved / total_second * 100
+    )
+
+    unchanged_pct = round(
+        unchanged / total_second * 100
     )
 
 
-# ------------------------------------------------------------
+    c1, c2 = st.columns(2)
+
+
+    # --------------------------------------------------------
+    # RANGFOLGE VERÄNDERT
+    # --------------------------------------------------------
+
+    with c1:
+
+        st.metric(
+            "Rangfolge verändert",
+            f"{moved} von {total_second}",
+            help=(
+                "Anzahl der Personen, deren Reihenfolge "
+                "der persönlichen Top 3 nach dem Second Look "
+                "nicht mehr identisch mit dem First Screening war."
+            ),
+        )
+
+        st.markdown(
+            f"""
+            <div class="second-look-explanation">
+
+                <strong>{moved_pct} %</strong>
+                haben ihre Top 3 nach den zusätzlichen
+                Informationen neu gereiht.
+
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+    # --------------------------------------------------------
+    # RANGFOLGE UNVERÄNDERT
+    # --------------------------------------------------------
+
+    with c2:
+
+        st.metric(
+            "Rangfolge unverändert",
+            f"{unchanged} von {total_second}",
+            help=(
+                "Anzahl der Personen, deren Reihenfolge "
+                "der persönlichen Top 3 nach dem Second Look "
+                "exakt gleich geblieben ist."
+            ),
+        )
+
+        st.markdown(
+            f"""
+            <div class="second-look-explanation">
+
+                <strong>{unchanged_pct} %</strong>
+                blieben bei ihrer ursprünglichen Reihenfolge.
+
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+    # --------------------------------------------------------
+    # BEWEGUNGSANALYSE
+    # --------------------------------------------------------
+
+    st.subheader(
+        "Welche Profile gewannen oder verloren nach dem Second Look?"
+    )
+
+
+    st.markdown(
+        """
+        <div class="second-look-explanation">
+
+        Hier wird sichtbar, wie sich die Positionen innerhalb
+        der persönlichen Top 3 verändert haben.
+
+        <br><br>
+
+        <strong>+ bedeutet:</strong>
+        Das Profil ist nach zusätzlichen Informationen
+        insgesamt nach oben gerückt.
+
+        <br>
+
+        <strong>− bedeutet:</strong>
+        Das Profil ist insgesamt nach unten gerückt.
+
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+    movement_items = [
+        (cand, value)
+        for cand, value
+        in net_movement.items()
+        if value != 0
+    ]
+
+
+    movement_items.sort(
+        key=lambda x: x[1],
+        reverse=True
+    )
+
+
+    if movement_items:
+
+        rows_html = []
+
+
+        for cand, net_value in movement_items:
+
+            gained = upward_moves.get(
+                cand,
+                0
+            )
+
+            lost = downward_moves.get(
+                cand,
+                0
+            )
+
+
+            if net_value > 0:
+
+                result = f"+{net_value}"
+                interpretation = "nach oben"
+
+
+            else:
+
+                result = str(net_value)
+                interpretation = "nach unten"
+
+
+            rows_html.append(
+                f"""
+                <tr>
+
+                    <td>
+                        <strong>{cand}</strong>
+                    </td>
+
+                    <td>
+                        {gained}
+                    </td>
+
+                    <td>
+                        {lost}
+                    </td>
+
+                    <td>
+                        <strong>{result}</strong>
+                    </td>
+
+                    <td>
+                        {interpretation}
+                    </td>
+
+                </tr>
+                """
+            )
+
+
+        st.markdown(
+            """
+            <div class="live-table-wrap">
+
+                <table class="live-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Profil</th>
+
+                            <th>
+                                Rangplätze gewonnen
+                            </th>
+
+                            <th>
+                                Rangplätze verloren
+                            </th>
+
+                            <th>
+                                Netto
+                            </th>
+
+                            <th>
+                                Tendenz
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+            """
+            + "".join(rows_html)
+            + """
+                    </tbody>
+
+                </table>
+
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+        st.caption(
+            "Beispiel: +2 bedeutet, dass ein Profil über alle "
+            "ausgewerteten Entscheidungen hinweg netto zwei "
+            "Rangplätze gewonnen hat. Die Zahl steht nicht für "
+            "zwei Personen."
+        )
+
+
+    else:
+
+        st.info(
+            "Aktuell ergibt sich bei den einzelnen Profilen "
+            "keine Netto-Rangbewegung."
+        )
+
+
+else:
+
+    st.info(
+        "Noch keine vollständigen Second-Look-Entscheidungen vorhanden."
+    )
+
+
+# ============================================================
 # 4 · FINALE EMPFEHLUNGEN
-# ------------------------------------------------------------
+# ============================================================
 
 st.markdown("---")
 
@@ -688,15 +961,16 @@ st.header(
     "4 · Finale Empfehlungen"
 )
 
+
 show_counter(
     "Welche Kandidat:innen wurden final empfohlen?",
     finals
 )
 
 
-# ------------------------------------------------------------
+# ============================================================
 # 5 · BLIND-SPOT CHECK
-# ------------------------------------------------------------
+# ============================================================
 
 st.markdown("---")
 
@@ -709,6 +983,7 @@ if blind_total:
 
     rows_html = []
 
+
     for cand, total in sorted(
         blind_total.items()
     ):
@@ -718,45 +993,84 @@ if blind_total:
             0
         )
 
+
         yes_share = (
             f"{yes_count / total * 100:.0f}%"
             if total
             else "—"
         )
 
-        safe_cand = escape(str(cand))
 
         rows_html.append(
-            "<tr>"
-            f"<td>{safe_cand}</td>"
-            f"<td>{yes_count}</td>"
-            f"<td>{total}</td>"
-            f"<td><strong>{yes_share}</strong></td>"
-            "</tr>"
+            f"""
+            <tr>
+
+                <td>
+                    {cand}
+                </td>
+
+                <td>
+                    {yes_count}
+                </td>
+
+                <td>
+                    {total}
+                </td>
+
+                <td>
+                    <strong>
+                        {yes_share}
+                    </strong>
+                </td>
+
+            </tr>
+            """
         )
 
-    table_html = (
-        '<div class="live-table-wrap">'
-        '<table class="live-table">'
-        '<thead>'
-        '<tr>'
-        '<th>Kandidat:in</th>'
-        '<th>Ja – hätte ich näher geprüft</th>'
-        '<th>Antworten gesamt</th>'
-        '<th>Ja-Anteil</th>'
-        '</tr>'
-        '</thead>'
-        '<tbody>'
-        + "".join(rows_html)
-        + '</tbody>'
-        '</table>'
-        '</div>'
-    )
 
     st.markdown(
-        table_html,
-        unsafe_allow_html=True
+        """
+        <div class="live-table-wrap">
+
+            <table class="live-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Kandidat:in
+                        </th>
+
+                        <th>
+                            Ja – hätte ich näher geprüft
+                        </th>
+
+                        <th>
+                            Antworten gesamt
+                        </th>
+
+                        <th>
+                            Ja-Anteil
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+        """
+        + "".join(rows_html)
+        + """
+                </tbody>
+
+            </table>
+
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
+
 
 else:
 
@@ -765,9 +1079,9 @@ else:
     )
 
 
-# ------------------------------------------------------------
+# ============================================================
 # 6 · SICHERHEIT
-# ------------------------------------------------------------
+# ============================================================
 
 st.markdown("---")
 
@@ -805,9 +1119,9 @@ m2.metric(
 
 st.markdown("---")
 
+
 st.caption(
-    "Moderationsprinzip: Ergebnisse beschreiben, "
-    "nicht als richtig oder falsch bewerten. "
-    "Fokus: Information → Interpretation → "
+    "Moderationsprinzip: Ergebnisse beschreiben, nicht als richtig "
+    "oder falsch bewerten. Fokus: Information → Interpretation → "
     "Anforderungsbezug → Eignungsprognose."
 )
