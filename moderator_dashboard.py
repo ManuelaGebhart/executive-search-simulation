@@ -14,7 +14,8 @@ st.set_page_config(
 st.markdown("""
 <style>
 .stApp { background: linear-gradient(135deg,#0E2033 0%,#17324D 55%,#1D405D 100%); }
-h1,h2,h3,p,div[data-testid="stMetricLabel"],div[data-testid="stMetricValue"] { color:#fff; }
+h1, h2, h3, h4, h5, h6, p, [data-testid="stCaptionContainer"], [data-testid="stMarkdownContainer"] { color:#fff !important; }
+[data-testid="stMarkdownContainer"] strong, [data-testid="stMarkdownContainer"] span { color:inherit !important; }
 .block-container { max-width: 1400px; padding-top: 2rem; }
 [data-testid="stMetric"] { background:#fff; border-radius:14px; padding:16px 18px; }
 [data-testid="stMetric"] * { color:#14283B !important; }
@@ -83,7 +84,7 @@ def show_counter(title, counter, x_label="Kandidat:in"):
         st.caption("Noch keine Daten vorhanden.")
         return
     df = pd.DataFrame(counter.most_common(), columns=[x_label, "Anzahl"])
-    st.bar_chart(df.set_index(x_label), horizontal=True)
+    st.bar_chart(df.set_index(x_label))
 
 
 # 1) First Screening: Häufigkeit + gewichtete Rangpunkte
