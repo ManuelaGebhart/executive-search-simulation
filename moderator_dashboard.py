@@ -2,7 +2,6 @@ import json
 import urllib.request
 from collections import Counter
 
-import pandas as pd
 import streamlit as st
 
 st.set_page_config(
@@ -20,6 +19,19 @@ h1, h2, h3, h4, h5, h6, p, [data-testid="stCaptionContainer"], [data-testid="stM
 [data-testid="stMetric"] { background:#fff; border-radius:14px; padding:16px 18px; }
 [data-testid="stMetric"] * { color:#14283B !important; }
 [data-testid="stDataFrame"] { background:#fff; border-radius:14px; padding:8px; }
+/* All presentation text on the navy canvas stays white. */
+.stApp > header { background: transparent; }
+.live-chart { background:#fff; border-radius:16px; padding:20px 22px; margin:8px 0 18px; }
+.live-bar-row { display:grid; grid-template-columns:minmax(120px, 220px) 1fr 48px; gap:14px; align-items:center; margin:12px 0; }
+.live-bar-label, .live-bar-value { color:#14283B !important; font-weight:700; }
+.live-bar-value { text-align:right; font-size:1.05rem; }
+.live-bar-track { height:22px; background:#E8EEF4; border-radius:6px; overflow:hidden; }
+.live-bar-fill { height:100%; background:#0A66C2; border-radius:6px; }
+.live-table-wrap { background:#fff; border-radius:16px; padding:12px 18px; overflow-x:auto; }
+.live-table { width:100%; border-collapse:collapse; }
+.live-table th, .live-table td { color:#14283B !important; padding:12px 10px; border-bottom:1px solid #E4EAF0; text-align:left; }
+.live-table th { font-weight:800; }
+@media (max-width: 800px) { .live-bar-row { grid-template-columns:90px 1fr 38px; gap:8px; } }
 </style>
 """, unsafe_allow_html=True)
 
@@ -83,8 +95,20 @@ def show_counter(title, counter, x_label="Kandidat:in"):
     if not counter:
         st.caption("Noch keine Daten vorhanden.")
         return
-    df = pd.DataFrame(counter.most_common(), columns=[x_label, "Anzahl"])
-    st.bar_chart(df.set_index(x_label))
+
+    items = counter.most_common()
+    max_value = max(value for _, value in items) or 1
+    bars = []
+    for label, value in items:
+        width = max(4, round(value / max_value * 100))
+        bars.append(f"""
+        <div class="live-bar-row">
+          <div class="live-bar-label">{label}</div>
+          <div class="live-bar-track"><div class="live-bar-fill" style="width:{width}%"></div></div>
+          <div class="live-bar-value">{value}</div>
+        </div>
+        """)
+    st.markdown('<div class="live-chart">' + ''.join(bars) + '</div>', unsafe_allow_html=True)
 
 
 # 1) First Screening: Häufigkeit + gewichtete Rangpunkte
@@ -188,16 +212,19 @@ show_counter("Welche Kandidat:innen wurden final empfohlen?", finals)
 st.markdown("---")
 st.header("5 · Blind-Spot Check")
 if blind_total:
-    blind_df = pd.DataFrame([
-        {
-            "Kandidat:in": cand,
-            "Ja – hätte ich näher geprüft": blind_yes.get(cand, 0),
-            "Antworten gesamt": total,
-            "Ja-Anteil": f"{(blind_yes.get(cand, 0) / total * 100):.0f}%" if total else "—",
-        }
-        for cand, total in sorted(blind_total.items())
-    ])
-    st.dataframe(blind_df, hide_index=True, use_container_width=True)
+    rows_html = []
+    for cand, total in sorted(blind_total.items()):
+        yes_count = blind_yes.get(cand, 0)
+        yes_share = f"{(yes_count / total * 100):.0f}%" if total else "—"
+        rows_html.append(
+            f"<tr><td>{cand}</td><td>{yes_count}</td><td>{total}</td><td><strong>{yes_share}</strong></td></tr>"
+        )
+    st.markdown(
+        """<div class="live-table-wrap"><table class="live-table">
+        <thead><tr><th>Kandidat:in</th><th>Ja – hätte ich näher geprüft</th><th>Antworten gesamt</th><th>Ja-Anteil</th></tr></thead>
+        <tbody>""" + "".join(rows_html) + "</tbody></table></div>",
+        unsafe_allow_html=True,
+    )
 else:
     st.caption("Noch keine Blind-Spot-Antworten vorhanden.")
 
