@@ -100,13 +100,13 @@ div[data-testid="stExpander"] [data-testid="stMarkdownContainer"] strong {{
     color:#243746 !important;
 }}
 /* Kontrast-Sicherung: dunkle Flächen = helle Schrift, weiße/helle Karten = dunkle Schrift */
-.hero, .hero *, .progress-wrap, .progress-wrap * {color:#FFFFFF !important;}
+.hero, .hero *, .progress-wrap, .progress-wrap * {{color:#FFFFFF !important;}}
 .main-card, .main-card *, .internal, .internal *, .metricbox, .metricbox *,
 .candidate, .candidate *, .profile-card, .profile-card *, .recruiter-shell, .recruiter-shell *,
 .final-choice, .final-choice *, .reflection-box, .reflection-box *, .newinfo, .newinfo *,
-.lock, .lock * {color:#142536 !important;}
-.recruiter-top, .recruiter-top * {color:#FFFFFF !important;}
-div[data-testid="stMetric"], div[data-testid="stMetric"] * {color:#142536 !important;}
+.lock, .lock * {{color:#142536 !important;}}
+.recruiter-top, .recruiter-top * {{color:#FFFFFF !important;}}
+div[data-testid="stMetric"], div[data-testid="stMetric"] * {{color:#142536 !important;}}
 
 </style>
 """, unsafe_allow_html=True)
