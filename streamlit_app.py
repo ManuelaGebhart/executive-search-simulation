@@ -2,6 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from collections import Counter
 import json, uuid, urllib.request, urllib.error
+from datetime import datetime, timezone
 
 st.set_page_config(page_title="Executive Search Simulation", page_icon="◼", layout="wide")
 
@@ -228,6 +229,45 @@ GLOSSARY = {
     "AI-Literacy":"Grundverständnis dafür, wie KI im Arbeitsbereich sinnvoll eingesetzt und beurteilt werden kann."
 }
 
+# ---------- zentrale Screening-Steuerung ----------
+def _supabase_public():
+    try:
+        return st.secrets.get("SUPABASE_URL", "").rstrip("/"), st.secrets.get("SUPABASE_KEY", "")
+    except Exception:
+        return "", ""
+
+def load_screening_control():
+    """Liest den gemeinsamen Startzustand. Fällt bei fehlender Verbindung auf lokalen Demo-Modus zurück."""
+    url, key = _supabase_public()
+    if not url or not key:
+        return {"status":"demo", "started_at":None, "duration_seconds":240, "extra_seconds":0}
+    req=urllib.request.Request(
+        url+"/rest/v1/simulation_control?id=eq.1&select=status,started_at,duration_seconds,extra_seconds",
+        headers={"apikey":key,"Authorization":"Bearer "+key}
+    )
+    try:
+        with urllib.request.urlopen(req,timeout=5) as r:
+            data=json.loads(r.read().decode("utf-8"))
+        return data[0] if data else {"status":"waiting", "started_at":None, "duration_seconds":240, "extra_seconds":0}
+    except Exception:
+        return {"status":"unavailable", "started_at":None, "duration_seconds":240, "extra_seconds":0}
+
+def parse_started_at(value):
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(str(value).replace("Z", "+00:00")).astimezone(timezone.utc)
+    except Exception:
+        return None
+
+def remaining_seconds(control):
+    start=parse_started_at(control.get("started_at"))
+    if not start:
+        return int(control.get("duration_seconds") or 240) + int(control.get("extra_seconds") or 0)
+    total=int(control.get("duration_seconds") or 240)+int(control.get("extra_seconds") or 0)
+    elapsed=(datetime.now(timezone.utc)-start).total_seconds()
+    return max(0, int(total-elapsed))
+
 # ---------- state ----------
 defaults=dict(participant_id=str(uuid.uuid4()),submitted=False,phase=0,max_phase=0,shortlist=[],screening_index=0,screening_draft=[],criteria=[],criteria_other="",confidence1=60,assessments={},second_ranking=[],final_candidate=None,final_reasons=[],final_other="",final_confidence=70,reveal={},counter_change="Nein",counter_candidate=None)
 for k,v in defaults.items():
@@ -235,6 +275,22 @@ for k,v in defaults.items():
 
 PHASES=["Suchauftrag","First Screening","Theorie & Praxis","Second Look","Finale Entscheidung","Übergang","Blind-Spot Check","Fertig"]
 
+
+def mark_screening_complete():
+    """Meldet anonym nur: diese Session hat das First Screening abgeschlossen."""
+    url, key = _supabase_public()
+    if not url or not key:
+        return
+    payload={"participant_id":st.session_state.participant_id}
+    req=urllib.request.Request(
+        url+"/rest/v1/screening_progress?on_conflict=participant_id",
+        data=json.dumps(payload).encode("utf-8"), method="POST",
+        headers={"apikey":key,"Authorization":"Bearer "+key,"Content-Type":"application/json","Prefer":"resolution=merge-duplicates"}
+    )
+    try:
+        urllib.request.urlopen(req,timeout=5).read()
+    except Exception:
+        pass
 
 def submit_result():
     """Speichert anonym aggregierbare Ergebnisse zentral, wenn Supabase-Secrets gesetzt sind.
@@ -336,10 +392,36 @@ if st.session_state.phase==0:
         for term, expl in GLOSSARY.items():
             st.markdown(f"**{term}**  \n{expl}")
 
-    if st.button("FIRST SCREENING · ERSTE SICHTUNG STARTEN →",use_container_width=True): goto(1)
+    if st.button("ZUM FIRST SCREENING · GEMEINSAMEN START ABWARTEN →",use_container_width=True): goto(1)
 
 # ---------- 1 SCREENING ----------
 elif st.session_state.phase==1:
+    control = load_screening_control()
+    status = control.get("status", "waiting")
+
+    if status in ("waiting", "unavailable"):
+        hero("FIRST SCREENING","Bereit für die erste Auswahl?","Das Screening wird für alle gleichzeitig freigegeben. Bitte wartet auf das gemeinsame Startsignal.")
+        st.markdown("""<div class="main-card"><span class="tag">SYNCHRONER START</span><h2 style="margin-top:14px">STARTET GLEICH …</h2><p>Die Profile werden automatisch freigegeben, sobald die Moderation das First Screening startet.</p><p class="small">Der Countdown läuft anschließend für alle vom selben Startzeitpunkt.</p></div>""",unsafe_allow_html=True)
+        if status == "unavailable":
+            st.warning("Die zentrale Steuerung ist gerade nicht erreichbar. Bitte kurz warten; die Seite prüft automatisch erneut.")
+
+        @st.fragment(run_every=1)
+        def wait_for_screening_start():
+            latest=load_screening_control()
+            if latest.get("status") in ("running", "finished") and latest.get("started_at"):
+                st.rerun()
+            st.caption("Warte auf Freigabe …")
+        wait_for_screening_start()
+        st.stop()
+
+    # Demo-Modus: ohne Supabase bleibt die App testbar und startet lokal.
+    if status == "demo" and not st.session_state.get("demo_screening_started"):
+        hero("FIRST SCREENING · DEMO","Lokaler Testmodus","Supabase-Steuerung ist nicht verbunden. Für einen lokalen Test kannst du das Screening hier starten.")
+        if st.button("DEMO-SCREENING STARTEN →",use_container_width=True):
+            st.session_state.demo_screening_started=True
+            st.rerun()
+        st.stop()
+
     # First-Screening-Ranking wie im Second Look: drei Dropdowns statt Rang-Buttons je Profil.
     _rank_keys = ["first_rank1_v3", "first_rank2_v3", "first_rank3_v3"]
     _rank_vals = [st.session_state.get(k) for k in _rank_keys]
@@ -384,16 +466,39 @@ elif st.session_state.phase==1:
     </div>""",unsafe_allow_html=True)
 
     if len(st.session_state.screening_draft) < 3:
-        components.html("""
+        # Alle Teilnehmenden rechnen vom zentral gespeicherten Startzeitpunkt.
+        if status == "demo":
+            timer_start_ms = 0
+            timer_total = 240
+            local_demo = True
+        else:
+            started=parse_started_at(control.get("started_at"))
+            timer_start_ms=int(started.timestamp()*1000) if started else 0
+            timer_total=int(control.get("duration_seconds") or 240)+int(control.get("extra_seconds") or 0)
+            local_demo = False
+        components.html(f"""
         <style>
-          body{margin:0;background:transparent}
-          #timerbox{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#FFFFFF;border:2px solid #B9D5EE;border-radius:10px;padding:9px 16px;font-family:Arial;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-          #t{font-weight:900;font-size:32px;line-height:1;color:#0A66C2;letter-spacing:1px}
-          #warn{display:none;margin-top:7px;font-size:14px;font-weight:900;color:#C94E55;text-align:center}
-          .blink{animation:blink 0.8s step-end infinite}@keyframes blink{50%{opacity:.25}}
+          body{{margin:0;background:transparent}}
+          #timerbox{{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#FFFFFF;border:2px solid #B9D5EE;border-radius:10px;padding:9px 16px;font-family:Arial;box-shadow:0 2px 8px rgba(0,0,0,.06)}}
+          #t{{font-weight:900;font-size:32px;line-height:1;color:#0A66C2;letter-spacing:1px}}
+          #warn{{display:none;margin-top:7px;font-size:14px;font-weight:900;color:#C94E55;text-align:center}}
+          .blink{{animation:blink 0.8s step-end infinite}}@keyframes blink{{50%{{opacity:.25}}}}
         </style>
         <div id="timerbox"><div id="t">04:00</div><div id="warn">NOCH 30 SEKUNDEN · Bitte Auswahl abschließen.</div></div>
-        <script>let s=240,e=document.getElementById('t'),w=document.getElementById('warn');let x=setInterval(()=>{s--;let m=Math.floor(s/60),r=s%60;e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');if(s<=30&&s>0){e.style.color='#C94E55';e.classList.add('blink');w.style.display='block';}if(s<=0){clearInterval(x);e.classList.remove('blink');e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';w.innerText='Die Auswahl bleibt offen – bitte jetzt abschließen.';}},1000);</script>""",height=82)
+        <script>
+        const startMs={timer_start_ms}; const total={timer_total}; const demo={str(local_demo).lower()};
+        const localStart=Date.now(); const e=document.getElementById('t'), w=document.getElementById('warn');
+        function draw(){{
+          let elapsed=demo ? Math.floor((Date.now()-localStart)/1000) : Math.floor((Date.now()-startMs)/1000);
+          let s=Math.max(0,total-elapsed);
+          let m=Math.floor(s/60),r=s%60;
+          e.innerText=String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');
+          if(s<=30&&s>0){{e.style.color='#C94E55';e.classList.add('blink');w.style.display='block';}}
+          if(s<=0){{e.classList.remove('blink');e.innerText='ZEIT ABGELAUFEN · Bitte Auswahl bestätigen';w.style.display='block';w.innerText='Die Auswahl bleibt offen – bitte jetzt abschließen.';return;}}
+          setTimeout(draw,250);
+        }} draw();
+        </script>""",height=82)
+
 
     # Compact A–J result navigation. Green = currently on shortlist.
     nav_cols=st.columns(10)
@@ -498,6 +603,7 @@ elif st.session_state.phase==1:
             st.session_state.criteria=selected_criteria
             st.session_state.criteria_other=criteria_other
             st.session_state.confidence1=confidence
+            mark_screening_complete()
             goto(2)
 
 # ---------- 2 THEORY HANDOVER ----------
@@ -674,5 +780,8 @@ elif st.session_state.phase==7:
           <p><b>Deine Entscheidungsgründe:</b> {reasons_txt}</p>
         </div>""",unsafe_allow_html=True)
 
-    if st.button("← ZUM BLIND-SPOT CHECK",use_container_width=True):
-        goto(6)
+    st.markdown("""<div class="result-shell" style="text-align:center;margin-top:26px">
+      <div class="result-kicker">MISSION · DEIN TEIL IST ABGESCHLOSSEN</div>
+      <h2 style="margin:6px 0 8px">Deine Entscheidung ist gespeichert.</h2>
+      <p style="margin:0;color:#D9E5EF !important">Bitte jetzt zurück zur gemeinsamen Präsentation.<br>Gleich vergleichen wir eure Entscheidungen anonym in der Live-Auswertung.</p>
+    </div>""", unsafe_allow_html=True)
