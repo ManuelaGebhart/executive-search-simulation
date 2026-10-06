@@ -406,7 +406,11 @@ elif st.session_state.phase==1:
     control = load_screening_control()
     status = control.get("status", "waiting")
 
-    if status in ("waiting", "unavailable"):
+    # Nur ein aktuell laufendes Screening darf die Profile freigeben.
+    # Jeder andere zentrale Zustand (waiting/finished/unavailable) führt zurück
+    # auf den Wartebildschirm. So kann kein alter Startzeitpunkt aus einem
+    # vorherigen Testversuch erneut als "Zeit abgelaufen" erscheinen.
+    if status not in ("running", "demo"):
         hero("FIRST SCREENING","Bereit für die erste Auswahl?","Das Screening wird für alle gleichzeitig freigegeben. Bitte wartet auf das gemeinsame Startsignal.")
         st.markdown("""<div class="main-card"><span class="tag">SYNCHRONER START</span><h2 style="margin-top:14px">STARTET GLEICH …</h2><p>Die Profile werden automatisch freigegeben, sobald die Moderation das First Screening startet.</p><p class="small">Der Countdown läuft anschließend für alle vom selben Startzeitpunkt.</p></div>""",unsafe_allow_html=True)
         if status == "unavailable":
@@ -415,7 +419,7 @@ elif st.session_state.phase==1:
         @st.fragment(run_every=1)
         def wait_for_screening_start():
             latest=load_screening_control()
-            if latest.get("status") in ("running", "finished") and latest.get("started_at"):
+            if latest.get("status") == "running" and latest.get("started_at"):
                 st.rerun()
             st.caption("Warte auf Freigabe …")
         wait_for_screening_start()
@@ -428,6 +432,18 @@ elif st.session_state.phase==1:
             st.session_state.demo_screening_started=True
             st.rerun()
         st.stop()
+
+    # Während das Screening sichtbar ist, zentralen Status weiter beobachten.
+    # Wird der Versuch im Moderator-Dashboard abgebrochen/zurückgesetzt,
+    # springt auch ein bereits geöffnetes Teilnehmergerät automatisch zurück
+    # auf den Wartebildschirm.
+    if status == "running":
+        @st.fragment(run_every=1)
+        def watch_screening_control():
+            latest = load_screening_control()
+            if latest.get("status") != "running" or not latest.get("started_at"):
+                st.rerun()
+        watch_screening_control()
 
     # First-Screening-Ranking wie im Second Look: drei Dropdowns statt Rang-Buttons je Profil.
     _rank_keys = ["first_rank1_v3", "first_rank2_v3", "first_rank3_v3"]
