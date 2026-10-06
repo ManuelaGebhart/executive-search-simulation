@@ -17,7 +17,17 @@ st.markdown(f"""
 h1,h2,h3,h4,p,label,div{{font-family:Arial,sans-serif}}
 [data-testid="stMarkdownContainer"] h1,[data-testid="stMarkdownContainer"] h2,[data-testid="stMarkdownContainer"] h3,[data-testid="stMarkdownContainer"] h4{{color:#fff!important}}
 [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] *{{color:#C8D7E4!important}}
-.stButton>button{{border-radius:8px;font-weight:800;min-height:44px}}
+.stButton>button{{border-radius:8px;font-weight:800;min-height:44px;background:rgba(10,32,51,.42)!important;color:#FFFFFF!important;border:1px solid rgba(255,255,255,.32)!important}}
+.stButton>button:hover{{background:rgba(10,102,194,.28)!important;border-color:#5FA8EE!important;color:#FFFFFF!important}}
+.stButton>button:disabled{{background:rgba(255,255,255,.055)!important;color:#8EA6B9!important;border-color:rgba(255,255,255,.13)!important;opacity:1!important}}
+.stButton>button[kind="primary"]{{background:#0A66C2!important;color:#FFFFFF!important;border-color:#0A66C2!important}}
+.stButton>button[kind="primary"]:hover{{background:#0958A8!important;border-color:#5FA8EE!important}}
+[data-testid="stExpander"]{{background:rgba(10,32,51,.24)!important;border:1px solid rgba(255,255,255,.20)!important;border-radius:9px!important}}
+[data-testid="stExpander"] details{{background:transparent!important}}
+[data-testid="stExpander"] summary{{background:transparent!important;color:#FFFFFF!important}}
+[data-testid="stExpander"] summary:hover{{background:rgba(255,255,255,.04)!important}}
+[data-testid="stExpander"] summary p,[data-testid="stExpander"] summary span,[data-testid="stExpander"] summary svg{{color:#FFFFFF!important;fill:#FFFFFF!important}}
+[data-testid="stCheckbox"] label p,[data-testid="stCheckbox"] label span{{color:#FFFFFF!important}}
 .hero{{padding:24px 28px;border:1px solid rgba(255,255,255,.18);border-radius:14px;background:rgba(10,32,51,.28);margin-bottom:18px}}
 .eyebrow{{font-size:10px;font-weight:850;letter-spacing:1.4px;color:#BFD0E0;text-transform:uppercase}}
 .hero h1{{color:white!important;font-size:34px;margin:5px 0 5px}}
@@ -120,10 +130,25 @@ with b2:
         api_patch("simulation_control?id=eq.1",{"extra_seconds":int(control.get("extra_seconds") or 0)+60,"updated_at":utc_now_iso()})
         st.rerun()
 with b3:
-    if st.button("↺ SCREENING ZURÜCKSETZEN",use_container_width=True):
-        api_patch("simulation_control?id=eq.1",{"status":"waiting","started_at":None,"duration_seconds":240,"extra_seconds":0,"updated_at":utc_now_iso()})
-        api_delete("screening_progress?participant_id=not.is.null")
-        st.rerun()
+    if status == "running":
+        if st.button("■ SCREENING ABBRECHEN",use_container_width=True):
+            st.session_state["confirm_abort_screening"] = True
+    else:
+        st.button("■ SCREENING ABBRECHEN",disabled=True,use_container_width=True)
+
+if status == "running" and st.session_state.get("confirm_abort_screening", False):
+    st.warning("Laufendes Screening wirklich abbrechen? Der Countdown wird beendet und der gemeinsame Start auf BEREIT zurückgesetzt.")
+    a1,a2=st.columns(2)
+    with a1:
+        if st.button("JA · SCREENING ABBRECHEN",use_container_width=True):
+            api_patch("simulation_control?id=eq.1",{"status":"waiting","started_at":None,"duration_seconds":240,"extra_seconds":0,"updated_at":utc_now_iso()})
+            api_delete("screening_progress?participant_id=not.is.null")
+            st.session_state.pop("confirm_abort_screening", None)
+            st.rerun()
+    with a2:
+        if st.button("ABBRUCH VERWERFEN",use_container_width=True):
+            st.session_state.pop("confirm_abort_screening", None)
+            st.rerun()
 
 # ---------------- LIVE-DATEN ZURÜCKSETZEN ----------------
 with st.expander("TESTDATEN / LIVE-AUSWERTUNG ZURÜCKSETZEN"):
