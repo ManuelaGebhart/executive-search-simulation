@@ -283,12 +283,19 @@ def mark_screening_complete():
         return
     payload={"participant_id":st.session_state.participant_id}
     req=urllib.request.Request(
-        url+"/rest/v1/screening_progress?on_conflict=participant_id",
+        url+"/rest/v1/screening_progress",
         data=json.dumps(payload).encode("utf-8"), method="POST",
-        headers={"apikey":key,"Authorization":"Bearer "+key,"Content-Type":"application/json","Prefer":"resolution=merge-duplicates"}
+        headers={"apikey":key,"Authorization":"Bearer "+key,"Content-Type":"application/json","Prefer":"return=minimal"}
     )
     try:
-        urllib.request.urlopen(req,timeout=5).read()
+        with urllib.request.urlopen(req,timeout=5) as response:
+            response.read()
+    except urllib.error.HTTPError as exc:
+        # Ein doppelter Eintrag derselben Session ist unkritisch: Die Shortlist
+        # wurde bereits als abgeschlossen gemeldet. Andere Fehler werden bewusst
+        # nicht zum Abbruch der Teilnehmer-App verwendet.
+        if exc.code != 409:
+            pass
     except Exception:
         pass
 
