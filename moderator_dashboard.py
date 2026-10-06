@@ -15,7 +15,7 @@ st.markdown(f"""
 .block-container{{max-width:1400px;padding-top:1.4rem;padding-bottom:4rem}}
 [data-testid="stHeader"]{{background:transparent}}
 h1,h2,h3,h4,p,label,div{{font-family:Arial,sans-serif}}
-[data-testid="stMarkdownContainer"]>h1,[data-testid="stMarkdownContainer"]>h2,[data-testid="stMarkdownContainer"]>h3{{color:#fff!important}}
+[data-testid="stMarkdownContainer"] h1,[data-testid="stMarkdownContainer"] h2,[data-testid="stMarkdownContainer"] h3,[data-testid="stMarkdownContainer"] h4{{color:#fff!important}}
 [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] *{{color:#C8D7E4!important}}
 .stButton>button{{border-radius:8px;font-weight:800;min-height:44px}}
 .hero{{padding:24px 28px;border:1px solid rgba(255,255,255,.18);border-radius:14px;background:rgba(10,32,51,.28);margin-bottom:18px}}
@@ -178,7 +178,7 @@ def label_html(c):
     return f'<div class="live-bar-label">CANDIDATE {c}<div class="live-bar-sub">{CANDIDATE_ROLES.get(c,"")}</div></div>'
 
 def show_counter(title,counter):
-    st.subheader(title)
+    st.markdown(f'<h3 style="color:#FFFFFF !important;margin:8px 0 12px">{title}</h3>', unsafe_allow_html=True)
     if not counter: st.caption("Noch keine Daten vorhanden."); return
     items=counter.most_common(); mx=max(v for _,v in items) or 1
     bars=[]
@@ -239,7 +239,7 @@ if total_second:
     with c2: st.markdown(f'<div class="outline-card"><div class="kicker">RANGFOLGE UNVERÄNDERT</div><div class="big-number">{unchanged} von {total_second}</div><div>{round(unchanged/total_second*100)} % blieben bei ihrer Reihenfolge.</div></div>',unsafe_allow_html=True)
     items=sorted([(c,v) for c,v in net.items() if v],key=lambda x:x[1],reverse=True)
     if items:
-        st.subheader("Welche Profile bewegten sich nach dem Second Look?")
+        st.markdown('<h3 style="color:#FFFFFF !important;margin:8px 0 12px">Welche Profile bewegten sich nach dem Second Look?</h3>', unsafe_allow_html=True)
         trs=[]
         for c,v in items:
             tendency="häufiger höher gereiht" if v>0 else "häufiger niedriger gereiht"
