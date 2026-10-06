@@ -44,6 +44,12 @@ h1,h2,h3,h4,p,label,div{{font-family:Arial,sans-serif}}
 .status-wait{{color:#BFD0E0!important;font-weight:900}} .status-run{{color:#7ED5AA!important;font-weight:900}} .status-end{{color:#F2C56B!important;font-weight:900}}
 [data-testid="stMetric"]{{background:transparent!important;border:1px solid rgba(255,255,255,.26);border-radius:10px;padding:12px 14px}}
 [data-testid="stMetric"] *{{color:#fff!important}}
+/* Streamlit controls on dark background */
+[data-testid="stExpander"] details, [data-testid="stExpander"] summary{{color:#FFFFFF!important}}
+[data-testid="stExpander"] summary *{{color:#FFFFFF!important}}
+[data-testid="stExpander"] label, [data-testid="stExpander"] label *{{color:#FFFFFF!important}}
+[data-testid="stCheckbox"] label, [data-testid="stCheckbox"] label *{{color:#FFFFFF!important}}
+[data-testid="stMarkdownContainer"] p{{color:#D9E5EF!important}}
 @media(max-width:800px){{.live-bar-row{{grid-template-columns:1fr 70px}}.live-bar-track{{grid-column:1/-1}}}}
 </style>
 """, unsafe_allow_html=True)
@@ -136,7 +142,6 @@ with st.expander("TESTDATEN / LIVE-AUSWERTUNG ZURÜCKSETZEN"):
     ):
         try:
             api_delete("executive_search_results?id=not.is.null")
-            st.session_state["confirm_delete_results"] = False
             st.success("Live-Auswertung wurde auf 0 zurückgesetzt.")
             st.rerun()
         except Exception as exc:
