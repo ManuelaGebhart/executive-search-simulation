@@ -119,6 +119,30 @@ with b3:
         api_delete("screening_progress?participant_id=not.is.null")
         st.rerun()
 
+# ---------------- LIVE-DATEN ZURÜCKSETZEN ----------------
+with st.expander("TESTDATEN / LIVE-AUSWERTUNG ZURÜCKSETZEN"):
+    st.caption(
+        "Löscht alle bisher gespeicherten Teilnehmer-Ergebnisse aus der Live-Auswertung. "
+        "Kandidatenprofile, App-Konfiguration und Screening-Steuerung bleiben unverändert."
+    )
+    confirm_delete = st.checkbox(
+        "Ja, ich möchte alle bisherigen Teilnehmer-Ergebnisse löschen.",
+        key="confirm_delete_results",
+    )
+    if st.button(
+        "🗑 AUSWERTUNG AUF 0 ZURÜCKSETZEN",
+        disabled=not confirm_delete,
+        use_container_width=True,
+    ):
+        try:
+            api_delete("executive_search_results?id=not.is.null")
+            st.session_state["confirm_delete_results"] = False
+            st.success("Live-Auswertung wurde auf 0 zurückgesetzt.")
+            st.rerun()
+        except Exception as exc:
+            st.error("Die Live-Auswertung konnte nicht zurückgesetzt werden.")
+            st.caption(str(exc))
+
 if status=="running" and started:
     start_ms=int(started.timestamp()*1000)
     # Der Ton läuft ausschließlich in diesem Moderator-Browser. WebAudio erzeugt die kurzen Signale lokal.
