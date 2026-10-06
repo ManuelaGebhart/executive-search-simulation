@@ -99,6 +99,15 @@ div[data-testid="stExpander"] [data-testid="stMarkdownContainer"] p,
 div[data-testid="stExpander"] [data-testid="stMarkdownContainer"] strong {{
     color:#243746 !important;
 }}
+/* Kontrast-Sicherung: dunkle Flächen = helle Schrift, weiße/helle Karten = dunkle Schrift */
+.hero, .hero *, .progress-wrap, .progress-wrap * {color:#FFFFFF !important;}
+.main-card, .main-card *, .internal, .internal *, .metricbox, .metricbox *,
+.candidate, .candidate *, .profile-card, .profile-card *, .recruiter-shell, .recruiter-shell *,
+.final-choice, .final-choice *, .reflection-box, .reflection-box *, .newinfo, .newinfo *,
+.lock, .lock * {color:#142536 !important;}
+.recruiter-top, .recruiter-top * {color:#FFFFFF !important;}
+div[data-testid="stMetric"], div[data-testid="stMetric"] * {color:#142536 !important;}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -132,13 +141,13 @@ CANDIDATES = [
 "second":["Disziplinarische Führung von 26 Mitarbeitenden, davon 3 Teamleitungen als direkte Führungskräfte.","Refresh einer Versicherungsmarke, ca. 40 Mio. EUR Budget und messbare Full-Funnel-Steuerung.","KI-gestützte Kampagnenaussteuerung und Content-Produktion; KI-Leitlinien mitentwickelt.","Wechselmotivation sehr hoch: alleinige Verantwortung und Finanzberatervertrieb reizen besonders.","Gehaltsvorstellung 220.000–240.000 EUR gesamt; kein Spielraum nach unten."],
 "blind":["26 Mitarbeitende, davon 3 Teamleitungen als direkte Führungskräfte.","KI-gestützte Kampagnenaussteuerung und interne KI-Leitlinien.","Gehaltsvorstellung 220.000–240.000 EUR – deutlich über dem festen Rahmen." ]},
 {
-"id":"CANDIDATE D","source":"A","role":"Head of Brand, Marketing & Communication · Automotive","role_de":"Leitung Marke, Marketing & Kommunikation · Premiummarke",
+"id":"CANDIDATE D","source":"A","role":"Head of Brand, Marketing & Communication · Automobile","role_de":"Leitung Marke, Marketing & Kommunikation · Premiummarke",
 "meta":"Süddeutschland (Bayern) · ca. 13 Jahre Berufserfahrung · offen für neue Positionen",
 "career":[("Head of Brand, Marketing & Communication","Premiummarke · Automobil","ca. 5 Jahre"),("Teamleitung International Advertising","Internationale Werbung","ca. 1 Jahr"),("Projektleitung International Advertising","Internationale Werbung","ca. 3 Jahre"),("Consultant Organisationsentwicklung & Prozessmanagement","Sales & Marketing","ca. 3,5 Jahre"),("Konzern-Traineeprogramm","Führungsnachwuchs","ca. 1,5 Jahre")],
 "education":"Diplomstudium an einer deutschen Universität · Auslandsstudium USA",
 "facts":"Premium-Automobilmarke · internationale Werbung · Organisations- und Prozessmanagement",
-"second":["Nur fachliche Führung von Projektteams mit 2–6 Personen; keine disziplinarische Führung.","Positionierung und Markenidentität einer Premium-Submarke mit aufgebaut; globale Filmkampagnen gesteuert.","Beschäftigt sich im aktuellen Projekt mit KI im Marketing.","Wechselmotivation sehr hoch: mehr Gestaltungsspielraum und erstmals mehr Führungsverantwortung.","Aktuelles Paket ca. 140.000 EUR plus Dienstwagen."],
-"blind":["Nur fachliche Führung von Projektteams mit 2–6 Personen; keine disziplinarische Führung.","Wechselmotivation sehr hoch – sucht erstmals mehr Führungsverantwortung.","Aktuelles Paket ca. 140.000 EUR plus Dienstwagen." ]},
+"second":["Nur fachliche Führung von Projektteams mit 2–6 Personen; keine disziplinarische Führung.","Positionierung und Markenidentität einer Premium-Submarke mit aufgebaut; globale Filmkampagnen gesteuert.","Beschäftigt sich im aktuellen Projekt mit KI im Marketing.","Im Gespräch wenig überzeugend: Aussagen blieben allgemein, kaum konkrete Beispiele zu eigenen Beiträgen.","Wechselmotivation sehr hoch: mehr Gestaltungsspielraum und erstmals mehr Führungsverantwortung.","Aktuelles Paket ca. 140.000 EUR plus Dienstwagen."],
+"blind":["Nur fachliche Führung von Projektteams mit 2–6 Personen; keine disziplinarische Führung.","Im Gespräch wenig überzeugend: Aussagen blieben allgemein, kaum konkrete Beispiele zu eigenen Beiträgen.","Aktuelles Paket ca. 140.000 EUR plus Dienstwagen." ]},
 {
 "id":"CANDIDATE E","source":"G","role":"Brand Strategist & Marketing Expert · selbstständig","role_de":"Markenstrategie & Marketing · zuvor Versicherung",
 "meta":"Süddeutschland (Bayern) · ca. 19 Jahre Berufserfahrung",
@@ -169,8 +178,8 @@ CANDIDATES = [
 "career":[("Head of Marketing","Pharmaunternehmen","ca. 4,5 Jahre"),("Brand Director","FMCG","ca. 3 Jahre"),("Head of Brand Teams DACH","FMCG","ca. 1 Jahr"),("Head of Brand Teams DACH","Pharma/Chemie","ca. 1,5 Jahre"),("Senior Brand Manager","Konsumgüter / Consumer Health","ca. 5 Jahre")],
 "education":"Im Profil nicht angegeben",
 "facts":"FMCG-Schule · Pharma / Consumer Health · Brand Management · Profil enthält kaum Tätigkeitsdetails",
-"second":["Führung bis zu 8 Mitarbeitenden, davon 4 direkt und 1 Teamleitung.","Keine CRM-Erfahrung.","Im Interview kein Bezug zu KI.","Zuletzt ca. 194.000 EUR; würde 160.000 EUR gesamt akzeptieren.","Wohnt in München; 3–4 Bürotage grundsätzlich vereinbar."],
-"blind":["Keine CRM-Erfahrung.","Im Interview kein Bezug zu KI.","Zuletzt ca. 194.000 EUR; würde für die Rolle 160.000 EUR gesamt akzeptieren." ]},
+"second":["Führung bis zu 8 Mitarbeitenden, davon 4 direkt und 1 Teamleitung.","Keine CRM-Erfahrung.","Im Interview kein Bezug zu KI.","Im Gespräch sehr überzeugend und reflektiert; Referenzen durchweg sehr stark, vor allem Stakeholder-Management und Einbindung des Vertriebs.","Zuletzt ca. 194.000 EUR; würde 160.000 EUR gesamt akzeptieren.","Wohnt in München; 3–4 Bürotage grundsätzlich vereinbar."],
+"blind":["Keine CRM-Erfahrung.","Im Gespräch sehr überzeugend und reflektiert; Referenzen durchweg sehr stark, vor allem Stakeholder-Management und Einbindung des Vertriebs.","Zuletzt ca. 194.000 EUR; würde für die Rolle 160.000 EUR gesamt akzeptieren." ]},
 {
 "id":"CANDIDATE I","source":"F","role":"Principal AI & Brand Marketing Communications Operations · Telekommunikation","role_de":"KI-Transformation & Marken-/Kommunikationssteuerung",
 "meta":"Süddeutschland (Bayern) · ca. 17 Jahre im selben Konzern · offen für neue Positionen",
@@ -346,7 +355,8 @@ elif st.session_state.phase==1:
     [data-testid="stWidgetLabel"] p,
     div[data-testid="stSlider"] p,
     div[data-testid="stTextInput"] label p,
-    div[data-testid="stMultiSelect"] label p {color:#243746 !important;}
+    div[data-testid="stMultiSelect"] label p,
+    div[data-testid="stSelectbox"] label p {color:#243746 !important;}
     .recruiter-brand{background:#FFFFFF;border:1px solid #B9D5EE;border-top:6px solid #0A66C2;border-radius:8px;padding:11px 15px;margin-bottom:12px;display:flex;align-items:center;gap:13px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
     .recruiter-mark{width:34px;height:34px;border-radius:4px;background:#0A66C2;color:white;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px}
     .recruiter-search{flex:1;background:#EEF3F8;border:1px solid #C9D6E2;border-radius:4px;padding:9px 12px;color:#425466;font-size:13px}
@@ -511,8 +521,8 @@ elif st.session_state.phase==3:
         <div class="small">WAS DU BEREITS WUSSTEST</div><p>{c['meta']}<br>{c['facts']}</p>
         <div class="newinfo"><b>PRIORISIERTE INFORMATIONEN AUS DEM ERSTINTERVIEW</b><br>{''.join(f'• {x}<br>' for x in c['second'])}</div></div>""",unsafe_allow_html=True)
 
-    st.markdown("### Hat sich deine Reihenfolge verändert?")
-    st.caption("Es bleiben dieselben drei Personen. Vergib Rang 1–3 nach den neuen Informationen erneut.")
+    st.markdown('<h3 style="color:#FFFFFF !important;">Hat sich deine Reihenfolge verändert?</h3>', unsafe_allow_html=True)
+    st.markdown('<p style="color:#D9E5EF !important;font-size:13px;margin-top:-6px;">Es bleiben dieselben drei Personen. Vergib Rang 1–3 nach den neuen Informationen erneut.</p>', unsafe_allow_html=True)
     base=list(st.session_state.second_ranking or st.session_state.shortlist)
     opts=list(st.session_state.shortlist)
     rc1,rc2,rc3=st.columns(3)
@@ -596,26 +606,66 @@ elif st.session_state.phase==7:
         st.success(msg)
     else:
         st.info(msg)
-    st.markdown('<h3 style="color:#FFFFFF !important;">Dein Ergebnis auf einen Blick</h3>', unsafe_allow_html=True)
-    first_rank="  ·  ".join(f"{i+1}. {cid.split()[-1]}" for i,cid in enumerate(st.session_state.shortlist))
-    second_rank="  ·  ".join(f"{i+1}. {cid.split()[-1]}" for i,cid in enumerate(st.session_state.second_ranking or st.session_state.shortlist))
-    st.markdown(f"""<div class="main-card">
-      <span class="status">ERGEBNIS VOLLSTÄNDIG</span>
-      <h3 style="margin-top:14px">Deine ersten Top 3</h3><p style="font-size:20px;font-weight:850">{first_rank}</p>
-      <h3>Deine Top 3 nach dem Second Look</h3><p style="font-size:20px;font-weight:850">{second_rank}</p>
-      <h3>Finale Empfehlung</h3><p style="font-size:24px;font-weight:900">{(st.session_state.final_candidate or '—').split()[-1] if st.session_state.final_candidate else '—'}</p>
-    </div>""",unsafe_allow_html=True)
-    c1,c2=st.columns(2)
-    c1.metric("Sicherheit First Screening",f"{st.session_state.confidence1}%")
-    c2.metric("Sicherheit final",f"{st.session_state.final_confidence}%")
+    st.markdown("""
+    <style>
+    .result-shell{border:1px solid rgba(255,255,255,.30);border-radius:14px;padding:22px 24px;margin:20px 0 22px;background:rgba(10,32,51,.18)}
+    .result-shell h2,.result-shell h3,.result-shell p,.result-shell div,.result-shell span{color:#FFFFFF !important}
+    .result-kicker{font-size:10px;font-weight:850;letter-spacing:1.2px;color:#BFD0E0 !important;text-transform:uppercase;margin-bottom:8px}
+    .ranking-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 18px}
+    .rank-card{border:1px solid rgba(255,255,255,.28);border-radius:9px;padding:12px 14px;background:rgba(255,255,255,.045)}
+    .rank-no{font-size:10px;font-weight:850;letter-spacing:.8px;color:#BFD0E0 !important;text-transform:uppercase}
+    .rank-id{font-size:17px;font-weight:900;margin-top:4px}
+    .rank-role{font-size:12px;line-height:1.35;color:#D9E5EF !important;margin-top:3px}
+    .final-result{border:1px solid rgba(255,255,255,.40);border-left:4px solid #2F8F67;border-radius:9px;padding:14px 16px;margin-top:8px;background:rgba(47,143,103,.10)}
+    .confidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 22px}
+    .confidence-card{border:1px solid rgba(255,255,255,.28);border-radius:10px;padding:15px 17px;background:rgba(255,255,255,.045)}
+    .confidence-label{font-size:11px;font-weight:800;color:#D9E5EF !important}
+    .confidence-value{font-size:28px;font-weight:900;color:#FFFFFF !important;margin-top:3px}
+    .detail-shell{border:1px solid rgba(255,255,255,.30);border-radius:14px;padding:20px 22px;margin-top:8px;background:rgba(10,32,51,.18)}
+    .detail-shell,.detail-shell *{color:#FFFFFF !important}
+    @media(max-width:800px){.ranking-row,.confidence-grid{grid-template-columns:1fr}}
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<h3 style="color:#FFFFFF !important;margin-bottom:4px;">Dein Ergebnis auf einen Blick</h3>', unsafe_allow_html=True)
+
+    def rank_cards(ids):
+        cards=[]
+        for i,cid in enumerate(ids):
+            cand=BYID[cid]
+            cards.append(f"""<div class="rank-card"><div class="rank-no">Rang {i+1}</div><div class="rank-id">{cid}</div><div class="rank-role">{cand['role_de']}</div></div>""")
+        return "".join(cards)
+
+    first_ids=st.session_state.shortlist
+    second_ids=st.session_state.second_ranking or st.session_state.shortlist
+    final_id=st.session_state.final_candidate
+    if final_id:
+        final_c=BYID[final_id]
+        final_html=f"""<div class="final-result"><div class="rank-no">FINALE EMPFEHLUNG</div><div class="rank-id">{final_id}</div><div class="rank-role">{final_c['role_de']}</div></div>"""
+    else:
+        final_html="""<div class="final-result"><div class="rank-no">FINALE EMPFEHLUNG</div><div class="rank-id">—</div></div>"""
+
+    st.markdown(f"""<div class="result-shell">
+      <div class="result-kicker">DEINE ENTSCHEIDUNG</div>
+      <h3>Erste Shortlist</h3>
+      <div class="ranking-row">{rank_cards(first_ids)}</div>
+      <h3>Nach dem Second Look</h3>
+      <div class="ranking-row">{rank_cards(second_ids)}</div>
+      {final_html}
+    </div>""", unsafe_allow_html=True)
+
+    st.markdown(f"""<div class="confidence-grid">
+      <div class="confidence-card"><div class="confidence-label">SICHERHEIT · FIRST SCREENING</div><div class="confidence-value">{st.session_state.confidence1}%</div></div>
+      <div class="confidence-card"><div class="confidence-label">SICHERHEIT · FINALE ENTSCHEIDUNG</div><div class="confidence-value">{st.session_state.final_confidence}%</div></div>
+    </div>""", unsafe_allow_html=True)
 
     if st.session_state.final_candidate:
         fc=BYID[st.session_state.final_candidate]
         final_info="".join(f"<li>{x}</li>" for x in fc["second"])
         reasons_txt=" · ".join(st.session_state.final_reasons + ([st.session_state.final_other] if st.session_state.final_other else [])) or "keine zusätzlichen Kriterien angegeben"
-        st.markdown(f"""<div class="main-card" style="margin-top:14px">
-          <span class="tag">DISKUSSGRUNDLAGE</span>
-          <h2 style="margin-top:12px">Deine finale Empfehlung: {st.session_state.final_candidate}</h2>
+        st.markdown(f"""<div class="detail-shell">
+          <div class="result-kicker">DISKUSSGRUNDLAGE</div>
+          <h2>Deine finale Empfehlung: {st.session_state.final_candidate}</h2>
           <p><b>{fc['role']}</b><br>{fc['role_de']}</p>
           <p><b>Profil:</b> {fc['meta']}</p>
           <p>{fc['facts']}</p>
