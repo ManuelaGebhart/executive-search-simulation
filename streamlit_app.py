@@ -85,6 +85,15 @@ div[data-testid="stMultiSelect"] label p {{color:#F4F8FB !important;}}
 .reflection-box {{
     background:#F5F8FA;border-left:4px solid #6E879B;padding:15px;border-radius:7px;
 }}
+/* Headings on navy sections: explicit high-contrast styling */
+.dark-section-heading, .dark-section-heading * {{
+    color:#FFFFFF !important;
+    -webkit-text-fill-color:#FFFFFF !important;
+}}
+.dark-section-subtitle, .dark-section-subtitle * {{
+    color:#D9E5EF !important;
+    -webkit-text-fill-color:#D9E5EF !important;
+}}
 /* Readable glossary on dark pages */
 div[data-testid="stExpander"] {{
     background:#FFFFFF !important;
@@ -650,8 +659,8 @@ elif st.session_state.phase==3:
         <div class="small">WAS DU BEREITS WUSSTEST</div><p>{c['meta']}<br>{c['facts']}</p>
         <div class="newinfo"><b>PRIORISIERTE INFORMATIONEN AUS DEM ERSTINTERVIEW</b><br>{''.join(f'• {x}<br>' for x in c['second'])}</div></div>""",unsafe_allow_html=True)
 
-    st.markdown('<h3 style="color:#FFFFFF !important;">Hat sich deine Reihenfolge verändert?</h3>', unsafe_allow_html=True)
-    st.markdown('<p style="color:#D9E5EF !important;font-size:13px;margin-top:-6px;">Es bleiben dieselben drei Personen. Vergib Rang 1–3 nach den neuen Informationen erneut.</p>', unsafe_allow_html=True)
+    st.markdown('<div class="dark-section-heading" style="color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF !important;font-size:1.35rem;font-weight:700;line-height:1.4;margin:1rem 0 .5rem;">Hat sich deine Reihenfolge verändert?</div>', unsafe_allow_html=True)
+    st.markdown('<div class="dark-section-subtitle" style="color:#D9E5EF !important;-webkit-text-fill-color:#D9E5EF !important;font-size:13px;margin-top:-6px;margin-bottom:12px;">Es bleiben dieselben drei Personen. Vergib Rang 1–3 nach den neuen Informationen erneut.</div>', unsafe_allow_html=True)
     base=list(st.session_state.second_ranking or st.session_state.shortlist)
     opts=list(st.session_state.shortlist)
     rc1,rc2,rc3=st.columns(3)
@@ -756,7 +765,7 @@ elif st.session_state.phase==7:
     </style>
     """, unsafe_allow_html=True)
 
-    st.markdown('<h3 style="color:#FFFFFF !important;margin-bottom:4px;">Dein Ergebnis auf einen Blick</h3>', unsafe_allow_html=True)
+    st.markdown('<div class="dark-section-heading" style="color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF !important;font-size:1.35rem;font-weight:700;line-height:1.4;margin:1rem 0 4px;">Dein Ergebnis auf einen Blick</div>', unsafe_allow_html=True)
 
     def rank_cards(ids):
         cards=[]
